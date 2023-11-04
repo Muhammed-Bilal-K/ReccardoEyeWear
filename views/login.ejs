@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/userSignup.css">
+    <link rel="stylesheet" href="/stylesheets/frontend.css">
+    <link rel="stylesheet" href="/stylesheets/main.min.css">
+    <link rel="stylesheet" href="/stylesheets/post-14.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <%- include('partials/__signup__') %>
+
+    <% if (errMSG) { %>
+        <div style="text-align: center; margin: 0px 36rem;">
+            <h3 class="alert alert-info" role="alert" style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">no user</h3>
+        </div>
+    <% } %>
+    <% if (is_veri) { %>
+        <div style="text-align: center; margin: 0px 36rem;">
+            <h3 class="alert alert-info" role="alert" style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">user account not verified yet.</h3>
+        </div>
+    <% } %>
+    <% if (is_block) { %>
+        <div style="text-align: center; margin: 0px 36rem;">
+            <h3 class="alert alert-info" role="alert" style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">your account is suspended</h3>
+        </div>
+    <% } %>
+    
+        <form action="/login" method="post">
+            <h1 style="font-size: 3rem;">Login</h1>
+            <div><label for="email">Email:</label>
+                <input type="email" name="email" id="email" required>
+                <!-- pattern="[A-Za-z0-9]*[@](gmail)*[\.](com)$" -->
+            </div>
+            <div>
+                <label for="password">Password:</label> <input type="password" name="password" id="Password" required>
+            </div>
+            <div><input type="submit" value="Login"></div>
+            <!-- onclick=" return confirm('delete')" -->
+            <p>you don't have an <a class="loginPagesSty" href="/signup">singup</a></p>
+        </form>
+
+        <!-- <%- include('partials/__signupfooter__') %> -->
+            <script id="astra-theme-js-js-extra">
+                var astra = { "break_point": "921", "isRtl": "", "is_scroll_to_id": "", "is_scroll_to_top": "", "is_header_footer_builder_active": "1", "edit_post_url": "https:\/\/websitedemos.net\/eyewear-store-04\/wp-admin\/post.php?post={{id}}&action=edit", "ajax_url": "https:\/\/websitedemos.net\/eyewear-store-04\/wp-admin\/admin-ajax.php", "shop_infinite_count": "2", "shop_infinite_total": "0", "shop_pagination": "infinite", "shop_infinite_scroll_event": "scroll", "shop_no_more_post_message": "No more products to show.", "checkout_prev_text": "Back to my details", "checkout_next_text": "Proceed to payment", "show_comments": "Show Comments", "shop_quick_view_enable": "on-image", "shop_quick_view_stick_cart": "1", "shop_quick_view_auto_height": "1", "woo_cart_empty_featured_product": "", "single_product_qty_ajax_nonce": "c48c5b3727", "single_product_ajax_add_to_cart": "1", "is_cart": "", "is_single_product": "", "view_cart": "View cart", "cart_url": "https:\/\/websitedemos.net\/eyewear-store-04\/cart\/", "checkout_url": "https:\/\/websitedemos.net\/eyewear-store-04\/checkout\/", "add_to_cart_options_single": "rt_add_to_cart", "is_astra_pro": "1" };
+            </script>
+            <script src="/javascripts/frontend.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

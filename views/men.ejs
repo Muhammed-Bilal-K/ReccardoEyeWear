@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<%- include('partials/__homeheader__') %>
+
+	<body
+		class="archive tax-product_cat term-women term-35 wp-custom-logo theme-astra woocommerce woocommerce-page woocommerce-js ast-desktop ast-plain-container ast-no-sidebar astra-4.3.1 columns-3 tablet-columns-3 mobile-columns-2 ast-woo-shop-archive ast-inherit-site-logo-transparent ast-hfb-header ast-full-width-primary-header ast-default-shop-page-modern-style ast-woocommerce-shop-page-modern-style ast-woocommerce-pagination-type-infinite elementor-default elementor-kit-4 astra-addon-4.1.5">
+
+		<div class="hfeed site" id="page">
+			<header
+				class="site-header header-main-layout-1 ast-primary-menu-enabled ast-logo-title-inline ast-hide-custom-menu-mobile ast-builder-menu-toggle-icon ast-mobile-header-inline"
+				id="masthead" itemscope="itemscope" itemid="#masthead">
+				<div id="ast-desktop-header" data-toggle-type="dropdown">
+					<div class="ast-main-header-wrap main-header-bar-wrap ">
+						<div class="ast-primary-header-bar ast-primary-header main-header-bar site-header-focus-item"
+							data-section="section-primary-header-builder">
+							<div class="site-primary-header-wrap ast-builder-grid-row-container site-header-focus-item ast-container"
+								data-section="section-primary-header-builder">
+								<div
+									class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-grid-center-col-layout">
+									<div
+										class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+										<div class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+											data-section="section-hb-menu-1">
+											<div class="ast-main-header-bar-alignment">
+												<div class="main-header-bar-navigation">
+													<nav class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+														id="primary-site-navigation-desktop"
+														aria-label="Site Navigation" itemscope="itemscope">
+														<div class="main-navigation ast-inline-flex">
+															<ul id="ast-hf-menu-1"
+																class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex  submenu-with-border ast-menu-hover-style-underline  stack-on-mobile">
+																<li id="menu-item-81"
+																	class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-81">
+																	<a href="/" class="menu-link">Home</a>
+																</li>
+															</ul>
+														</div>
+													</nav>
+												</div>
+											</div>
+										</div>
+										<div
+											class="site-header-primary-section-left-center site-header-section ast-flex ast-grid-left-center-section">
+										</div>
+									</div>
+									<div
+										class="site-header-primary-section-center site-header-section ast-flex ast-grid-section-center">
+										<div class="ast-builder-layout-element ast-flex site-header-focus-item"
+											data-section="title_tagline">
+											<div class="site-branding ast-site-identity" itemscope="itemscope">
+												<span class="site-logo-img"><a href="/" class="custom-logo-link"
+														rel="home"><img width="134" height="56"
+															src="/images/logo-header-regular copy.png"
+															class="custom-logo" alt="Eyewear Store"></a><span>
+											</div>
+										</div>
+									</div>
+									<div
+										class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+										<div
+											class="site-header-primary-section-right-center site-header-section ast-flex ast-grid-right-center-section">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</header>
+			<div id="content" class="site-content">
+				<div class="ast-container">
+					<div id="primary" class="content-area primary">
+						<main id="main" class="site-main">
+							<div class="ast-woocommerce-container">
+								<header class="woocommerce-products-header">
+									<h1 class="woocommerce-products-header__title page-title" style="font-size: 5rem;">
+											Men
+									</h1>
+								</header>
+								<div class="woocommerce-notices-wrapper"></div>
+								<ul class="products columns-3">
+									<% for( let i = 0; i < productDeatil.length; i++ ) { %>
+										<li
+											class="ast-grid-common-col ast-full-width ast-article-post astra-woo-hover-swap desktop-align-left tablet-align-left mobile-align-left ast-product-gallery-layout-vertical-slider ast-product-tabs-layout-accordion ast-qv-on-image product type-product post-149 status-publish first instock product_cat-women has-post-thumbnail sale shipping-taxable purchasable product-type-simple">
+											<div class="astra-shop-thumbnail-wrap">
+												<a href="/product-category/women/view/<%=  productDeatil[i]._id %>"
+													class="woocommerce-LoopProduct-link woocommerce-loop-product__link"><img
+														width="600" height="600" src="/uploaded/<%=  productDeatil[i].image %>"
+														class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
+														alt="" decoding="async" loading="lazy"></a>
+											</div>
+											<div class="astra-shop-summary-wrap">
+												<a href="#" class="ast-loop-product__link">
+													<h2 class="woocommerce-loop-product__title"><%=  productDeatil[i].name %></h2>
+												</a>
+												<span class="price"><del aria-hidden="true"><span
+															class="woocommerce-Price-amount amount"><bdi><span
+																	class="woocommerce-Price-currencySymbol">$</span>175.00</bdi></span></del>
+													<ins><span class="woocommerce-Price-amount amount"><bdi><span
+																	class="woocommerce-Price-currencySymbol">$</span><%=  productDeatil[i].price %>.00</bdi></span></ins></span>
+											</div>
+										</li>
+									<% } %>
+								</ul>
+							</div>
+						</main>
+					</div>
+				</div>
+			</div>
+			<footer class="site-footer" id="colophon" itemscope="itemscope" itemid="#colophon">
+				<div class="site-below-footer-wrap ast-builder-grid-row-container site-footer-focus-item ast-builder-grid-row-2-equal ast-builder-grid-row-tablet-2-equal ast-builder-grid-row-mobile-full ast-footer-row-stack ast-footer-row-tablet-stack ast-footer-row-mobile-stack"
+					data-section="section-below-footer-builder">
+					<div class="ast-builder-grid-row-container-inner">
+						<div class="ast-builder-footer-grid-columns site-below-footer-inner-wrap ast-builder-grid-row">
+							<div class="site-footer-below-section-1 site-footer-section site-footer-section-1">
+								<div class="ast-builder-layout-element ast-flex site-footer-focus-item ast-footer-copyright"
+									data-section="section-footer-builder">
+									<div class="ast-footer-copyright">
+										<p>Copyright © 2023 Eyewear Store | Powered by Eyewear Store</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+		<div id="showcase-cta-entry-root" class="st-customizer-cta"></div>
+
+	</body>
+
+</html>

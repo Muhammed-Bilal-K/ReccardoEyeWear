@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/frontend.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/main.min.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/post-14.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/userSignup.css">
+</head>
+
+<body>
+    <%- include('partials/__otp__') %>
+    
+        <form action="/otp" method="post">
+            <h1 style="font-size: 3rem;">Email Verification</h1>
+            <div style="text-align: center;">
+                <label for="otp">OTP</label> 
+                <input type="number" name="otp" id="Password" required>
+            </div>
+            <div><input type="submit" value="Verify"></div>
+            <!-- onclick=" return confirm('delete')" -->
+        </form>
+            <script id="astra-theme-js-js-extra">
+                var astra = { "break_point": "921", "isRtl": "", "is_scroll_to_id": "", "is_scroll_to_top": "", "is_header_footer_builder_active": "1", "edit_post_url": "https:\/\/websitedemos.net\/eyewear-store-04\/wp-admin\/post.php?post={{id}}&action=edit", "ajax_url": "https:\/\/websitedemos.net\/eyewear-store-04\/wp-admin\/admin-ajax.php", "shop_infinite_count": "2", "shop_infinite_total": "0", "shop_pagination": "infinite", "shop_infinite_scroll_event": "scroll", "shop_no_more_post_message": "No more products to show.", "checkout_prev_text": "Back to my details", "checkout_next_text": "Proceed to payment", "show_comments": "Show Comments", "shop_quick_view_enable": "on-image", "shop_quick_view_stick_cart": "1", "shop_quick_view_auto_height": "1", "woo_cart_empty_featured_product": "", "single_product_qty_ajax_nonce": "c48c5b3727", "single_product_ajax_add_to_cart": "1", "is_cart": "", "is_single_product": "", "view_cart": "View cart", "cart_url": "https:\/\/websitedemos.net\/eyewear-store-04\/cart\/", "checkout_url": "https:\/\/websitedemos.net\/eyewear-store-04\/checkout\/", "add_to_cart_options_single": "rt_add_to_cart", "is_astra_pro": "1" };
+            </script>
+            <script src="/javascripts/frontend.js"></script>
+</body>
+
+</html>
