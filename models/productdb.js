@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const USERSSchema = new mongoose.Schema({
+const ProductSchema = new mongoose.Schema({
     name: {
         type: String,
         required: 'This field is required.'
@@ -26,4 +26,4 @@ const USERSSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('ProductDetail', USERSSchema);
+module.exports = mongoose.model('ProductDetail', ProductSchema);

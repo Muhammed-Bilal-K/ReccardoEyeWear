@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var userController = require('../controllers/userController');
+var cartController = require('../controllers/cartController');
 
 
 
@@ -40,5 +41,8 @@ router.post('/otp', userController.otpverifiypage);
 
 /* POST user's loginppage listing. */
 router.post('/login', userController.createloginpage);
+
+/* POST user's loginppage listing. */
+router.post('/addToCart/:id', cartController.addTocarts);
 
 module.exports = router;

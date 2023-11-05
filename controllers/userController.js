@@ -124,11 +124,11 @@ exports.eachProductv = async (req, res) => {
 
 exports.cart = async (req, res) => {
     try {
-        if (req.session.userData) {
-            res.send('hi');
-        } else {
-            res.redirect('/login');
-        }
+        //if (req.session.userData) {
+            res.render('cart');
+        //} else {
+            //res.redirect('/login');
+        //}
     } catch (error) {
         console.log(error);
     }
