@@ -9,7 +9,6 @@ const sendVerifyMail = async (name, email, user_id) => {
     try {
 
         const otp = Math.floor(100000 + Math.random() * 900000);
-        console.log(otp);
 
         otpverifymake = otp;
 
@@ -46,9 +45,7 @@ exports.otpverifiypage = async (req, res) => {
     var veriOtp = req.body.otp;
     try {
         if (otpverifymake == veriOtp) {
-            console.log(`update part ${otpverifymake}`);
             var UpdatedDataDetail = await user.updateOne({ email: emailOtpCheck }, { $set: { is_verified: 1 } });
-            console.log(UpdatedDataDetail);
             otpverify = null;
             emailOtpCheck = null;
             res.redirect('/login');
@@ -69,7 +66,6 @@ exports.homepage = async (req, res) => {
 exports.womencate = async (req, res) => {
     try {
         var productDeatil = await product.find({ "choose": "women" });
-        console.log(productDeatil);
         res.render('women', { productDeatil: productDeatil });
     } catch (error) {
         console.log(error);
@@ -79,7 +75,6 @@ exports.womencate = async (req, res) => {
 exports.mencate = async (req, res) => {
     try {
         var productDeatil = await product.find({ "choose": "men" });
-        console.log(productDeatil);
         res.render('men', { productDeatil: productDeatil });
     } catch (error) {
         console.log(error);
@@ -114,21 +109,7 @@ exports.eachProductv = async (req, res) => {
     try {
         var uid = req.params.id;
         var EachproductDeatil = await product.findOne({ "_id": uid });
-        console.log(EachproductDeatil);
         res.render('eachProductV', { EachproductDeatil: EachproductDeatil });
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-
-exports.cart = async (req, res) => {
-    try {
-        //if (req.session.userData) {
-            res.render('cart');
-        //} else {
-            //res.redirect('/login');
-        //}
     } catch (error) {
         console.log(error);
     }
@@ -192,10 +173,8 @@ exports.createsignuppage = async (req, res) => {
 
 exports.createloginpage = async (req, res) => {
     var cheEma = req.body.email;
-    console.log(cheEma);
     try {
         var loginVerify = await user.findOne({ "email": cheEma });
-        console.log(loginVerify);
 
         if (!loginVerify) {
             req.session.loginErr = true;
@@ -212,7 +191,7 @@ exports.createloginpage = async (req, res) => {
             res.redirect('/login');
         } else if ((loginVerify.email === req.body.email && loginVerify.password === req.body.password)) {
             req.session.login = true;
-            req.session.userData = loginVerify;
+            req.session.userData = loginVerify._id;
             res.redirect('/');
         }
     } catch (error) {

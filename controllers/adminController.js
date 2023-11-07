@@ -8,63 +8,67 @@ const admin = {
 
 exports.adminpage = async (req, res) => {
 
-    if (req.session.adminData) {
-        var search = '';
-        var limit = 4;
-        var page = 1;
-        if (req.query.search) {
-            search = req.query.search;
+    try {
+        if (req.session.adminData) {
+            var search = '';
+            var limit = 4;
+            var page = 1;
+            if (req.query.search) {
+                search = req.query.search;
+            }
+    
+            if (req.query.page) {
+                page = req.query.page;
+            }
+    
+            var AllProduct = await product.find({
+                $expr: { $ne: [{ $size: "$choose" }, 0]  },
+                $or: [
+                    {
+                        name: {
+                            $regex: '.*' + search + '.*',
+                            $options: 'i'
+                        }
+                    },
+                    {
+                        price: {
+                            $regex: '.*' + search + '.*',
+                            $options: 'i'
+                        }
+                    }
+                ]
+            }).limit(limit * 1).skip((page - 1) * limit);
+    
+            var count = await product.find({
+                $or: [
+                    {
+                        name: {
+                            $regex: '.*' + search + '.*',
+                            $options: 'i'
+                        }
+                    },
+                    {
+                        price: {
+                            $regex: '.*' + search + '.*',
+                            $options: 'i'
+                        }
+                    }
+                ]
+            }).countDocuments();
+    
+            var totalcos = await user.find({ "is_verified": 1 }).count();
+            res.render('adminPanel', {
+                ProductDoc: AllProduct,
+                totalcos,
+                totalpage: Math.ceil(count / limit),
+                currentPage: page,
+                search
+            });
+        } else {
+            res.redirect('admin/login');
         }
-
-        if (req.query.page) {
-            page = req.query.page;
-        }
-
-        var AllProduct = await product.find({
-            $expr: { $ne: [{ $size: "$choose" }, 0]  },
-            $or: [
-                {
-                    name: {
-                        $regex: '.*' + search + '.*',
-                        $options: 'i'
-                    }
-                },
-                {
-                    price: {
-                        $regex: '.*' + search + '.*',
-                        $options: 'i'
-                    }
-                }
-            ]
-        }).limit(limit * 1).skip((page - 1) * limit);
-
-        var count = await product.find({
-            $or: [
-                {
-                    name: {
-                        $regex: '.*' + search + '.*',
-                        $options: 'i'
-                    }
-                },
-                {
-                    price: {
-                        $regex: '.*' + search + '.*',
-                        $options: 'i'
-                    }
-                }
-            ]
-        }).countDocuments();
-
-        var totalcos = await user.find({ "is_verified": 1 }).count();
-        res.render('adminPanel', {
-            ProductDoc: AllProduct,
-            totalcos,
-            totalpage: Math.ceil(count / limit),
-            currentPage: page,
-            search
-        });
-    } else {
-        res.redirect('admin/login');
+    } catch (error) {
+        console.log(error);
     }
 }
 

@@ -24,7 +24,7 @@ router.get('/product-category/men', userController.mencate);
 router.get('/product-category/women/view/:id', userController.eachProductv);
 
 /* GET user' homepage listing. */
-router.get('/cart', userController.cart);
+router.get('/cart', cartController.cart);
 
 /* GET user' homepage listing. */
 router.get('/logout', userController.userlogout);
@@ -44,5 +44,7 @@ router.post('/login', userController.createloginpage);
 
 /* POST user's loginppage listing. */
 router.post('/addToCart/:id', cartController.addTocarts);
+
+router.post('/change-product-q', cartController.changeQUA);
 
 module.exports = router;
