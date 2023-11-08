@@ -27,6 +27,21 @@ router.get('/product-category/women/view/:id', userController.eachProductv);
 router.get('/cart', cartController.cart);
 
 /* GET user' homepage listing. */
+router.get('/cart/procesCheck', cartController.orderProceed);
+
+/* GET user' homepage listing. */
+router.get('/settings', cartController.userAdd);
+
+/* GET user' homepage listing. */
+router.get('/settings/addrs', cartController.specicAdd);
+
+/* GET user' homepage listing. */
+router.get('/settings/addrs/n1', cartController.newuserAdd);
+
+/* GET user' homepage listing. */
+router.get('/settings/orders', cartController.listOrder);
+
+/* GET user' homepage listing. */
 router.get('/logout', userController.userlogout);
 
 
@@ -46,5 +61,7 @@ router.post('/login', userController.createloginpage);
 router.post('/addToCart/:id', cartController.addTocarts);
 
 router.post('/change-product-q', cartController.changeQUA);
+
+router.post('/user/addNew', userController.newAddress);
 
 module.exports = router;

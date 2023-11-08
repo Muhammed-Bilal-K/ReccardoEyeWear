@@ -39,7 +39,18 @@ const USERSSchema = new mongoose.Schema({
             type:Number,
             required: true
         }
-    }]
+    }],
+    address: {
+        type: [{
+            name: String,
+            email: String,
+            select: String,
+            address:String,
+            city: String,
+            state: String,
+            zipcode: Number,
+        }]
+    },
 });
 
 module.exports = mongoose.model('EachUser', USERSSchema);

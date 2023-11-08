@@ -11,8 +11,8 @@
     </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <body
         class="archive tax-product_cat term-women term-35 wp-custom-logo theme-astra woocommerce woocommerce-page woocommerce-js ast-desktop ast-plain-container ast-no-sidebar astra-4.3.1 columns-3 tablet-columns-3 mobile-columns-2 ast-woo-shop-archive ast-inherit-site-logo-transparent ast-hfb-header ast-full-width-primary-header ast-default-shop-page-modern-style ast-woocommerce-shop-page-modern-style ast-woocommerce-pagination-type-infinite elementor-default elementor-kit-4 astra-addon-4.1.5">
@@ -117,19 +117,20 @@
                                         </td>
                                         <td>
                                             <button type="button" id="minus_qty" class="minus"
-                                                style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);" 
-                                                onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','-1','<%= x.totalPrice %>','<%= x.product_id.price %>','<%= total %>','sum')" >-</button>
-                                            <label class="screen-reader-text" for="quantity_6533da973faef">Product Name
+                                                style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
+                                                onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','-1','<%= x.totalPrice %>','<%= x.product_id.price %>','<%= total %>','sum')">-</button>
+                                            <label class="screen-reader-text" for="quantity_6533da973faef">Product
+                                                Name
                                                 1 quantity</label>
                                             <input type="number" class="" name="quantity" style="border: 1px solid rgb(245, 230, 230);
                                                 height: 1rem;
                                                 text-align: center;
-                                                margin: 0px -5px;" size="4" min="1" max="" id="<%= x.product_id._id %>" step="1"
-                                                placeholder="" value="<%= x.qty %>">
+                                                margin: 0px -5px;" size="4" min="1" max="" id="<%= x.product_id._id %>"
+                                                step="1" placeholder="" value="<%= x.qty %>">
                                             <label class="screen-reader-text" for="plus_qty"> Plus Quantity</label>
                                             <button type="button" href="" id="plus_qty" class="plus"
                                                 style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
-                                                onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','+1','<%= x.totalPrice %>','<%= x.product_id.price %>','<%= total %>','sum')" >+</button>
+                                                onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','+1','<%= x.totalPrice %>','<%= x.product_id.price %>','<%= total %>','sum')">+</button>
                                         </td>
                                         <td id="<%= x.totalPrice %>">
                                             <%= x.totalPrice %>
@@ -141,31 +142,28 @@
                         </table>
                     </div>
                     <div class="col-md-4" style="text-align: center;">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th style="background-color: #f1f1f1;" scope="col">Handle</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">SubTotal</th>
-                                    <td id="<%= total %>"><%= total %></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Total</th>
-                                    <td id="sum"><%= total %></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="coupon" style="display: flex;justify-content: center;align-items: center;">
-                            <input type="text" name="ast-coupon-code" id="ast-coupon-code" value=""
-                                placeholder="Coupon code">
-                            <a class="button" id="ast-apply-coupon" name="ast-apply-coupon" value="Apply"
-                                style="text-decoration: none;">
-                                Apply</a>
-                        </div>
-                        <button>continue</button>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: #f1f1f1;" scope="col">Handle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">SubTotal</th>
+                                        <td id="<%= total %>">
+                                            <%= total %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Total</th>
+                                        <td id="sum">
+                                            <%= total %>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a type="submit" href="/cart/procesCheck">PROCEED TO CHECKOUT</a>
                     </div>
                 </div>
             </div>
@@ -194,29 +192,29 @@
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
         <script>
-            function changeQuantity(proid,userID,count,totalP,pPrice,allP,sum) {
+            function changeQuantity(proid, userID, count, totalP, pPrice, allP, sum) {
                 let quantity = parseInt(document.getElementById(proid).value);
                 let tP = parseInt(document.getElementById(totalP).innerText);
                 let pp = parseInt(document.getElementById(pPrice).innerText);
                 let ALLprice = parseInt(document.getElementById(allP).innerText);
                 let sumss = parseInt(document.getElementById(sum).innerText);
                 $.ajax({
-                    url:'/change-product-q',
-                    data:{
-                        pro:proid,
-                        user:userID,
-                        count:count,
-                        quantity:quantity,
+                    url: '/change-product-q',
+                    data: {
+                        pro: proid,
+                        user: userID,
+                        count: count,
+                        quantity: quantity,
                     },
-                    method:'post',
-                    success:(response)=>{
+                    method: 'post',
+                    success: (response) => {
                         if (response.status) {
                             var num = parseInt(quantity) + parseInt(count);
                             if (parseInt(count) === 1) {
                                 var Psum = tP + pp;
                                 var ALLp = ALLprice + pp;
                                 var summm = sumss + pp;
-                            }else{
+                            } else {
                                 var Psum = tP - pp;
                                 var ALLp = ALLprice - pp;
                                 var summm = sumss - pp;

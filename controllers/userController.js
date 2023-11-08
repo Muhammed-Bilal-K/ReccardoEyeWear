@@ -200,7 +200,29 @@ exports.createloginpage = async (req, res) => {
 }
 
 
-
+exports.newAddress = async (req,res) => {
+    var userId = '654a5101dbeb9850ecd63158';
+    var UserAddss = await user.findOne({"_id":userId});
+        try {
+            if (UserAddss) {
+                await user.updateOne({"_id": userId }, {
+                    $push: {
+                        "address": {
+                            name:req.body.name,
+                            email:req.body.email,
+                            select:req.body.select,
+                            address:req.body.address,
+                            city:req.body.city,
+                            state:req.body.state,
+                            zipcode:req.body.zipcode
+                        }
+                    }
+                })
+            }
+        } catch (error) {
+            console.log(error);
+        }
+}
 
 
 

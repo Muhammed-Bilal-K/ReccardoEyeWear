@@ -8,8 +8,7 @@ exports.addTocarts = async (req, res) => {
     quantity = parseInt(quantity);
     try {
         var ProductExist = await user.findOne({ "_id": userId });
-
-
+        
         var productQuanPrice = await product.findOne({ "_id": pid });
 
         var TotalAmount = parseInt(productQuanPrice.price) * quantity;
@@ -40,7 +39,7 @@ exports.addTocarts = async (req, res) => {
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////GET////////////////////////////////////////////
 
 exports.cart = async (req, res) => {
 
@@ -90,3 +89,23 @@ exports.changeQUA = async (req, res, next) => {
         console.log(error);
     }
 }        
+
+exports.orderProceed = async (req,res) => {
+    res.render('procedCHECk');
+}
+
+exports.userAdd = async (req,res) => {
+    res.render('UserAddFirst');
+}
+
+exports.specicAdd = async (req,res) => {
+    res.render('UserAddSecond');
+}
+
+exports.newuserAdd = async (req,res) => {
+    res.render('addnewUr');
+}
+
+exports.listOrder = async (req,res) => {
+    res.render('userOrder');
+}
