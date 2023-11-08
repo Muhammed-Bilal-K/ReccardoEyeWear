@@ -42,8 +42,6 @@ exports.addTocarts = async (req, res) => {
 ////////////////////////////////////////GET////////////////////////////////////////////
 
 exports.cart = async (req, res) => {
-
-
     if (req.session.userData) {
         try {
             var totalsum = 0;
@@ -61,7 +59,6 @@ exports.cart = async (req, res) => {
     } else {
         res.redirect('/login')
     }
-
 }
 
 exports.changeQUA = async (req, res, next) => {
@@ -91,6 +88,9 @@ exports.changeQUA = async (req, res, next) => {
 }        
 
 exports.orderProceed = async (req,res) => {
+    var userId = '654b070c35a07dd695eb9176'
+    var allDeta = await user.findOne({ "_id": userId }).populate('cart.product_id');
+    console.log(allDeta.cart);
     res.render('procedCHECk');
 }
 
@@ -99,7 +99,9 @@ exports.userAdd = async (req,res) => {
 }
 
 exports.specicAdd = async (req,res) => {
-    res.render('UserAddSecond');
+        var ID = req.session.userData;
+        var addsData = await user.findOne({"_id":ID});
+        res.render('UserAddSecond',{addList:addsData.address});
 }
 
 exports.newuserAdd = async (req,res) => {

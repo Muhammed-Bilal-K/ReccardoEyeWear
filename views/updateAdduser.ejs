@@ -66,7 +66,7 @@
                     <!--Grid column-->
                     <div class="col-md-10 mb-4" style="margin: 0 130px;">
                         <!--Card-->
-                        <form action="/user/addNew" method="post">
+                        <form action="/user/addNew/<%= addlist._id %>" method="post">
                             <div class="card p-4">
                                 <!-- first data -->
                                 <h3>NEW ADDRESS INFO</h3>
@@ -77,7 +77,7 @@
                                         <!--firstName-->
                                         <label>Full Name</label>
                                         <div class="form-outline">
-                                            <input type="text" name="name" style="width: 100%;" />
+                                            <input type="text" name="name" style="width: 100%;" value="<%= addlist.name %>"/>
                                         </div>
                                     </div>
                                     <!--Grid column-->
@@ -86,13 +86,14 @@
                                         <!--lastName-->
                                         <label>Email</label>
                                         <div class="form-outline">
-                                            <input type="text" name="email" style="width: 100%;" />
+                                            <input type="text" name="email" style="width: 100%;" value="<%= addlist.email %>"/>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- first data -->
                                 <label>Country / Region</label>
                                 <select class="browser-default custom-select mb-3" name="select">
+                                    <option><%= addlist.select %></option>
                                     <option>India</option>
                                     <option>USA</option>
                                     <option>AUS</option>
@@ -100,7 +101,7 @@
                                 <!-- first data -->
                                 <label>Street address</label>
                                 <div class="input-group mb-4">
-                                    <input type="text" class="form-control" name="address" placeholder="address" aria-label="Username"
+                                    <input type="text" class="form-control" name="address" value="<%= addlist.address %>" placeholder="address" aria-label="Username"
                                         aria-describedby="basic-addon1"
                                         style="padding-top: 1rem;padding-bottom: 2rem;" />
                                 </div>
@@ -111,7 +112,7 @@
                                         <!--firstName-->
                                         <label>Town / City</label>
                                         <div class="form-outline">
-                                            <input type="text" style="width: 100%;" name="city"/>
+                                            <input type="text" style="width: 100%;" name="city" value="<%= addlist.city %>/>
                                         </div>
                                     </div>
                                     <!--Grid column-->
@@ -120,7 +121,7 @@
                                         <!--lastName-->
                                         <label>State</label>
                                         <div class="form-outline">
-                                            <input type="text" style="width: 100%;" name="state"/>
+                                            <input type="text" style="width: 100%;" name="state" value="<%= addlist.state %>"/>
                                         </div>
                                     </div>
                                     <!--Grid column-->
@@ -128,7 +129,7 @@
                                         <!--lastName-->
                                         <label>ZipCode</label>
                                         <div class="form-outline">
-                                            <input type="number" name="zipcode" style="width: 100%;">
+                                            <input type="number" name="zipcode" style="width: 100%;" value="<%= addlist.zipcode %>">
                                         </div>
                                     </div>
                                     <!--Grid column-->

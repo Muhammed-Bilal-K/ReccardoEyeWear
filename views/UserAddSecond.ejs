@@ -1,30 +1,30 @@
 <%- include('partials/__userAddConfig__') %>
-	
-<section id="sidebar">
-	<a href="#" class="brand">
-		<i class='bx bxs-smile'></i>
-		<span class="text">USER DATA</span>
-	</a>
-	<ul class="side-menu top">
-		<li>
-			<a href="/settings">
-				<i class='bx bxs-user'></i>
-				<span class="text">Account Details</span>
-			</a>
-		</li>
-		<li class="active">
-			<a href="/settings/addrs">
-				<i class='bx bx-home' ></i>
-				<span class="text">Address</span>
-			</a>
-		</li>
-		<li>
-			<a href="/settings/orders">
-				<i class='bx bxs-shopping-bags' ></i>
-				<span class="text">My Orders</span>
-			</a>
-		</li>
-		<!-- <li>
+
+	<section id="sidebar">
+		<a href="/" class="brand">
+			<i class='bx bx-home'></i>
+			<span class="text">HOME</span>
+		</a>
+		<ul class="side-menu top">
+			<li>
+				<a href="/settings">
+					<i class='bx bxs-user'></i>
+					<span class="text">Account Details</span>
+				</a>
+			</li>
+			<li class="active">
+				<a href="/settings/addrs">
+					<i class='bx bx-home'></i>
+					<span class="text">Address</span>
+				</a>
+			</li>
+			<li>
+				<a href="/settings/orders">
+					<i class='bx bxs-shopping-bags'></i>
+					<span class="text">My Orders</span>
+				</a>
+			</li>
+			<!-- <li>
 			<a href="#">
 				<i class='bx bxs-message-dots'></i>
 				<span class="text">Message</span>
@@ -36,8 +36,8 @@
 				<span class="text">Team</span>
 			</a>
 		</li> -->
-	</ul>
-	<!-- <ul class="side-menu"> -->
+		</ul>
+		<!-- <ul class="side-menu"> -->
 		<!-- <li>
 			<a href="#">
 				<i class='bx bxs-cog' ></i>
@@ -50,27 +50,29 @@
 				<span class="text">Logout</span>
 			</a>
 		</li> -->
-	<!-- </ul> -->
-</section>
+		<!-- </ul> -->
+	</section>
 
 	<!-- CONTENT -->
 	<section id="content" style="margin: 3rem 9rem;">
-		<div class="card" style="width: 60rem;">
-			<div class="card-body">
-			  <h5 class="card-title">Card title</h5>
-			  <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-			  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-			  <a href="#" class="card-link">Delete</a>
-			  <a href="#" class="card-link">Edit</a>
-			  <a href="#" class="card-link">Default</a>
+		<% for( let i=0; i < addList.length; i++ ) { %>
+			<div class="card mb-4" style="width: 60rem;">
+				<div class="card-body">
+					<h5 class="card-title"><%= addList[i].name %></h5>
+					<h6 class="card-subtitle mb-2 text-muted"><%= addList[i].email %></h6>
+					<h6 class="card-subtitle mb-2 text-muted"><%= addList[i].select %></h6>
+					<p class="card-text"> <%= addList[i].address %> , <%= addList[i].city %> , <%= addList[i].state %> , <%= addList[i].zipcode %> </p>
+					<!-- idid -->
+					<a href="/settings/useradd/update/<%= addList[i]._id %>" class="card-link">Edit</a>
+					<a href="/settings/useradd/delete/<%= addList[i]._id %>" class="card-link">Delete</a>
+					<a href="#" class="card-link">Default</a>
+				</div>
 			</div>
-		  </div>
-
-		  <a href="/settings/addrs/n1">Add Address</a>
+			<% } %>
+				<a href="/settings/addrs/n1">Add Address</a>
 	</section>
 	<!-- CONTENT -->
 
 
 
 	<%- include('partials/__useraddFoo__') %>
-

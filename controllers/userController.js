@@ -125,6 +125,18 @@ exports.userlogout = async (req, res) => {
     }
 }
 
+exports.updateUseradd = async(req,res)=>{
+    var userId = req.session.userData;
+    var updateId = req.params.id;
+    try {
+        var UserAddss = await user.findOne({"_id":userId});
+        var addsList = UserAddss.address.find(data => data._id.toString() === updateId);
+        res.render('updateAdduser',{addlist:addsList});
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 //<-----------------------------------------POST METHODS--------------------------------------------->//
 
 
@@ -201,7 +213,7 @@ exports.createloginpage = async (req, res) => {
 
 
 exports.newAddress = async (req,res) => {
-    var userId = '654a5101dbeb9850ecd63158';
+    var userId = req.session.userData;
     var UserAddss = await user.findOne({"_id":userId});
         try {
             if (UserAddss) {
@@ -225,20 +237,42 @@ exports.newAddress = async (req,res) => {
 }
 
 
+exports.updateAdds = async (req,res) => {
+    var userId = req.session.userData;
+    var pid = req.params.id;
+    console.log(pid);
+    console.log(req.body);
+    var UserAddss = await user.findOne({"_id":userId});
+    var addsList = UserAddss.address.find(data => data._id.toString() === pid);
+    if (addsList) {
+        await user.updateOne({"_id": userId , "address._id" : pid}, {
+            $set:{
+                'address.$.name':req.body.name,
+                'address.$.email':req.body.email,
+                'address.$.select':req.body.select,
+                'address.$.address':req.body.address,
+                'address.$.city':req.body.city,
+                'address.$.state':req.body.state,
+                'address.$.zipcode':req.body.zipcode,
+            }
+        })
+        console.log('success');
+    } else {
+        console.log(error);
+    }
+}
 
 
-
-// let LogCheck = await user.findOne({ email: req.body.email, password: req.body.password });
-
-//         if (!LogCheck) {
-//             console.log('fail');
-//             req.session.loginErr = true;
-//             res.redirect('/login');
-//         } else if (LogCheck.email === req.body.email && LogCheck.password === req.body.password) {
-//             req.session.login = true;
-//             req.session.userData = LogCheck;
-//             return res.redirect('/');
-//         }
+exports.deleteAdds = async (req,res) => {
+    var userId = req.session.userData;
+    var addID = req.params.id;
+    var UserAddss = await user.findOne({"_id":userId});
+    var addsList = UserAddss.address.find(data => data._id.toString() === addID);
+    if (addsList) {
+        var result = await user.updateOne({"_id": userId},{$pull:{"address":{"_id":addID}}});
+        console.log(result);
+    }
+}
 
 
 

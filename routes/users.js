@@ -42,6 +42,12 @@ router.get('/settings/addrs/n1', cartController.newuserAdd);
 router.get('/settings/orders', cartController.listOrder);
 
 /* GET user' homepage listing. */
+router.get('/settings/useradd/update/:id', userController.updateUseradd);
+
+/* GET user' homepage listing. :id*/
+router.get('/settings/useradd/delete/:id', userController.deleteAdds);
+
+/* GET user' homepage listing. */
 router.get('/logout', userController.userlogout);
 
 
@@ -63,5 +69,7 @@ router.post('/addToCart/:id', cartController.addTocarts);
 router.post('/change-product-q', cartController.changeQUA);
 
 router.post('/user/addNew', userController.newAddress);
+
+router.post('/user/addNew/:id', userController.updateAdds);
 
 module.exports = router;
