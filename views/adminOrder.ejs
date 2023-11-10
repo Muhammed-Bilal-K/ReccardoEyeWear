@@ -45,10 +45,8 @@
                                     <h4><%= third.product_id.name %></h4>
                                     <p style="display: inline;">Qunatity:<%= third.qty %></p>
                                     <p style="display: inline;">$<%= third.price %></p>
-                                    <p>Status :<%= third.status %> 
-                                        
-                                            <button onclick="changeQuantity()">Mark as Delivered</button>
-                                        
+                                    <h5>Status :<p id="<%= third._id %>"><%= third.status %></h4>
+                                    <button onclick="makeOrder('<%= third._id %>','<%= First._id %>')">Mark as Delivered</button>
                                     </p>
                                     <hr>
                                 <% }) %>
@@ -79,10 +77,21 @@
     <!-- CONTENT -->
 
     <script>
-        function changeQuantity() {
+        function makeOrder(proID,userID) {
+            var UIID = document.getElementById(proID).innerHTML;
+            console.log(UIID);
             $.ajax({
                 url: 'admin/dorder',
+                data : {
+                        pID : proID,
+                        uID : userID
+                },
                 method: 'post',
+                success:(response)=>{
+                    if (response.status) {
+                        document.getElementById(proID).innerHTML = 'Delivered';
+                    }
+                }
             })
         }            
     </script>

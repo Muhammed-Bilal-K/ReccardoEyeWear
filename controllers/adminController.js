@@ -16,13 +16,13 @@ exports.adminpage = async (req, res) => {
             if (req.query.search) {
                 search = req.query.search;
             }
-    
+
             if (req.query.page) {
                 page = req.query.page;
             }
-    
+
             var AllProduct = await product.find({
-                $expr: { $ne: [{ $size: "$choose" }, 0]  },
+                $expr: { $ne: [{ $size: "$choose" }, 0] },
                 $or: [
                     {
                         name: {
@@ -38,7 +38,7 @@ exports.adminpage = async (req, res) => {
                     }
                 ]
             }).limit(limit * 1).skip((page - 1) * limit);
-    
+
             var count = await product.find({
                 $or: [
                     {
@@ -55,7 +55,7 @@ exports.adminpage = async (req, res) => {
                     }
                 ]
             }).countDocuments();
-    
+
             var totalcos = await user.find({ "is_verified": 1 }).count();
             res.render('adminPanel', {
                 ProductDoc: AllProduct,
@@ -148,9 +148,9 @@ exports.userCompDelet = async (req, res) => {
 }
 
 
-exports.orderList = async (req,res) => {
-    var addsData = await user.find({"is_verified":1,"is_blocked":0}).populate("orders.products.product_id"); 
-    res.render('adminOrder',{FULLDATA:addsData});
+exports.orderList = async (req, res) => {
+    var addsData = await user.find({ "is_verified": 1, "is_blocked": 0 }).populate("orders.products.product_id");
+    res.render('adminOrder', { FULLDATA: addsData });
 }
 
 exports.logoutpage = async (req, res) => {
@@ -214,6 +214,23 @@ exports.deleteCa = async (req, res) => {
 }
 
 
-exports.deleOrder = async (req,res,next) => {
-    console.log('hi');
+exports.deleOrder = async (req, res, next) => {
+    try {
+        console.log(req.body);
+        var UserOrderm = await user.findOne({ "_id": req.body.uID }).populate("orders.products.product_id");
+        if (UserOrderm.orders) {
+            var firRes = UserOrderm.orders.find(prod => prod.products);
+            if (firRes.products) {
+                var last = firRes.products.find(sprod => sprod._id.toString() == req.body.pID);
+                if (last.status == 'pending') {
+                    last.status = 'Delivered';
+                }
+            }
+        }
+        await UserOrderm.save().then(() => {
+            res.json({ status: true });
+        })
+    } catch (error) {
+        console.log(error);
+    }
 }
