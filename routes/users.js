@@ -42,6 +42,9 @@ router.get('/settings/addrs/n1', cartController.newuserAdd);
 router.get('/settings/orders', cartController.listOrder);
 
 /* GET user' homepage listing. */
+router.get('/settings/orders/view/:id', cartController.viewEach);
+
+/* GET user' homepage listing. */
 router.get('/settings/useradd/update/:id', userController.updateUseradd);
 
 /* GET user' homepage listing. :id*/
@@ -71,5 +74,7 @@ router.post('/change-product-q', cartController.changeQUA);
 router.post('/user/addNew', userController.newAddress);
 
 router.post('/user/addNew/:id', userController.updateAdds);
+
+router.post('/getAdd',cartController.processDelivery)
 
 module.exports = router;

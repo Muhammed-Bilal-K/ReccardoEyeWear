@@ -1,0 +1,91 @@
+<%- include('partials/__userAddConfig__') %>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Admin Panel</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- <div class="twoclasssome"> -->
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/admin">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/user">Users</a>
+                    </li>
+                    <!-- </div> -->
+                    <div class="someclass">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/orders">Orders</a>
+                        </li>
+                    </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href=/admin/logout>LogOut</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <section id="content">
+        <h1>ORDER DETAILS</h1>
+        <div class="card mb-4" style="width: 60rem; margin-top: 2rem;">
+            <% FULLDATA.forEach(First=> { %>
+                <div class="card-body">
+                    <% First.orders.forEach(second=> { %>
+                        <HR>
+                        </HR>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <% second.products.forEach(third => { %>                                 
+                                    <h4><%= third.product_id.name %></h4>
+                                    <p style="display: inline;">Qunatity:<%= third.qty %></p>
+                                    <p style="display: inline;">$<%= third.price %></p>
+                                    <p>Status :<%= third.status %> 
+                                        
+                                            <button onclick="changeQuantity()">Mark as Delivered</button>
+                                        
+                                    </p>
+                                    <hr>
+                                <% }) %>
+                            </div>
+                            <div class="col-md-4">
+                                <h4><%= second.address.name %></h4>
+                                <p style="display: inline;"><%= second.address.email %></p>
+                                <p style="display: inline;"><%= second.address.country %></p>
+                                <p style="display: inline;"><%= second.address.address %>das</p>
+                                <p style="display: inline;"><%= second.address.city %>asdhbj</p>
+                                <p style="display: inline;"><%= second.address.state %>asdhbj</p>
+                                <p style="display: inline;"><%= second.address.zipcode %>asdhbj</p>
+                                <hr>
+                                <h4>Total : $<%= second.totalamount %></h4>
+                                <h4>Payment : <%= second.paymentmethod %></h4>
+                                <hr>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- <p><a href="/settings/useradd/update/" class="card-link"></a></p> -->
+                                <p><a href="/order/delete/<%= second._id %>" class="card-link">Delete Order</a></p>
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+            <% }) %>
+        </div>
+    </section>
+    <!-- CONTENT -->
+
+    <script>
+        function changeQuantity() {
+            $.ajax({
+                url: 'admin/dorder',
+                method: 'post',
+            })
+        }            
+    </script>
+
+
+    <%- include('partials/__useraddFoo__') %>

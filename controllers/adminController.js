@@ -148,6 +148,11 @@ exports.userCompDelet = async (req, res) => {
 }
 
 
+exports.orderList = async (req,res) => {
+    var addsData = await user.find({"is_verified":1,"is_blocked":0}).populate("orders.products.product_id"); 
+    res.render('adminOrder',{FULLDATA:addsData});
+}
+
 exports.logoutpage = async (req, res) => {
     req.session.destroy(() => {
         res.redirect('/admin/login');
@@ -209,4 +214,6 @@ exports.deleteCa = async (req, res) => {
 }
 
 
-
+exports.deleOrder = async (req,res,next) => {
+    console.log('hi');
+}

@@ -9,7 +9,7 @@ const USERSSchema = new mongoose.Schema({
         type: String,
         required: 'This field is required.'
     },
-    p_number:{
+    p_number: {
         type: String,
         required: 'This field is required.'
     },
@@ -19,24 +19,24 @@ const USERSSchema = new mongoose.Schema({
     },
     is_verified: {
         type: Number,
-        default:0,
+        default: 0,
     },
     is_blocked: {
         type: Number,
-        default:0,
+        default: 0,
     },
-    cart:[{
-        product_id:{ type : mongoose.Schema.Types.ObjectId, ref: 'ProductDetail'},
-        qty:{
-            type:Number,
-            default:1
+    cart: [{
+        product_id: { type: mongoose.Schema.Types.ObjectId, ref: 'ProductDetail' },
+        qty: {
+            type: Number,
+            default: 1
         },
-        productPrice:{
-            type:Number,
+        productPrice: {
+            type: Number,
             required: true
         },
-        totalPrice:{
-            type:Number,
+        totalPrice: {
+            type: Number,
             required: true
         }
     }],
@@ -45,12 +45,46 @@ const USERSSchema = new mongoose.Schema({
             name: String,
             email: String,
             select: String,
-            address:String,
+            address: String,
             city: String,
             state: String,
             zipcode: Number,
         }]
     },
+    orders:[{
+        products:[{
+            product_id: { type: mongoose.Schema.Types.ObjectId, ref: 'ProductDetail' },
+            qty:{
+                type:Number,
+            },
+            price:{
+                type:Number,
+            },
+            status:{
+                type:String,
+                default:"pending"
+            },
+            returned:{
+                type:Boolean,
+                default:false
+            },
+        }],
+        totalamount:{
+            type:Number,
+        },
+        paymentmethod:{
+            type:String
+        },
+        address:{
+            name: String,
+            email: String,
+            country: String,
+            address: String,
+            city: String,
+            state:String,
+            zipcode: Number
+        },
+    }]
 });
 
 module.exports = mongoose.model('EachUser', USERSSchema);

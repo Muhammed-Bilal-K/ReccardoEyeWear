@@ -84,14 +84,14 @@
                 <div class="EachSection"
                     style="display: flex;justify-content: center;gap: 2rem;padding: 4rem 3rem 2rem;">
                     <div>
-                        <h3>1 shopping cart</h3>
+                        <h3>Shopping cart</h3>
                     </div>
-                    <div>
+                    <!-- <div>
                         <h3>2 shopping cart</h3>
                     </div>
                     <div>
                         <h3>3 shopping cart</h3>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="row">
                     <div class="col-md-8" style="text-align: center;">
@@ -118,7 +118,9 @@
                                         <td>
                                             <button type="button" id="minus_qty" class="minus"
                                                 style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
+
                                                 onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','-1','<%= x.totalPrice %>','<%= x.product_id.price %>','<%= total %>','sum')">-</button>
+                                                
                                             <label class="screen-reader-text" for="quantity_6533da973faef">Product
                                                 Name
                                                 1 quantity</label>
@@ -142,28 +144,28 @@
                         </table>
                     </div>
                     <div class="col-md-4" style="text-align: center;">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th style="background-color: #f1f1f1;" scope="col">Handle</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">SubTotal</th>
-                                        <td id="<%= total %>">
-                                            <%= total %>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Total</th>
-                                        <td id="sum">
-                                            <%= total %>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <a type="submit" href="/cart/procesCheck">PROCEED TO CHECKOUT</a>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="background-color: #f1f1f1;" scope="col">Handle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">SubTotal</th>
+                                    <td id="<%= total %>">
+                                        <%= total %>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Total</th>
+                                    <td id="sum">
+                                        <%= total %>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <a type="submit" href="/cart/procesCheck">PROCEED TO CHECKOUT</a>
                     </div>
                 </div>
             </div>

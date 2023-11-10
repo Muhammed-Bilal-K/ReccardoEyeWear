@@ -77,119 +77,74 @@
             <div class="container">
                 <!-- Heading -->
                 <h2 class="my-5 text-center">Checkout Details</h2>
+                <form action="/getAdd" method="post">
+                    <!--Grid row-->
+                    <div class="row">
+                        <!--Grid column-->
+                        <div class="col-md-8 mb-4">
+                            <!--Card-->
+                            <div class="card p-4">
+                                <!-- first data -->
+                                <h3>CUSTOMER INFORMATION</h3>
+                                <label>Email Address</label>
+                                <div class="input-group mb-4">
+                                    <input type="text" class="form-control" disabled placeholder="Username"
+                                        aria-label="Username" aria-describedby="basic-addon1" />
+                                </div>
+                                <!-- first data -->
+                                <h3>BILLING DETAILS</h3>
+                                <div class="row mb-3">
+                                    <!--Grid column-->
+                                    <h6>Select the Address</h4>
+                                        <select class="browser-default custom-select mb-3" name="address">
+                                            <option>please select address</option>
+                                            <% for( let i=0; i < address.length; i++ ) { %>
+                                                <option value="<%= address[i]._id %>">
+                                                    <%= address[i].name %>
+                                                        <%= address[i].address %>
+                                                            <%= address[i].state %>
+                                                                <%= address[i].city %>
+                                                </option>
+                                                <% } %>
+                                        </select>
+                                </div>
+                                <!-- first data -->
 
-                <!--Grid row-->
-                <div class="row">
-                    <!--Grid column-->
-                    <div class="col-md-8 mb-4">
-                        <!--Card-->
-                        <div class="card p-4">
-                            <!-- first data -->
-                            <h3>CUSTOMER INFORMATION</h3>
-                            <label>Email Address</label>
-                            <div class="input-group mb-4">
-                                <input type="text" class="form-control" placeholder="Username" aria-label="Username"
-                                    aria-describedby="basic-addon1" />
-                            </div>
-                            <!-- first data -->
-                            <h3>BILLING DETAILS</h3>
-                            <div class="row mb-3">
-                                <!--Grid column-->
-                                <div class="col-md-6 mb-2">
-                                    <!--firstName-->
-                                    <label>First name</label>
-                                    <div class="form-outline">
-                                        <input type="text" / style="width: 100%;">
-                                    </div>
-                                </div>
-                                <!--Grid column-->
-                                <!--Grid column-->
-                                <div class="col-md-6 mb-2">
-                                    <!--lastName-->
-                                    <label>Last name</label>
-                                    <div class="form-outline">
-                                        <input type="text" / style="width: 100%;">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- first data -->
-                            <label>Country / Region</label>
-                            <div class="input-group mb-4">
-                                <input type="text" class="form-control" placeholder="Username" aria-label="Username"
-                                    aria-describedby="basic-addon1" />
-                            </div>
-                            <!-- first data -->
-                            <label>Street address</label>
-                            <div class="input-group mb-4">
-                                <input type="text" class="form-control" placeholder="Username" aria-label="Username"
-                                    aria-describedby="basic-addon1" />
-                            </div>
-                            <!--Grid row-->
-                            <div class="row mb-3">
-                                <!--Grid column-->
-                                <div class="col-md-4 mb-2">
-                                    <!--firstName-->
-                                    <label>Town / City</label>
-                                    <div class="form-outline">
-                                        <input type="text" / style="width: 100%;">
-                                    </div>
-                                </div>
-                                <!--Grid column-->
-                                <!--Grid column-->
-                                <div class="col-md-4 mb-2">
-                                    <!--lastName-->
-                                    <label>State</label>
-                                    <div class="form-outline">
-                                        <input type="text" / style="width: 100%;">
-                                    </div>
-                                </div>
-                                <!--Grid column-->
-                                <div class="col-md-4 mb-2">
-                                    <!--lastName-->
-                                    <label>ZipCode</label>
-                                    <div class="form-outline">
-                                        <input type="text" / style="width: 100%;">
-                                    </div>
-                                </div>
-                                <!--Grid column-->
-                            </div>
-                            <!--Grid row-->
+                                <!--Grid row-->
 
-                            <!--Username-->
-                            <label>Phone</label>
-                            <div class="input-group mb-4">
-                                <input type="number" class="form-control" placeholder="Phone" aria-label="Username"
-                                    aria-describedby="basic-addon1" />
-                            </div>
+                                <!--Grid row-->
 
-                        </div>
-                        <div class="form-outline mb-4">
-                            <hr />
-                            <h3>PAYMENT</h3>
-                            <div class="my-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                        id="flexRadioDefault1" checked />
-                                    <label class="form-check-label" for="flexRadioDefault1"> Credit card </label>
-                                </div>
+                                <!--Username-->
 
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                        id="flexRadioDefault2" />
-                                    <label class="form-check-label" for="flexRadioDefault2"> Debit card </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                        id="flexRadioDefault3" />
-                                    <label class="form-check-label" for="flexRadioDefault3"> Paypal & UPI</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                        id="flexRadioDefault3" />
-                                    <label class="form-check-label" for="flexRadioDefault3"> COD </label>
-                                </div>
+
                             </div>
-                            <div class="row mb-3">
+                            <div class="form-outline mb-4">
+                                <hr />
+                                <h3>PAYMENT</h3>
+                                <div class="my-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="radio"
+                                            id="flexRadioDefault1" checked  value="Card"/>
+                                        <label class="form-check-label" for="flexRadioDefault1"> Credit card </label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="radio"
+                                            id="flexRadioDefault2" />
+                                        <label class="form-check-label" for="flexRadioDefault2"> Debit card </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="radio"
+                                            id="flexRadioDefault3" />
+                                        <label class="form-check-label" for="flexRadioDefault3"> Paypal & UPI</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="radio"
+                                            id="flexRadioDefault3" value="COD"/>
+                                        <label class="form-check-label" for="flexRadioDefault3"> COD </label>
+                                    </div>
+                                </div>
+                                <!-- <div class="row mb-3">
                                 <div class="col-md-6 mb-3">
                                     <p class="mb-0">
                                         Name on card
@@ -208,8 +163,8 @@
                                 width: 100%;" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
+                            </div> -->
+                                <!-- <div class="row">
                                 <div class="col-md-3 mb-3">
                                     <p class="mb-0">
                                         Expiration
@@ -229,60 +184,62 @@
 
                                     </div>
                                 </div>
+                            </div> -->
+                                <hr class="mb-4" />
+                                <!-- <button class="btn btn-primary" type="button">Continue to checkout</button> -->
+                                <button type="submit" class="button alt" name="totalamount"
+                                    id="place_order" value="<%= sumP %>">Place
+                                    Order $<%= sumP %>.00</button>
                             </div>
-                            <hr class="mb-4" />
-                            <!-- <button class="btn btn-primary" type="button">Continue to checkout</button> -->
-                            <button type="submit" class="button alt" name="woocommerce_checkout_place_order"
-                                id="place_order" value="Place Order $1260.00" data-value="Place Order $1260.00">Place
-                                Order $1260.00</button>
+                            <!--/.Card-->
                         </div>
-                        <!--/.Card-->
-                    </div>
-                    <!--Grid column-->
+                        <!--Grid column-->
+                </form>
+                <!--Grid column-->
+                <div class="col-md-4 mb-4">
+                    <!-- Heading -->
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Your cart</span>
+                        <span class="badge rounded-pill badge-primary">
+                            <%= count %>
+                        </span>
+                    </h4>
 
-                    <!--Grid column-->
-                    <div class="col-md-4 mb-4">
-                        <!-- Heading -->
-                        <h4 class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="text-muted">Your cart</span>
-                            <span class="badge rounded-pill badge-primary">3</span>
-                        </h4>
-
-                        <!-- Cart -->
-                        <ul class="list-group mb-3" style="margin: 0 -20px;">
+                    <!-- Cart -->
+                    <ul class="list-group mb-3" style="margin: 0 -20px;">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <div>
+                                <h6 class="my-0">Product name</h6>
+                            </div>
+                            <span class="text-muted">Total</span>
+                        </li>
+                        <% for( let i=0; i < ProcsData.length; i++ ) { %>
                             <li class="list-group-item d-flex justify-content-between">
                                 <div>
-                                    <h6 class="my-0">Product name</h6>
+                                    <h6 class="my-0">
+                                        <%= ProcsData[i].product_id.name %> x <%= ProcsData[i].qty %>
+                                    </h6>
                                 </div>
-                                <span class="text-muted">$12</span>
+                                <span class="text-muted">$<%= ProcsData[i].totalPrice %></span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <div>
-                                    <h6 class="my-0">Second product</h6>
-                                </div>
-                                <span class="text-muted">$8</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <div>
-                                    <h6 class="my-0">Third item</h6>
-                                </div>
-                                <span class="text-muted">$5</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between bg-light">
+                            <% } %>
+                                <!-- <li class="list-group-item d-flex justify-content-between bg-light">
                                 <div class="text-success">
                                     <h6 class="my-0">Promo code</h6>
                                 </div>
                                 <span class="text-success">-$5</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between">
-                                <span>Total (USD)</span>
-                                <strong>$20</strong>
-                            </li>
-                        </ul>
-                        <!-- Cart -->
+                            </li> -->
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Total (USD)</span>
+                                    <strong>$<%= sumP %></strong>
+                                    <!-- <input type="text" class="form-control" disabled placeholder="Username" aria-label="Username"
+                                    aria-describedby="basic-addon1" value='"/> -->
+                                </li>
+                    </ul>
+                    <!-- Cart -->
 
-                        <!-- Promo code -->
-                        <form class="card p-2">
+                    <!-- Promo code -->
+                    <!-- <form class="card p-2">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" placeholder="Promo code" aria-label="Promo code"
                                     aria-describedby="button-addon2" />
@@ -291,12 +248,12 @@
                                     redeem
                                 </button>
                             </div>
-                        </form>
-                        <!-- Promo code -->
-                    </div>
-                    <!--Grid column-->
+                        </form> -->
+                    <!-- Promo code -->
                 </div>
-                <!--Grid row-->
+                <!--Grid column-->
+            </div>
+            <!--Grid row-->
             </div>
         </main>
         <!--Main layout-->

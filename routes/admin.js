@@ -27,6 +27,9 @@ router.get('/user/view/:id', adminController.userDetailsE);
 /* POST user's loginppage listing. */
 router.get('/user/delete/:id', adminController.userCompDelet);
 
+/* POST user's loginppage listing. */
+router.get('/orders', adminController.orderList);
+
 router.get('/logout', adminController.logoutpage)
 
 ///////////////////////////////////////////////////////////////////
@@ -45,6 +48,9 @@ router.post('/updateUser/:id', adminController.userUpdateDetail);
 
 /* POST user's loginppage listing. */
 router.post('/deletecat', adminController.deleteCa);
+
+/* POST user's loginppage listing. */
+router.post('/admin/dorder', adminController.deleOrder);
 
 
 
