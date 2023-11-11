@@ -7,11 +7,8 @@ var emailOtpCheck = null;
 
 const sendVerifyMail = async (name, email, user_id) => {
     try {
-
         const otp = Math.floor(100000 + Math.random() * 900000);
-
         otpverifymake = otp;
-
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
@@ -19,7 +16,6 @@ const sendVerifyMail = async (name, email, user_id) => {
                 pass: process.env.Pass,
             },
         });
-
         const mailOptions = {
             from: process.env.Email,
             to: email,
@@ -27,7 +23,6 @@ const sendVerifyMail = async (name, email, user_id) => {
             html: `<p>Hey ${name} Here is your Verification OTP: <br> Your OTP is <b>${otp}</b> </p><br>
                     <i>Otp will Expire in 1 Minute</i>`
         };
-
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log(error);
@@ -35,7 +30,6 @@ const sendVerifyMail = async (name, email, user_id) => {
                 console.log('Email sent: ' + info.response);
             }
         });
-
     } catch (error) {
         console.log(error);
     }
@@ -65,8 +59,31 @@ exports.homepage = async (req, res) => {
 
 exports.womencate = async (req, res) => {
     try {
-        var productDeatil = await product.find({ "choose": "women" });
-        res.render('women', { productDeatil: productDeatil });
+        //var productDeatil = await product.find({ "choose": "women" });
+
+        var search = '';
+            if (req.query.search) {
+                search = req.query.search;
+            }
+            
+            var AllProduct = await product.find({
+                "choose":"women",
+                $or: [
+                    {
+                        name: {
+                            $regex: '.*' + search + '.*',
+                            $options: 'i'
+                        }
+                    },
+                    {
+                        price: {
+                            $regex: '.*' + search + '.*',
+                            $options: 'i'
+                        }
+                    }
+                ]
+            });
+        res.render('women', { productDeatil: AllProduct });
     } catch (error) {
         console.log(error);
     }
@@ -74,8 +91,32 @@ exports.womencate = async (req, res) => {
 
 exports.mencate = async (req, res) => {
     try {
-        var productDeatil = await product.find({ "choose": "men" });
-        res.render('men', { productDeatil: productDeatil });
+        // var productDeatil = await product.find({ "choose": "men" });
+
+            var search = '';
+            if (req.query.search) {
+                search = req.query.search;
+            }
+            
+            var AllProduct = await product.find({
+                "choose":"men",
+                $or: [
+                    {
+                        name: {
+                            $regex: '.*' + search + '.*',
+                            $options: 'i'
+                        }
+                    },
+                    {
+                        price: {
+                            $regex: '.*' + search + '.*',
+                            $options: 'i'
+                        }
+                    }
+                ]
+            });
+
+        res.render('men', { productDeatil: AllProduct });
     } catch (error) {
         console.log(error);
     }
@@ -83,24 +124,32 @@ exports.mencate = async (req, res) => {
 
 
 exports.loginpage = async (req, res) => {
-    req.session.signupErr = false;
-    req.session.signupPassErr = false
-    if (req.session.userData) {
-        res.redirect('/');
-    } else {
-        req.session.otpVerify = false;
-        res.render('login', { errMSG: req.session.loginErr, is_veri: req.session.is_verified , is_block:req.session.is_blocked });
+    try {
+        req.session.signupErr = false;
+        req.session.signupPassErr = false
+        if (req.session.userData) {
+            res.redirect('/');
+        } else {
+            req.session.otpVerify = false;
+            res.render('login', { errMSG: req.session.loginErr, is_veri: req.session.is_verified, is_block: req.session.is_blocked });
+        }
+    } catch (error) {
+        console.log(error);
     }
 }
 
 exports.signuppage = async (req, res) => {
-    req.session.is_verified = false;
-    req.session.is_blocked = false;
-    req.session.loginErr = false;
-    if (req.session.userData) {
-        res.redirect('/');
-    } else {
-        res.render('signup', { SignMSR: req.session.signupErr, passNotmatch: req.session.signupPassErr });
+    try {
+        req.session.is_verified = false;
+        req.session.is_blocked = false;
+        req.session.loginErr = false;
+        if (req.session.userData) {
+            res.redirect('/');
+        } else {
+            res.render('signup', { SignMSR: req.session.signupErr, passNotmatch: req.session.signupPassErr });
+        }
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -125,13 +174,13 @@ exports.userlogout = async (req, res) => {
     }
 }
 
-exports.updateUseradd = async(req,res)=>{
+exports.updateUseradd = async (req, res) => {
     var userId = req.session.userData;
     var updateId = req.params.id;
     try {
-        var UserAddss = await user.findOne({"_id":userId});
+        var UserAddss = await user.findOne({ "_id": userId });
         var addsList = UserAddss.address.find(data => data._id.toString() === updateId);
-        res.render('updateAdduser',{addlist:addsList});
+        res.render('updateAdduser', { addlist: addsList });
     } catch (error) {
         console.log(error);
     }
@@ -212,48 +261,49 @@ exports.createloginpage = async (req, res) => {
 }
 
 
-exports.newAddress = async (req,res) => {
+exports.newAddress = async (req, res) => {
     var userId = req.session.userData;
-    var UserAddss = await user.findOne({"_id":userId});
-        try {
-            if (UserAddss) {
-                await user.updateOne({"_id": userId }, {
-                    $push: {
-                        "address": {
-                            name:req.body.name,
-                            email:req.body.email,
-                            select:req.body.select,
-                            address:req.body.address,
-                            city:req.body.city,
-                            state:req.body.state,
-                            zipcode:req.body.zipcode
-                        }
+    var UserAddss = await user.findOne({ "_id": userId });
+    try {
+        if (UserAddss) {
+            await user.updateOne({ "_id": userId }, {
+                $push: {
+                    "address": {
+                        name: req.body.name,
+                        email: req.body.email,
+                        select: req.body.select,
+                        address: req.body.address,
+                        city: req.body.city,
+                        state: req.body.state,
+                        zipcode: req.body.zipcode
                     }
-                })
-            }
-        } catch (error) {
-            console.log(error);
+                }
+            })
+            res.redirect('/settings/addrs');
         }
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 
-exports.updateAdds = async (req,res) => {
+exports.updateAdds = async (req, res) => {
     var userId = req.session.userData;
     var pid = req.params.id;
     console.log(pid);
     console.log(req.body);
-    var UserAddss = await user.findOne({"_id":userId});
+    var UserAddss = await user.findOne({ "_id": userId });
     var addsList = UserAddss.address.find(data => data._id.toString() === pid);
     if (addsList) {
-        await user.updateOne({"_id": userId , "address._id" : pid}, {
-            $set:{
-                'address.$.name':req.body.name,
-                'address.$.email':req.body.email,
-                'address.$.select':req.body.select,
-                'address.$.address':req.body.address,
-                'address.$.city':req.body.city,
-                'address.$.state':req.body.state,
-                'address.$.zipcode':req.body.zipcode,
+        await user.updateOne({ "_id": userId, "address._id": pid }, {
+            $set: {
+                'address.$.name': req.body.name,
+                'address.$.email': req.body.email,
+                'address.$.select': req.body.select,
+                'address.$.address': req.body.address,
+                'address.$.city': req.body.city,
+                'address.$.state': req.body.state,
+                'address.$.zipcode': req.body.zipcode,
             }
         })
         console.log('success');
@@ -263,13 +313,13 @@ exports.updateAdds = async (req,res) => {
 }
 
 
-exports.deleteAdds = async (req,res) => {
+exports.deleteAdds = async (req, res) => {
     var userId = req.session.userData;
     var addID = req.params.id;
-    var UserAddss = await user.findOne({"_id":userId});
+    var UserAddss = await user.findOne({ "_id": userId });
     var addsList = UserAddss.address.find(data => data._id.toString() === addID);
     if (addsList) {
-        var result = await user.updateOne({"_id": userId},{$pull:{"address":{"_id":addID}}});
+        var result = await user.updateOne({ "_id": userId }, { $pull: { "address": { "_id": addID } } });
         console.log(result);
     }
 }

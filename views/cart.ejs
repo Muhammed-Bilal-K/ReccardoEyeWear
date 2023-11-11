@@ -93,81 +93,85 @@
                         <h3>3 shopping cart</h3>
                     </div> -->
                 </div>
-                <div class="row">
-                    <div class="col-md-8" style="text-align: center;">
-                        <table class="table">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th style="background-color: #f1f1f1;" scope="col">#</th>
-                                    <th style="background-color: #f1f1f1;" scope="col">First</th>
-                                    <th style="background-color: #f1f1f1;" scope="col">Last</th>
-                                    <th style="background-color: #f1f1f1;" scope="col">Handle</th>
-                                    <th style="background-color: #f1f1f1;" scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% for(var x of userCart) { %>
+                <% if (userCart.length === 0) { %>
+                    <h1 style="margin-left: 27rem;">No items in Your Cart</h1>
+                    <a style="text-decoration: none; margin-left: 38.5rem;" href="/">SHOP</a>
+                <% } else {%>
+                    <div class="row">
+                        <div class="col-md-8" style="text-align: center;">
+                            <table class="table">
+                                <thead class="thead-light">
                                     <tr>
-                                        <th scope="row">
-                                            <%= x.product_id.name %>
-                                                <%= x.product_id.name %>
-                                        </th>
-                                        <td id="<%= x.product_id.price %>">
-                                            <%= x.product_id.price %>
-                                        </td>
-                                        <td>
-                                            <button type="button" id="minus_qty" class="minus"
-                                                style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
-
-                                                onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','-1','<%= x.totalPrice %>','<%= x.product_id.price %>','<%= total %>','sum')">-</button>
-                                                
-                                            <label class="screen-reader-text" for="quantity_6533da973faef">Product
-                                                Name
-                                                1 quantity</label>
-                                            <input type="number" class="" name="quantity" style="border: 1px solid rgb(245, 230, 230);
-                                                height: 1rem;
-                                                text-align: center;
-                                                margin: 0px -5px;" size="4" min="1" max="" id="<%= x.product_id._id %>"
-                                                step="1" placeholder="" value="<%= x.qty %>">
-                                            <label class="screen-reader-text" for="plus_qty"> Plus Quantity</label>
-                                            <button type="button" href="" id="plus_qty" class="plus"
-                                                style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
-                                                onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','+1','<%= x.totalPrice %>','<%= x.product_id.price %>','<%= total %>','sum')">+</button>
-                                        </td>
-                                        <td id="<%= x.totalPrice %>">
-                                            <%= x.totalPrice %>
-                                        </td>
-                                        <td><a href="">x</a></td>
+                                        <th style="background-color: #f1f1f1;" scope="col">Product</th>
+                                        <th style="background-color: #f1f1f1;" scope="col">Price</th>
+                                        <th style="background-color: #f1f1f1;" scope="col">Quantity</th>
+                                        <th style="background-color: #f1f1f1;" scope="col">Total</th>
+                                        <th style="background-color: #f1f1f1;" scope="col"></th>
                                     </tr>
-                                    <% } %>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <% for(var x of userCart) { %>
+                                        <tr>
+                                            <th scope="row">
+                                                <%= x.product_id.name %>
+                                            </th>
+                                            <td id="<%= x.product_id.price %>">
+                                                <%= x.product_id.price %>
+                                            </td>
+                                            <td>
+                                                <button type="button" id="minus_qty" class="minus"
+                                                    style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
+    
+                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','-1','<%= x.totalPrice %>','<%= x.product_id.price %>','<%= total %>','sum')">-</button>
+                                                    
+                                                <label class="screen-reader-text" for="quantity_6533da973faef">Product
+                                                    Name
+                                                    1 quantity</label>
+                                                <input type="number" class="" name="quantity" style="border: 1px solid rgb(245, 230, 230);
+                                                    height: 1rem;
+                                                    text-align: center;
+                                                    margin: 0px -5px;" size="4" min="1" max="" id="<%= x.product_id._id %>"
+                                                    step="1" placeholder="" value="<%= x.qty %>">
+                                                <label class="screen-reader-text" for="plus_qty"> Plus Quantity</label>
+                                                <button type="button" href="" id="plus_qty" class="plus"
+                                                    style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
+                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','+1','<%= x.totalPrice %>','<%= x.product_id.price %>','<%= total %>','sum')">+</button>
+                                            </td>
+                                            <td id="<%= x.totalPrice %>">
+                                                <%= x.totalPrice %>
+                                            </td>
+                                            <td><a href="">x</a></td>
+                                        </tr>
+                                        <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-4" style="text-align: center;">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: #f1f1f1;" scope="col">ALL PRICE</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">SubTotal</th>
+                                        <td id="<%= total %>">
+                                            <%= total %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Total</th>
+                                        <td id="sum">
+                                            <%= total %>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <a style="color: #7f2525;text-decoration: none;font-size: 14px;font-weight: 700;" type="submit" href="/cart/procesCheck">PROCEED TO CHECKOUT</a>
+                        </div>
                     </div>
-                    <div class="col-md-4" style="text-align: center;">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th style="background-color: #f1f1f1;" scope="col">Handle</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">SubTotal</th>
-                                    <td id="<%= total %>">
-                                        <%= total %>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">Total</th>
-                                    <td id="sum">
-                                        <%= total %>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <a type="submit" href="/cart/procesCheck">PROCEED TO CHECKOUT</a>
-                    </div>
-                </div>
+                <% } %>    
             </div>
 
 

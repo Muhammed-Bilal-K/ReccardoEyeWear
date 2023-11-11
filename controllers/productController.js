@@ -24,7 +24,7 @@ exports.createNewOne = async (req, res) => {
 
         const productDetail = new product({
             name: req.body.name,
-            qnumber: req.body.qnumber,
+            qnumber: parseInt(req.body.qnumber),
             price: req.body.price,
             choose: giveCate,
             review: req.body.review,

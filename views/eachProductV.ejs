@@ -127,21 +127,28 @@
                           <%= EachproductDeatil.review %>
                         </p>
                       </div>
-                      <form class="cart" action="/addToCart/<%= EachproductDeatil._id %>" method="post" enctype="multipart/form-data">
+                      <form class="cart" action="/addToCart/<%= EachproductDeatil._id %>" method="post"
+                        enctype="multipart/form-data">
                         <div class="quantity" style="display: flex;align-items: center;justify-content: space-between;
                         "><label class="screen-reader-text" for="minus_qty">Minus
                             Quantity</label>
                           <button type="button" id="minus_qty" class="minus">-</button>
                           <label class="screen-reader-text" for="quantity_6533da973faef">Product Name 1 quantity</label>
-                          <input type="number" class="" name="quantity" style="height: 3rem;margin-left: 38px;width: 4rem;text-align: center;"
-                            size="4" min="1" max="" id="quy_value" step="1" placeholder="" value="1">
+                          <input type="number" class="" name="quantity"
+                            style="height: 3rem;margin-left: 38px;width: 4rem;text-align: center;" size="4" min="1"
+                            max="" id="quy_value" step="1" placeholder="" value="1">
                           <label class="screen-reader-text" for="plus_qty"> Plus Quantity</label>
                           <button type="button" href="" id="plus_qty" class="plus">+</button>
                         </div>
-                        <button type="submit" value="" class="">Add to cart</button>
-
-                        <p style="display: inline; margin-left: 6px;">quantity : <%= EachproductDeatil.qnumber %>
-                        </p>
+                        <% if ( EachproductDeatil.qnumber === 0) { %>
+                            <h4>Out Of Stock</h4>
+                        <% } else { %>
+                          <button type="submit" value="" class="">Add to cart</button>
+                          <% } %>
+                        quantity :
+                        <input type="number" name="equantity" id=""
+                          value="<%= EachproductDeatil.qnumber %>">
+                        <br>
                       </form>
                       <div class="ast-woocommerce-accordion woocommerce-tabs ast-woocommerce-tabs">
                         <div class="ast-single-tab">
@@ -410,8 +417,6 @@
         quantityTotal = quaVal + 1;
         document.getElementById('quy_value').value = quantityTotal;
       }
-
-      console.log(quantityTotal);
 
 
 

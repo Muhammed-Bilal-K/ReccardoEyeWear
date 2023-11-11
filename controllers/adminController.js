@@ -7,7 +7,6 @@ const admin = {
 }
 
 exports.adminpage = async (req, res) => {
-
     try {
         if (req.session.adminData) {
             var search = '';
@@ -142,21 +141,41 @@ exports.userDetailsE = async (req, res) => {
 }
 
 exports.userCompDelet = async (req, res) => {
-    var uid = req.params.id;
-    var userSpec = await user.deleteOne({ "_id": uid });
-    res.redirect('/admin/user');
+    try {
+        if (req.session.adminData) {
+            var uid = req.params.id;
+            await user.deleteOne({ "_id": uid });
+            res.redirect('/admin/user');
+        } else {
+            res.redirect('/admin/login');
+        }
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 
 exports.orderList = async (req, res) => {
-    var addsData = await user.find({ "is_verified": 1, "is_blocked": 0 }).populate("orders.products.product_id");
-    res.render('adminOrder', { FULLDATA: addsData });
+    try {
+        if (req.session.adminData) {
+            var addsData = await user.find({ "is_verified": 1, "is_blocked": 0 }).populate("orders.products.product_id");
+            res.render('adminOrder', { FULLDATA: addsData });
+        } else {
+            res.redirect('/admin/login');
+        }
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 exports.logoutpage = async (req, res) => {
-    req.session.destroy(() => {
-        res.redirect('/admin/login');
-    })
+    try {
+        req.session.destroy(() => {
+            res.redirect('/admin/login');
+        })
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 
@@ -170,41 +189,47 @@ exports.logoutpage = async (req, res) => {
 ///////////////////////////////////////////////////////////////////////
 
 exports.createAdminlogin = async (req, res) => {
-    if (admin.email === req.body.email && admin.password === req.body.password) {
-        req.session.adminLog = true;
-        req.session.adminData = req.body;
-        res.redirect('/admin');
-    } else {
-        res.redirect('/admin/login')
+    try {
+        if (admin.email === req.body.email && admin.password === req.body.password) {
+            req.session.adminLog = true;
+            req.session.adminData = req.body;
+            res.redirect('/admin');
+        } else {
+            res.redirect('/admin/login')
+        }
+    } catch (error) {
+        console.log(error);
     }
 }
 
 
 exports.userUpdateDetail = async (req, res) => {
-    var uid = req.params.id;
-    console.log(uid);
-    var Updchoose = req.body.choose;
-    if (Updchoose === "unblock") {
-        var updateData = await user.updateOne({ "_id": uid }, { $set: { is_blocked: 0 } });
-        //console.log(updateData); 
-    } else {
-        var updateData = await user.updateOne({ "_id": uid }, { $set: { is_blocked: 1 } });
-        //console.log(updateData);
+    try {
+        var uid = req.params.id;
+        var Updchoose = req.body.choose;
+        if (Updchoose === "unblock") {
+            await user.updateOne({ "_id": uid }, { $set: { is_blocked: 0 } });
+        } else {
+            await user.updateOne({ "_id": uid }, { $set: { is_blocked: 1 } });
+        }
+        res.redirect(`/admin/user`);
+    } catch (error) {
+        console.log(error);
     }
-    res.redirect(`/admin/user/view/${uid}`);
 }
 
 exports.updateCa = async (req, res) => {
-    category = req.body.category;
-    var result = await product.updateOne({}, { $push: { choose: category } });
-    console.log(result);
+    try {
+        category = req.body.category;
+        await product.updateOne({}, { $push: { choose: category } });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 exports.deleteCa = async (req, res) => {
-    var ch = req.body.choose;
-    console.log(ch);
-
     try {
+        var ch = req.body.choose;
         var result = await product.updateMany({ "choose": ch }, { $pull: { "choose": ch } });
         console.log(result);
         res.redirect('/admin');

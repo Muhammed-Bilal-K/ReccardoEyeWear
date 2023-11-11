@@ -62,23 +62,26 @@
                     <% data.products.forEach(sdata => { %>
                         <div class="row">
                             <div class="col">
+								<label for="">Product Name</label>
                                 <div>
                                     <h4><%= sdata.product_id.name %></h4>
                                 </div>
                             </div>
-                            <div class="col">
+                            <!-- <div class="col">
                                 <div>
-                                    <h4><%= sdata.product_id.name %></h4>
+                                    <h4></h4>
+                                </div>
+                            </div> -->
+                            <div class="col">
+								<label for="">Product Quantity</label>
+                                <div>
+                                    <h4>Q:<%= sdata.qty %></h4>
                                 </div>
                             </div>
                             <div class="col">
+								<label for="">Product Price</label>
                                 <div>
-                                    <h4><%= sdata.qty %></h4>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div>
-                                    <h4><%= sdata.price %></h4>
+                                    <h4>$<%= sdata.price %></h4>
                                 </div>
                             </div>
                         </div>
