@@ -63,6 +63,8 @@ router.post('/signup/verification', userController.createsignuppage);
 /* POST user's signuppage listing. */
 router.post('/otp', userController.otpverifiypage);
 
+router.post('/resendOtp', userController.otpResend);
+
 /* POST user's loginppage listing. */
 router.post('/login', userController.createloginpage);
 
@@ -74,6 +76,8 @@ router.post('/change-product-q', cartController.changeQUA);
 router.post('/user/addNew', userController.newAddress);
 
 router.post('/user/addNew/:id', userController.updateAdds);
+
+router.post('/cart/delete/:id', userController.deleteCartItem);
 
 router.post('/getAdd',cartController.processDelivery)
 

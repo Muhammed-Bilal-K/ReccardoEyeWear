@@ -32,7 +32,7 @@
         </div>
     <% } %>
     
-        <form action="/login" method="post">
+        <form action="/login" method="post" style="box-shadow: 7px 8px 27px #cbc0b2;">
             <h1 style="font-size: 3rem;">Login</h1>
             <div><label for="email">Email:</label>
                 <input type="email" name="email" id="email" required>
@@ -43,7 +43,7 @@
             </div>
             <div><input type="submit" value="Login"></div>
             <!-- onclick=" return confirm('delete')" -->
-            <p>you don't have an <a class="loginPagesSty" href="/signup">singup</a></p>
+            <p style="color: #bf360c;">you don't have an account ? <a class="loginPagesSty" href="/signup">singup</a></p>
         </form>
 
         <!-- <%- include('partials/__signupfooter__') %> -->

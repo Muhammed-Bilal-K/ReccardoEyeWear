@@ -115,15 +115,33 @@ exports.cart = async (req, res) => {
 
 exports.changeQUA = async (req, res, next) => {
     try {
-        count = parseInt(req.body.count);
+        var count = req.body.count;
+        var proID = req.body.pro;
+        var quantity = req.body.quantity;
+
+        if (count === '-1' && quantity === '1') {
+            return res.json({status:false})
+        }
+        if (count === '+1') {
+            var ccount = 1;
+        }
+        var data = await product.findOne({_id:proID});
+        console.log(data.qnumber);
         quantity = parseInt(req.body.quantity);
+        if (data.qnumber <= quantity && ccount === 1 && data.qnumber === 0) {
+            return res.json({status:false})
+        }
+        count = parseInt(req.body.count);
+        
         var Userdata = await user.findOne({ "_id": req.body.user });
         var cartItem = Userdata.cart.find(item => item.product_id.toString() === req.body.pro);
         if (cartItem) {
             if (count === 1) {
                 var total = cartItem.productPrice;
+                await product.updateOne({"_id":proID},{$inc:{"qnumber":-1}})
             } else {
                 var total = -cartItem.productPrice;
+                await product.updateOne({"_id":proID},{$inc:{"qnumber":1}})
             }
             await user.updateOne({ "_id": req.body.user, "cart.product_id": req.body.pro }, {
                 $inc: { "cart.$.qty": count, "cart.$.totalPrice": total }
@@ -131,6 +149,7 @@ exports.changeQUA = async (req, res, next) => {
                 res.json({ status: true })
             })
         };
+
     } catch (error) {
         console.log(error);
     }

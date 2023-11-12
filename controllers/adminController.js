@@ -244,9 +244,11 @@ exports.deleOrder = async (req, res, next) => {
         console.log(req.body);
         var UserOrderm = await user.findOne({ "_id": req.body.uID }).populate("orders.products.product_id");
         if (UserOrderm.orders) {
-            var firRes = UserOrderm.orders.find(prod => prod.products);
+            var firRes = UserOrderm.orders.filter(prod => prod.products);
             if (firRes.products) {
+                console.log(firRes.products);
                 var last = firRes.products.find(sprod => sprod._id.toString() == req.body.pID);
+                console.log(last);
                 if (last.status == 'pending') {
                     last.status = 'Delivered';
                 }

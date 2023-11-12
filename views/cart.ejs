@@ -140,7 +140,11 @@
                                             <td id="<%= x.totalPrice %>">
                                                 <%= x.totalPrice %>
                                             </td>
-                                            <td><a href="">x</a></td>
+                                            <td>
+                                                <form action="/cart/delete/<%= x._id %>" method="post">
+                                                    <button style="padding: 0 7px;" type="submit">X</button>
+                                                </form>
+                                            </td>
                                         </tr>
                                         <% } %>
                                 </tbody>
@@ -229,6 +233,8 @@
                             document.getElementById(totalP).innerHTML = Psum;
                             document.getElementById(allP).innerHTML = ALLp;
                             document.getElementById(sum).innerHTML = summm;
+                        }else{
+                            alert("Out of Stock or You reach maximum");
                         }
                     }
                 })

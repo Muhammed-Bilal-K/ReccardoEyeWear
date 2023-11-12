@@ -1,14 +1,26 @@
 var user = require('../models/usersdb');
 var product = require('../models/productdb');
+var otps = require('../models/otpdb');
 var nodemailer = require('nodemailer');
 var otpverifymake = null;
 var emailOtpCheck = null;
 
 
-const sendVerifyMail = async (name, email, user_id) => {
+const sendVerifyMail = async (email) => {
     try {
         const otp = Math.floor(100000 + Math.random() * 900000);
         otpverifymake = otp;
+        console.log(otpverifymake);
+        otpverifymake.toString();
+        console.log(otpverifymake);
+        const otpDetail = new otps({
+            user: otpverifymake,
+            otps: otpverifymake,
+            createdAt: new Date(),
+            expiresAt: new Date(Date.now() + 60000),
+        });
+        await otpDetail.save();
+
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
@@ -20,7 +32,7 @@ const sendVerifyMail = async (name, email, user_id) => {
             from: process.env.Email,
             to: email,
             subject: 'Your OTP Code',
-            html: `<p>Hey ${name} Here is your Verification OTP: <br> Your OTP is <b>${otp}</b> </p><br>
+            html: `<p>Hey ${email} Here is your Verification OTP: <br> Your OTP is <b>${otp}</b> </p><br>
                     <i>Otp will Expire in 1 Minute</i>`
         };
         transporter.sendMail(mailOptions, (error, info) => {
@@ -36,18 +48,41 @@ const sendVerifyMail = async (name, email, user_id) => {
 }
 
 exports.otpverifiypage = async (req, res) => {
-    var veriOtp = req.body.otp;
+    let veriOtp = req.body.otp;
     try {
-        if (otpverifymake == veriOtp) {
-            var UpdatedDataDetail = await user.updateOne({ email: emailOtpCheck }, { $set: { is_verified: 1 } });
-            otpverify = null;
-            emailOtpCheck = null;
-            res.redirect('/login');
+        if (!veriOtp) {
+            throw new Error('Otp empty');
+        } else {
+            let otpverify = await otps.findOne({ otps: veriOtp });
+            if (otpverify) {
+                let { expiresAt } = otpverify;
+                let savedOtp = otpverify.otps;
+                if (expiresAt < Date.now()) {
+                    await otps.deleteOne({ otps: savedOtp });
+                    throw new Error('otp expired');
+                } else {
+                    await user.updateOne({ email: emailOtpCheck }, { $set: { is_verified: 1 } });
+                    otpverify = null;
+                    emailOtpCheck = null;
+                    res.redirect('/login');
+                }
+            } else {
+                throw new Error('Invalid OTP');
+            }
         }
     } catch (error) {
-        console.log(error);
+        res.render('otp',{ error: error.message });
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 };
+
+
+exports.otpResend = async (req,res) => {
+    sendVerifyMail(emailOtpCheck);
+    res.render('otp',{ error: null });
+}
+
 
 exports.homepage = async (req, res) => {
     try {
@@ -62,27 +97,27 @@ exports.womencate = async (req, res) => {
         //var productDeatil = await product.find({ "choose": "women" });
 
         var search = '';
-            if (req.query.search) {
-                search = req.query.search;
-            }
-            
-            var AllProduct = await product.find({
-                "choose":"women",
-                $or: [
-                    {
-                        name: {
-                            $regex: '.*' + search + '.*',
-                            $options: 'i'
-                        }
-                    },
-                    {
-                        price: {
-                            $regex: '.*' + search + '.*',
-                            $options: 'i'
-                        }
+        if (req.query.search) {
+            search = req.query.search;
+        }
+
+        var AllProduct = await product.find({
+            "choose": "women",
+            $or: [
+                {
+                    name: {
+                        $regex: '.*' + search + '.*',
+                        $options: 'i'
                     }
-                ]
-            });
+                },
+                {
+                    price: {
+                        $regex: '.*' + search + '.*',
+                        $options: 'i'
+                    }
+                }
+            ]
+        });
         res.render('women', { productDeatil: AllProduct });
     } catch (error) {
         console.log(error);
@@ -93,28 +128,28 @@ exports.mencate = async (req, res) => {
     try {
         // var productDeatil = await product.find({ "choose": "men" });
 
-            var search = '';
-            if (req.query.search) {
-                search = req.query.search;
-            }
-            
-            var AllProduct = await product.find({
-                "choose":"men",
-                $or: [
-                    {
-                        name: {
-                            $regex: '.*' + search + '.*',
-                            $options: 'i'
-                        }
-                    },
-                    {
-                        price: {
-                            $regex: '.*' + search + '.*',
-                            $options: 'i'
-                        }
+        var search = '';
+        if (req.query.search) {
+            search = req.query.search;
+        }
+
+        var AllProduct = await product.find({
+            "choose": "men",
+            $or: [
+                {
+                    name: {
+                        $regex: '.*' + search + '.*',
+                        $options: 'i'
                     }
-                ]
-            });
+                },
+                {
+                    price: {
+                        $regex: '.*' + search + '.*',
+                        $options: 'i'
+                    }
+                }
+            ]
+        });
 
         res.render('men', { productDeatil: AllProduct });
     } catch (error) {
@@ -216,11 +251,11 @@ exports.createsignuppage = async (req, res) => {
         await userDetail.save();
 
         if (userDetail) {
-            sendVerifyMail(req.body.name, req.body.email, userDetail._id);
+            sendVerifyMail(req.body.email);
             req.session.otpVerify = true;
             req.session.signup = true;
             if (req.session.otpVerify) {
-                res.render('otp');
+                res.render('otp',{ error: null});
             }
         }
 
@@ -254,9 +289,12 @@ exports.createloginpage = async (req, res) => {
             req.session.login = true;
             req.session.userData = loginVerify._id;
             res.redirect('/');
+        }else{
+            throw new Error('Invalid Passowrd or Email');
         }
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -324,6 +362,15 @@ exports.deleteAdds = async (req, res) => {
     }
 }
 
+exports.deleteCartItem = async (req, res) => {
+    var CartId = req.params.id;
+    var UID = req.session.userData;
+    var UserAddss = await user.findOne({ "_id": UID });
+    if (UserAddss) {
+        await user.findByIdAndUpdate({ "_id": UID }, { $pull: { cart: { "_id": CartId } } }, { new: true })
+    }
+    res.redirect('/cart');
+}
 
 
 // sendVerifyMail(req.body.name, req.body.email, userDetail._id);

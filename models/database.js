@@ -9,3 +9,4 @@ db.once('open', function(){
 
 require('./usersdb');
 require('./productdb');
+require('./otpdb');
