@@ -8,7 +8,6 @@ const admin = {
 
 exports.adminpage = async (req, res) => {
     try {
-        if (req.session.adminData) {
             var search = '';
             var limit = 4;
             var page = 1;
@@ -63,108 +62,100 @@ exports.adminpage = async (req, res) => {
                 currentPage: page,
                 search
             });
-        } else {
-            res.redirect('admin/login');
-        }
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
-
-
 
 exports.loginpage = async (req, res) => {
-    if (req.session.adminLog) {
-        res.redirect('/admin');
-    } else {
+    try {
         res.render('adminlogin');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
-
 exports.addnewone = async (req, res) => {
-    if (req.session.adminData) {
-        var categ = await product.find({}).distinct("choose");
-        console.log(categ);
+    try {
+        let categ = await product.find({}).distinct("choose");
         res.render('addone', { categ: categ });
-    } else {
-        res.redirect('/admin/login');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.catUp = async (req, res) => {
-    if (req.session.adminData) {
-        var categ = await product.find({}).distinct("choose");
-        console.log(categ);
+    try {
+        let categ = await product.find({}).distinct("choose");
         res.render('categoryUpd', { categ: categ });
-    } else {
-        res.redirect('/admin/login');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 
 exports.updatenewone = async (req, res) => {
-    if (req.session.adminData) {
-        var id = req.params.id;
-        var formattedId = id.replace(/%20/g, ' ');
-        var categ = await product.find({}).distinct("choose");
-        var EachProduct = await product.findOne({ "_id": formattedId });
-        console.log(EachProduct);
+    try {
+        let id = req.params.id;
+        let formattedId = id.replace(/%20/g, ' ');
+        let categ = await product.find({}).distinct("choose");
+        let EachProduct = await product.findOne({ "_id": formattedId });
         res.render('updateone', { SpecificProduct: EachProduct, categ: categ });
-    } else {
-        res.redirect('/admin/login');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.userSpec = async (req, res) => {
-    if (req.session.adminData) {
-        var alluser = await user.find({ "is_verified": 1 });
+    try {
+        let alluser = await user.find({ "is_verified": 1 });
         res.render('adminUserP', { alluser: alluser });
-    } else {
-        res.redirect('/admin/login');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.userDetailsE = async (req, res) => {
-    if (req.session.adminData) {
-        var uid = req.params.id;
-        var userSpec = await user.findOne({ "_id": uid });
+    try {
+        let uid = req.params.id;
+        let userSpec = await user.findOne({ "_id": uid });
         if (userSpec.is_blocked === 0) {
             var access = 'unblock';
         } else {
             var access = 'block';
         }
         res.render('adminuserDetail', { userSpec: userSpec, access: access });
-    } else {
-        res.redirect('/admin/login');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.userCompDelet = async (req, res) => {
     try {
-        if (req.session.adminData) {
-            var uid = req.params.id;
-            await user.deleteOne({ "_id": uid });
-            res.redirect('/admin/user');
-        } else {
-            res.redirect('/admin/login');
-        }
+        let uid = req.params.id;
+        await user.deleteOne({ "_id": uid });
+        res.redirect('/admin/user');
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 
 exports.orderList = async (req, res) => {
     try {
-        if (req.session.adminData) {
-            var addsData = await user.find({ "is_verified": 1, "is_blocked": 0 }).populate("orders.products.product_id");
-            res.render('adminOrder', { FULLDATA: addsData });
-        } else {
-            res.redirect('/admin/login');
-        }
+        var addsData = await user.find({ "is_verified": 1, "is_blocked": 0 }).populate("orders.products.product_id");
+        res.render('adminOrder', { FULLDATA: addsData });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -174,7 +165,8 @@ exports.logoutpage = async (req, res) => {
             res.redirect('/admin/login');
         })
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -192,13 +184,14 @@ exports.createAdminlogin = async (req, res) => {
     try {
         if (admin.email === req.body.email && admin.password === req.body.password) {
             req.session.adminLog = true;
-            req.session.adminData = req.body;
+            req.session.adminData = req.body.email;
             res.redirect('/admin');
         } else {
             res.redirect('/admin/login')
         }
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -214,7 +207,8 @@ exports.userUpdateDetail = async (req, res) => {
         }
         res.redirect(`/admin/user`);
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -223,26 +217,26 @@ exports.updateCa = async (req, res) => {
         category = req.body.category;
         await product.updateOne({}, { $push: { choose: category } });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.deleteCa = async (req, res) => {
     try {
-        var ch = req.body.choose;
-        var result = await product.updateMany({ "choose": ch }, { $pull: { "choose": ch } });
-        console.log(result);
+        let ch = req.body.choose;
+        await product.updateMany({ "choose": ch }, { $pull: { "choose": ch } });
         res.redirect('/admin');
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 
 exports.deleOrder = async (req, res, next) => {
     try {
-        console.log(req.body);
-        var UserOrderm = await user.findOne({ "_id": req.body.uID }).populate("orders.products.product_id");
+        let UserOrderm = await user.findOne({ "_id": req.body.uID }).populate("orders.products.product_id");
         if (UserOrderm.orders) {
             var firRes = UserOrderm.orders.filter(prod => prod.products);
             if (firRes.products) {
@@ -258,6 +252,7 @@ exports.deleOrder = async (req, res, next) => {
             res.json({ status: true });
         })
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }

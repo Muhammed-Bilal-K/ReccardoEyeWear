@@ -10,9 +10,7 @@ const sendVerifyMail = async (email) => {
     try {
         const otp = Math.floor(100000 + Math.random() * 900000);
         otpverifymake = otp;
-        console.log(otpverifymake);
         otpverifymake.toString();
-        console.log(otpverifymake);
         const otpDetail = new otps({
             user: otpverifymake,
             otps: otpverifymake,
@@ -43,7 +41,8 @@ const sendVerifyMail = async (email) => {
             }
         });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -71,16 +70,21 @@ exports.otpverifiypage = async (req, res) => {
             }
         }
     } catch (error) {
-        res.render('otp',{ error: error.message });
+        res.render('otp', { error: error.message });
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
     }
 };
 
 
-exports.otpResend = async (req,res) => {
-    sendVerifyMail(emailOtpCheck);
-    res.render('otp',{ error: null });
+exports.otpResend = async (req, res) => {
+    try {
+        sendVerifyMail(emailOtpCheck);
+        res.render('otp', { error: null });
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
 }
 
 
@@ -88,14 +92,14 @@ exports.homepage = async (req, res) => {
     try {
         res.render('home', { logCheck: req.session.userData });
     } catch (error) {
-        console.log('error in user home product');
+        console.log('homepage');
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.womencate = async (req, res) => {
     try {
-        //var productDeatil = await product.find({ "choose": "women" });
-
         var search = '';
         if (req.query.search) {
             search = req.query.search;
@@ -120,19 +124,17 @@ exports.womencate = async (req, res) => {
         });
         res.render('women', { productDeatil: AllProduct });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.mencate = async (req, res) => {
     try {
-        // var productDeatil = await product.find({ "choose": "men" });
-
         var search = '';
         if (req.query.search) {
             search = req.query.search;
         }
-
         var AllProduct = await product.find({
             "choose": "men",
             $or: [
@@ -150,26 +152,20 @@ exports.mencate = async (req, res) => {
                 }
             ]
         });
-
         res.render('men', { productDeatil: AllProduct });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 
 exports.loginpage = async (req, res) => {
     try {
-        req.session.signupErr = false;
-        req.session.signupPassErr = false
-        if (req.session.userData) {
-            res.redirect('/');
-        } else {
-            req.session.otpVerify = false;
-            res.render('login', { errMSG: req.session.loginErr, is_veri: req.session.is_verified, is_block: req.session.is_blocked });
-        }
+        res.render('login', { errMSG: req.session.loginErr, is_veri: req.session.is_verified, is_block: req.session.is_blocked });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -178,11 +174,7 @@ exports.signuppage = async (req, res) => {
         req.session.is_verified = false;
         req.session.is_blocked = false;
         req.session.loginErr = false;
-        if (req.session.userData) {
-            res.redirect('/');
-        } else {
-            res.render('signup', { SignMSR: req.session.signupErr, passNotmatch: req.session.signupPassErr });
-        }
+        res.render('signup', { SignMSR: req.session.signupErr, passNotmatch: req.session.signupPassErr });
     } catch (error) {
         console.log(error);
     }
@@ -227,8 +219,8 @@ exports.updateUseradd = async (req, res) => {
 
 exports.createsignuppage = async (req, res) => {
     try {
-        const { email } = req.body;
-        var ExistEmail = await user.findOne({ email: email });
+        let { email } = req.body;
+        let ExistEmail = await user.findOne({ email: email });
         if (ExistEmail) {
             req.session.signupErr = true;
             return res.redirect('/signup');
@@ -255,12 +247,12 @@ exports.createsignuppage = async (req, res) => {
             req.session.otpVerify = true;
             req.session.signup = true;
             if (req.session.otpVerify) {
-                res.render('otp',{ error: null});
+                res.render('otp', { error: null });
             }
         }
-
     } catch (error) {
-        console.log('error signup');
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -268,20 +260,17 @@ exports.createsignuppage = async (req, res) => {
 
 
 exports.createloginpage = async (req, res) => {
-    var cheEma = req.body.email;
+    let checkEmail = req.body.email;
     try {
-        var loginVerify = await user.findOne({ "email": cheEma });
-
+        var loginVerify = await user.findOne({ "email": checkEmail });
         if (!loginVerify) {
             req.session.loginErr = true;
             return res.redirect('/login');
         }
-
         if (loginVerify.is_blocked === 1) {
             req.session.is_blocked = true;
             return res.redirect('/login');
         }
-
         if (loginVerify.is_verified != 1) {
             req.session.is_verified = true;
             res.redirect('/login');
@@ -289,7 +278,7 @@ exports.createloginpage = async (req, res) => {
             req.session.login = true;
             req.session.userData = loginVerify._id;
             res.redirect('/');
-        }else{
+        } else {
             throw new Error('Invalid Passowrd or Email');
         }
     } catch (error) {
@@ -320,67 +309,79 @@ exports.newAddress = async (req, res) => {
             res.redirect('/settings/addrs');
         }
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 
 exports.updateAdds = async (req, res) => {
-    var userId = req.session.userData;
-    var pid = req.params.id;
-    console.log(pid);
-    console.log(req.body);
-    var UserAddss = await user.findOne({ "_id": userId });
-    var addsList = UserAddss.address.find(data => data._id.toString() === pid);
-    if (addsList) {
-        await user.updateOne({ "_id": userId, "address._id": pid }, {
-            $set: {
-                'address.$.name': req.body.name,
-                'address.$.email': req.body.email,
-                'address.$.select': req.body.select,
-                'address.$.address': req.body.address,
-                'address.$.city': req.body.city,
-                'address.$.state': req.body.state,
-                'address.$.zipcode': req.body.zipcode,
-            }
-        })
-        console.log('success');
-    } else {
-        console.log(error);
+    try {
+        let userId = req.session.userData;
+        let pid = req.params.id;
+        let UserAddss = await user.findOne({ "_id": userId });
+        let addsList = UserAddss.address.find(data => data._id.toString() === pid);
+        if (addsList) {
+            await user.updateOne({ "_id": userId, "address._id": pid }, {
+                $set: {
+                    'address.$.name': req.body.name,
+                    'address.$.email': req.body.email,
+                    'address.$.select': req.body.select,
+                    'address.$.address': req.body.address,
+                    'address.$.city': req.body.city,
+                    'address.$.state': req.body.state,
+                    'address.$.zipcode': req.body.zipcode,
+                }
+            })
+        } else {
+            res.send('somthing went wrong');
+        }
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 
 exports.deleteAdds = async (req, res) => {
-    var userId = req.session.userData;
-    var addID = req.params.id;
-    var UserAddss = await user.findOne({ "_id": userId });
-    var addsList = UserAddss.address.find(data => data._id.toString() === addID);
-    if (addsList) {
-        var result = await user.updateOne({ "_id": userId }, { $pull: { "address": { "_id": addID } } });
-        console.log(result);
+    try {
+        let userId = req.session.userData;
+        let addID = req.params.id;
+        let UserAddss = await user.findOne({ "_id": userId });
+        let addsList = UserAddss.address.find(data => data._id.toString() === addID);
+        if (addsList) {
+            await user.updateOne({ "_id": userId }, { $pull: { "address": { "_id": addID } } });
+        }
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.deleteCartItem = async (req, res) => {
-    var CartId = req.params.id;
-    var UID = req.session.userData;
-    var UserAddss = await user.findOne({ "_id": UID });
-    if (UserAddss) {
-        await user.findByIdAndUpdate({ "_id": UID }, { $pull: { cart: { "_id": CartId } } }, { new: true })
+    try {
+        let CartId = req.params.id;
+        let UID = req.session.userData;
+        let UserAddss = await user.findOne({ "_id": UID });
+        if (UserAddss) {
+            await user.findByIdAndUpdate({ "_id": UID }, { $pull: { cart: { "_id": CartId } } }, { new: true })
+        }
+        res.redirect('/cart');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
-    res.redirect('/cart');
 }
 
 
+
+
+
+
+
+
+
 // sendVerifyMail(req.body.name, req.body.email, userDetail._id);
-
-
-
-
-
-
-
 // await userDetail.save();
 
 // const transporter = nodemailer.createTransport({

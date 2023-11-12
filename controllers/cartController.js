@@ -1,10 +1,10 @@
-var user = require('../models/usersdb');
-var product = require('../models/productdb');
+let user = require('../models/usersdb');
+let product = require('../models/productdb');
 
 exports.addTocarts = async (req, res) => {
-    var userId = req.session.userData;
-    var pid = req.params.id;
-    var mqty = 0;
+    let userId = req.session.userData;
+    let pid = req.params.id;
+    let mqty = 0;
     console.log(pid);
     quantity = req.body.quantity;
     equantity = req.body.equantity
@@ -14,11 +14,11 @@ exports.addTocarts = async (req, res) => {
         quantity = equantity;
     }
     try {
-        var ProductExist = await user.findOne({ "_id": userId });
-        var productQuanPrice = await product.findOne({ "_id": pid });
-        var TotalAmount = parseInt(productQuanPrice.price) * quantity;
+        let ProductExist = await user.findOne({ "_id": userId });
+        let productQuanPrice = await product.findOne({ "_id": pid });
+        let TotalAmount = parseInt(productQuanPrice.price) * quantity;
         unitPrice = parseInt(productQuanPrice.price);
-        var cartItem = ProductExist.cart.find(item => item.product_id.toString() === pid);
+        let cartItem = ProductExist.cart.find(item => item.product_id.toString() === pid);
         if (!cartItem) {
             await user.updateOne({ "_id": userId }, {
                 $push: {
@@ -31,7 +31,7 @@ exports.addTocarts = async (req, res) => {
                 }
             })
         } else {
-            var total = TotalAmount;
+            let total = TotalAmount;
             await user.updateOne({ "_id": userId, "cart.product_id": pid }, {
                 $inc: { "cart.$.qty": quantity, "cart.$.totalPrice": total }
             })
@@ -45,71 +45,70 @@ exports.addTocarts = async (req, res) => {
         }
         res.redirect('/cart');
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 
 exports.processDelivery = async (req, res) => {
-    var userID = req.session.userData;
-    var productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
-    var orderadd = productData.address;
-    const addres = orderadd.find(add => add._id.equals(req.body.address));
-    if (addres) {
-        var address = {
-            name: addres.name,
-            email: addres.email,
-            country: addres.select,
-            address: addres.address,
-            city: addres.city,
-            state: addres.state,
-            zipcode: addres.zipcode
+    try {
+        let userID = req.session.userData;
+        let productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
+        let orderadd = productData.address;
+        const addres = orderadd.find(add => add._id.equals(req.body.address));
+        if (addres) {
+            var address = {
+                name: addres.name,
+                email: addres.email,
+                country: addres.select,
+                address: addres.address,
+                city: addres.city,
+                state: addres.state,
+                zipcode: addres.zipcode
+            }
         }
+        let productsArray = productData.cart;
+        let products = productsArray.map(data => ({
+            product_id: data.product_id._id,
+            qty: data.qty,
+            price: data.totalPrice,
+            status: 'pending',
+            returned: false,
+        }));
+        let order = {
+            products,
+            totalamount: req.body.totalamount,
+            paymentmethod: req.body.radio,
+            address,
+        }
+        await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+        productData.cart = [];
+        await productData.save();
+        res.render('OrderComplete');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
-    var productsArray = productData.cart;
-    var products = productsArray.map(data => ({
-        product_id: data.product_id._id,
-        qty: data.qty,
-        price: data.totalPrice,
-        status: 'pending',
-        returned: false,
-    }));
-    var order = {
-        products,
-        totalamount: req.body.totalamount,
-        paymentmethod: req.body.radio,
-        address,
-    }
-    await user.updateOne({ "_id": userID }, { $push: { orders: order } });
-    productData.cart = [];
-    await productData.save();
-    res.render('OrderComplete');
 }
 
 ////////////////////////////////////////GET////////////////////////////////////////////
 
 exports.cart = async (req, res) => {
     try {
-        if (req.session.userData) {
-            try {
-                var totalsum = 0;
-                var userId = req.session.userData;
-                var allDeta = await user.findOne({ "_id": userId }).populate('cart.product_id');
-                var allDet = await user.findOne({ "_id": userId });
-                var f = allDeta.cart;
-                for (var d of f) {
-                    totalsum = totalsum + d.totalPrice;
-                }
-                console.log(f);
-                res.render('cart', { userCart: f, total: totalsum, userID: allDet._id });
-            } catch (error) {
-                console.log(error);
-            }
-        } else {
-            res.redirect('/login')
+        let totalsum = 0;
+        let userId = req.session.userData;
+        let allDeta = await user.findOne({ "_id": userId }).populate('cart.product_id');
+        let allDet = await user.findOne({ "_id": userId });
+        let f = allDeta.cart;
+        for (var d of f) {
+            totalsum = totalsum + d.totalPrice;
         }
+        console.log(f);
+        res.render('cart', { userCart: f, total: totalsum, userID: allDet._id });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -120,28 +119,28 @@ exports.changeQUA = async (req, res, next) => {
         var quantity = req.body.quantity;
 
         if (count === '-1' && quantity === '1') {
-            return res.json({status:false})
+            return res.json({ status: false })
         }
         if (count === '+1') {
             var ccount = 1;
         }
-        var data = await product.findOne({_id:proID});
+        var data = await product.findOne({ _id: proID });
         console.log(data.qnumber);
         quantity = parseInt(req.body.quantity);
         if (data.qnumber <= quantity && ccount === 1 && data.qnumber === 0) {
-            return res.json({status:false})
+            return res.json({ status: false })
         }
         count = parseInt(req.body.count);
-        
+
         var Userdata = await user.findOne({ "_id": req.body.user });
         var cartItem = Userdata.cart.find(item => item.product_id.toString() === req.body.pro);
         if (cartItem) {
             if (count === 1) {
                 var total = cartItem.productPrice;
-                await product.updateOne({"_id":proID},{$inc:{"qnumber":-1}})
+                await product.updateOne({ "_id": proID }, { $inc: { "qnumber": -1 } })
             } else {
                 var total = -cartItem.productPrice;
-                await product.updateOne({"_id":proID},{$inc:{"qnumber":1}})
+                await product.updateOne({ "_id": proID }, { $inc: { "qnumber": 1 } })
             }
             await user.updateOne({ "_id": req.body.user, "cart.product_id": req.body.pro }, {
                 $inc: { "cart.$.qty": count, "cart.$.totalPrice": total }
@@ -151,101 +150,84 @@ exports.changeQUA = async (req, res, next) => {
         };
 
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.orderProceed = async (req, res) => {
     try {
-        if (req.session.userData) {
-            var userId = req.session.userData;
-            var sumP = 0;
-            var count = 0;
-            var emailData = await user.findOne({ "_id": userId }, { "email": 1 });
-            var allDeta = await user.findOne({ "_id": userId }).populate('cart.product_id');
-            console.log(allDeta.address);
-            var f = allDeta.cart;
-            for (var x of f) {
-                sumP = sumP + x.totalPrice;
-                count++;
-            }
-            res.render('procedCHECk', { sumP: sumP, ProcsData: allDeta.cart, count: count, address: allDeta.address, emailData });
-        } else {
-            res.redirect('/login');
+        var userId = req.session.userData;
+        var sumP = 0;
+        var count = 0;
+        var emailData = await user.findOne({ "_id": userId }, { "email": 1 });
+        var allDeta = await user.findOne({ "_id": userId }).populate('cart.product_id');
+        console.log(allDeta.address);
+        var f = allDeta.cart;
+        for (var x of f) {
+            sumP = sumP + x.totalPrice;
+            count++;
         }
+        res.render('procedCHECk', { sumP: sumP, ProcsData: allDeta.cart, count: count, address: allDeta.address, emailData });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.userAdd = async (req, res) => {
     try {
-        if (req.session.userData) {
             var uid = req.session.userData;
             var userInfo = await user.findOne({ "_id": uid }, { "name": 1, "email": 1, "p_number": 1 });
             console.log(userInfo);
             res.render('UserAddFirst', { userInfo: userInfo });
-        } else {
-            res.redirect('/login');
-        }
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.specicAdd = async (req, res) => {
     try {
-        if (req.session.userData) {
             var ID = req.session.userData;
             var addsData = await user.findOne({ "_id": ID });
             res.render('UserAddSecond', { addList: addsData.address });
-        } else {
-            res.redirect('/login');
-        }
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.newuserAdd = async (req, res) => {
     try {
-        if (req.session.userData) {
             res.render('addnewUr');
-        } else {
-            res.redirect('/login');
-        }
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.listOrder = async (req, res) => {
     try {
-        if (req.session.userData) {
             var ID = req.session.userData;
             var addsData = await user.findOne({ "_id": ID }).populate("orders.products.product_id");
             console.log(addsData);
             res.render('userordersList', { Alldata: addsData.orders });
-        } else {
-            res.redirect('/login');
-        }
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
 exports.viewEach = async (req, res) => {
     try {
-        if (req.session.userData) {
             var ID = req.params.id;
             UID = req.session.userData;
             var addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
             var shopItem = addsData.orders.find(item => item._id == ID);
             res.render('DVProduct', { Fulldata: shopItem });
-        } else {
-            res.redirect('/login');
-        }
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }

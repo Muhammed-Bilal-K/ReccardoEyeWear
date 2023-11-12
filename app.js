@@ -8,7 +8,7 @@ var fileUpload = require('express-fileupload');
 
 require('nocache');
 require('dotenv').config();
-require('./models/database');
+require('./config/database');
 
 var usersRouter = require('./routes/users');
 var adminRouter = require('./routes/admin');

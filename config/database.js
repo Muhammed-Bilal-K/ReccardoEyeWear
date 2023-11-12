@@ -7,6 +7,7 @@ db.once('open', function(){
   console.log('Connected')
 });
 
-require('./usersdb');
-require('./productdb');
-require('./otpdb');
+require('../models/usersdb');
+require('../models/productdb');
+require('../models/otpdb');
+require('../models/categorydb');
