@@ -13,17 +13,22 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: 'This field is required.'
     },
-    choose: {
-        type: [String],
+    category: {
+        // type: mongoose.Schema.Types.ObjectId, ref: 'categories', 
+        type: String,
         required: 'This field is required.'
     },
-    review:{
+    description:{
         type :String,
         required : 'This field is required.'
     },
     image: {
-        type: String,
+        type: Array,
     },
+    unlist:{
+        type:Boolean,
+        default:false
+    }
 });
 
 module.exports = mongoose.model('ProductDetail', ProductSchema);

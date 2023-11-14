@@ -1,91 +1,218 @@
-var product = require('../models/productdb');
+let product = require('../models/productdb');
+let fs = require('fs').promises;
+let path = require('path');
 
-exports.createNewOne = async (req, res) => {
-    var fullcate = req.body.category;
-    var exicateg = req.body.choose;
-    var giveCate ;
-
-    if (!fullcate) {
-        giveCate = exicateg; 
-    }else{
-        giveCate = fullcate;
+function generateRandomName() {
+    const letters = 'abcdefgh';
+    let randomName = '';
+    for (let i = 0; i < 6; i++) {
+        const randomIndex = Math.floor(Math.random() * letters.length);
+        randomName += letters.charAt(randomIndex);
     }
+    return randomName;
+}
 
+exports.unlistedProduct = async (req, res) => {
+    await product.find({ unlist: true }).then((respo) => {
+        res.render('admin/adminUnlistProduct', { Allproduct: respo });
+    })
+}
+
+exports.addaProducts = async (req, res) => {
     try {
+        console.log(req.body);
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ message: 'No files were uploaded.' });
+        }
         ImageUpload = req.files.image;
-        newImageName = req.body.name;
-        uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
-        ImageUpload.mv(uploadPath, (err) => {
-            if (err) {
-                return console.log('error');
-            }
-            console.log('done');
-        })
+        let img = [];
+        if (Array.isArray(ImageUpload)) {
+            ImageUpload.forEach(file => {
+                let randomName = generateRandomName();
+                let newImageName = randomName;
+                let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
+                file.mv(uploadPath, (err) => {
+                    if (err) {
+                        return res.status(500).json({ message: 'Error uploading files.' });
+                    }
+                    console.log('done');
+                });
+                img.push(newImageName);
+            });
+        } else {
+            let randomName = generateRandomName();
+            let newImageName = randomName;
+            let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
+            ImageUpload.mv(uploadPath, err => {
+                if (err) {
+                    return res.status(500).json({ message: 'Error uploading file.' });
+                }
+            });
+            img.push(newImageName);
+        }
 
         const productDetail = new product({
-            name: req.body.name,
-            qnumber: parseInt(req.body.qnumber),
-            price: req.body.price,
-            choose: giveCate,
-            review: req.body.review,
-            image: newImageName,
+            name: req.body.pname,
+            qnumber: parseInt(req.body.pquantity),
+            price: req.body.pprice,
+            category: req.body.pcategory,
+            description: req.body.pdescription,
+            image: img,
         });
         await productDetail.save();
         res.redirect('/admin');
     } catch (error) {
-        console.log('error product');
+        console.log(error);
     }
 }
+
 
 
 exports.updateNewSpecific = async (req, res) => {
-    var id = req.params.id;
-    var formattedId = id.replace(/%20/g, ' ');
-    console.log(req.body);
-    if (req.files) {
-        ImageUpload = req.files.image;
-        newImageName = req.body.name;
-        uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
-        ImageUpload.mv(uploadPath, (err) => {
-            if (err) {
-                return console.log('error');
-            }
-            console.log('done');
-        })
-
-        await product.updateOne({ "_id": formattedId }, {
-            $set: {
-                name: req.body.name,
-                qnumber: req.body.qnumber,
-                price: req.body.price,
-                choose: req.body.choose,
-                review: req.body.review,
-                image: newImageName,
-            }
-        })
-    } else {
-        await product.updateOne({ "_id": formattedId }, {
-            $set: {
-                name: req.body.name,
-                qnumber: req.body.qnumber,
-                price: req.body.price,
-                choose: req.body.choose,
-                review: req.body.review
-            }
-        })
-    }
-
-    res.redirect('/admin');
-}
-
-exports.deleteOneSpec = async (req, res) => {
-    var uid = req.params.id;
-    console.log(uid);
     try {
-        await product.findByIdAndDelete(uid, req.body);
+        let id = req.params.id;
+        let formattedId = id.replace(/%20/g, '');
+        if (req.files) {
+
+            const ImageUpload = req.files.image;
+            let img = [];
+
+            if (Array.isArray(ImageUpload)) {
+                // If multiple images are uploaded, append them to the existing images
+                ImageUpload.forEach(file => {
+                    const randomName = generateRandomName();
+                    const newImageName = randomName;
+                    const uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
+
+                    file.mv(uploadPath, (err) => {
+                        if (err) {
+                            return res.status(500).json({ message: 'Error uploading files.' });
+                        }
+                    });
+
+                    img.push(newImageName);
+                });
+            } else {
+                // If only one image is uploaded, keep the existing images and add the new one
+                img = req.body.pimage ? [...req.body.pimage] : [];
+
+                const randomName = generateRandomName();
+                const newImageName = randomName;
+                const uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
+
+                ImageUpload.mv(uploadPath, err => {
+                    if (err) {
+                        return res.status(500).json({ message: 'Error uploading file.' });
+                    }
+                });
+
+                img.push(newImageName);
+            }
+
+            await product.updateOne(
+                { "_id": formattedId },
+                {
+                    $set: {
+                        name: req.body.pname,
+                        qnumber: parseInt(req.body.pquantity),
+                        price: req.body.pprice,
+                        category: req.body.pcategory,
+                        description: req.body.pdescription,
+                        image: img,
+                    }
+                }
+            );
+
+
+
+            // ImageUpload = req.files.image;
+            // let img = [];
+            // if (Array.isArray(ImageUpload)) {
+            //     ImageUpload.forEach(file => {
+            //         let randomName = generateRandomName();
+            //         let newImageName = randomName;
+            //         let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
+            //         file.mv(uploadPath, (err) => {
+            //             if (err) {
+            //                 return res.status(500).json({ message: 'Error uploading files.' });
+            //             }
+            //         });
+            //         img.push(newImageName);
+            //     });
+            // } else {
+            //     let randomName = generateRandomName();
+            //     let newImageName = randomName;
+            //     let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
+            //     ImageUpload.mv(uploadPath, err => {
+            //         if (err) {
+            //             return res.status(500).json({ message: 'Error uploading file.' });
+            //         }
+            //     });
+            //     img.push(newImageName);
+            // }
+
+            // await product.updateOne({ "_id": formattedId }, {
+            //     $set: {
+            //         name: req.body.pname,
+            //         qnumber: parseInt(req.body.pquantity),
+            //         price: req.body.pprice,
+            //         category: req.body.pcategory,
+            //         description: req.body.pdescription,
+            //         image: img,
+            //     }
+            // })
+        } else {
+            await product.updateOne({ "_id": formattedId }, {
+                $set: {
+                    name: req.body.pname,
+                    qnumber: parseInt(req.body.pquantity),
+                    price: req.body.pprice,
+                    category: req.body.pcategory,
+                    description: req.body.pdescription,
+                }
+            })
+        }
         res.redirect('/admin');
     } catch (error) {
-        console.log('error in deletePart');
+        console.log(error);
+    }
+}
+
+exports.deleteProductImg = async (req, res) => {
+    let id = req.query.id;
+    try {
+        const result = await product.deleteOne({ _id: id });
+        if (result) {
+            res.redirect('/admin');
+        } else {
+            res.status(404).send('Product not found.');
+        }
+    } catch (error) {
+        console.log('Error in deletePart:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+
+exports.unlistProduct = async (req, res) => {
+    let id = req.query.id;
+    try {
+        await product.updateOne({ "_id": id }, { $set: { unlist: true } }).then(() => {
+            res.redirect('/admin/unlistedProduct');
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.listProduct = async (req, res) => {
+    let id = req.query.id;
+    try {
+        await product.updateOne({ "_id": id }, { $set: { unlist: false } }).then(() => {
+            res.redirect('/admin/products');
+        });
+    } catch (error) {
+        console.log(error);
     }
 }
 

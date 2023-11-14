@@ -1,0 +1,100 @@
+<%- include('../partials/adminPartials/__adminHeader__') %>
+
+    <!-- MAIN -->
+    <main>
+
+        <div style="justify-content: space-between;
+           display: flex;
+           align-items: center;">
+            <div>
+                <a href="/admin/addPorducts">
+                    <button type="button" style="border: none;
+                    color: white;
+                    background: #170959cc;
+                    box-shadow: 1px 2px 7px black;
+                    padding: 1rem 2rem;
+                    outline: none;
+                    font-weight: 800;
+                    font-size: 12px;
+                    border-radius: 2rem;" class="btn btn-primary">Add Product</button>
+                </a>
+            </div>
+            <div>
+                <a href="/admin/unlistedProduct">
+                    <button type="button" style="border: none;
+                    color: white;
+                    background: #415471;
+                    box-shadow: 1px 4px 7px black;
+                    padding: 1rem 2rem;
+                    outline: none;
+                    border-radius: 2rem;" class="btn btn-primary">Unlisted Product</button>
+                </a>
+            </div>
+        </div>
+
+
+        <div class="table-data">
+            <div class="order">
+                <div class="head">
+                    <h3>Products List</h3>
+                    <i class='bx bx-search'></i>
+                    <i class='bx bx-filter'></i>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Qunatity</th>
+                            <th>Price</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% Allproduct.forEach(proData=> { %>
+                            <tr>
+                                <td>
+                                    <img src="/uploaded/<%= proData.image[0] %>">
+                                    <p>
+                                        <%= proData.name %>
+                                    </p>
+                                </td>
+                                <td>
+                                    <%= proData.qnumber %>
+                                </td>
+                                <td><span>
+                                        <%= proData.price %>
+                                </span></td>
+                                <td><a href="/admin/updateProduct/<%= proData._id %>"><span
+                                            class="status completed">Update</span></a>
+                                            
+                                            <a href="/admin/unlist?id=<%= proData._id %>"><span
+                                            class="status pending">Unlist</span></a>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="table-data">
+
+        
+        <div class="todo">
+                <div class="head">
+                    <h3>Category List</h3>
+                    <a href="/admin/addCategory"><i class='bx'>Add Category</i></a>
+                    <i class='bx bx-filter' ></i>
+                    
+                </div>
+                <ul class="todo-list">
+                    <% categoryList.forEach(category => { %>
+                        <li class="completed">
+                            <p><%= category.name %></p>
+                            <i class='bx' >Delete</i>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+        <%- include('../partials/adminPartials/__adminFooter__') %>

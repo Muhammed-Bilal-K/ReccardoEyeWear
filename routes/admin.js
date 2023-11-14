@@ -6,24 +6,34 @@ let adminMiddleware = require('../middleware/adminMiddleware');
 
 /* GET user' homepage listing. */
 router.get('/', adminMiddleware.loggedIn , adminController.adminpage);
+/* GET user' homepage listing. */
+router.get('/products', adminMiddleware.loggedIn , adminController.Listallproducts);
 
 /* GET user's loginpage listing. */
 router.get('/login', adminMiddleware.notlogged , adminController.loginpage);
 
-router.get('/addnew', adminMiddleware.loggedIn , adminController.addnewone);
+router.get('/addPorducts' , adminMiddleware.loggedIn , adminController.addingProducts);
 
-router.get('/categU', adminMiddleware.loggedIn , adminController.catUp);
+router.get('/addCategory', adminMiddleware.loggedIn , adminController.addCategoryPage);
 
-router.get('/updateone/:id', adminMiddleware.loggedIn , adminController.updatenewone);
+router.get('/updateProduct/:id', adminMiddleware.loggedIn , adminController.updatenewone);
+
+router.get('/unlistedProduct', adminMiddleware.loggedIn , productController.unlistedProduct);
+
+router.get('/ExistImgDelete', adminMiddleware.loggedIn , adminController.deleteImg)
 
 /* POST user's loginppage listing. */
-router.get('/deleteone/:id', adminMiddleware.loggedIn , productController.deleteOneSpec);
+router.get('/deleteProduct', adminMiddleware.loggedIn , productController.deleteProductImg);
 
 /* POST user's loginppage listing. */
-router.get('/user', adminMiddleware.loggedIn , adminController.userSpec);
+router.get('/users', adminMiddleware.loggedIn , adminController.userSpec);
 
 /* POST user's loginppage listing. */
 router.get('/user/view/:id', adminMiddleware.loggedIn , adminController.userDetailsE);
+
+router.get('/unblock', adminMiddleware.loggedIn , adminController.unblockUser);
+
+router.get('/block', adminMiddleware.loggedIn , adminController.blockUser);
 
 /* POST user's loginppage listing. */
 router.get('/user/delete/:id', adminMiddleware.loggedIn , adminController.userCompDelet);
@@ -39,13 +49,22 @@ router.get('/logout', adminController.logoutpage)
 router.post('/admin/login', adminMiddleware.notlogged , adminController.createAdminlogin);
 
 /* POST user's loginppage listing. */
-router.post('/admin/addonenew', adminMiddleware.loggedIn, productController.createNewOne);
+router.post('/admin/addProducts', adminMiddleware.loggedIn, productController.addaProducts);
 
 /* POST user's loginppage listing. */
-router.post('/updateNewone/:id', adminMiddleware.loggedIn, productController.updateNewSpecific);
+router.post('/Productupdate/:id', adminMiddleware.loggedIn, productController.updateNewSpecific);
+
+
+router.get('/unlist', productController.unlistProduct);
+
+router.get('/list', productController.listProduct)
+
 
 /* POST user's loginppage listing. */
 router.post('/updateUser/:id', adminMiddleware.loggedIn, adminController.userUpdateDetail);
+
+/* POST user's loginppage listing. */
+router.post('/admin/addCategory', adminController.addCategory);
 
 /* POST user's loginppage listing. */
 router.post('/deletecat', adminController.deleteCa);

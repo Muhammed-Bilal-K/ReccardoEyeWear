@@ -1,5 +1,8 @@
-var user = require('../models/usersdb');
-var product = require('../models/productdb');
+let user = require('../models/usersdb');
+let product = require('../models/productdb');
+let category = require('../models/categorydb');
+let path = require('path');
+let fs = require('fs');
 
 const admin = {
     email: 'a@m',
@@ -8,64 +11,72 @@ const admin = {
 
 exports.adminpage = async (req, res) => {
     try {
-            var search = '';
-            var limit = 4;
-            var page = 1;
-            if (req.query.search) {
-                search = req.query.search;
-            }
+        // var search = '';
+        // var limit = 4;
+        // var page = 1;
+        // if (req.query.search) {
+        //     search = req.query.search;
+        // }
 
-            if (req.query.page) {
-                page = req.query.page;
-            }
+        // if (req.query.page) {
+        //     page = req.query.page;
+        // }
 
-            var AllProduct = await product.find({
-                $expr: { $ne: [{ $size: "$choose" }, 0] },
-                $or: [
-                    {
-                        name: {
-                            $regex: '.*' + search + '.*',
-                            $options: 'i'
-                        }
-                    },
-                    {
-                        price: {
-                            $regex: '.*' + search + '.*',
-                            $options: 'i'
-                        }
-                    }
-                ]
-            }).limit(limit * 1).skip((page - 1) * limit);
+        // var AllProduct = await product.find({
+        //     $expr: { $ne: [{ $size: "$choose" }, 0] },
+        //     $or: [
+        //         {
+        //             name: {
+        //                 $regex: '.*' + search + '.*',
+        //                 $options: 'i'
+        //             }
+        //         },
+        //         {
+        //             price: {
+        //                 $regex: '.*' + search + '.*',
+        //                 $options: 'i'
+        //             }
+        //         }
+        //     ]
+        // }).limit(limit * 1).skip((page - 1) * limit);
 
-            var count = await product.find({
-                $or: [
-                    {
-                        name: {
-                            $regex: '.*' + search + '.*',
-                            $options: 'i'
-                        }
-                    },
-                    {
-                        price: {
-                            $regex: '.*' + search + '.*',
-                            $options: 'i'
-                        }
-                    }
-                ]
-            }).countDocuments();
+        // var count = await product.find({
+        //     $or: [
+        //         {
+        //             name: {
+        //                 $regex: '.*' + search + '.*',
+        //                 $options: 'i'
+        //             }
+        //         },
+        //         {
+        //             price: {
+        //                 $regex: '.*' + search + '.*',
+        //                 $options: 'i'
+        //             }
+        //         }
+        //     ]
+        // }).countDocuments();
 
-            var totalcos = await user.find({ "is_verified": 1 }).count();
-            res.render('adminPanel', {
-                ProductDoc: AllProduct,
-                totalcos,
-                totalpage: Math.ceil(count / limit),
-                currentPage: page,
-                search
-            });
+        // var totalcos = await user.find({ "is_verified": 1 }).count();
+        res.render('admin/adminPanel', {
+            // ProductDoc: AllProduct,
+            // totalcos,
+            // totalpage: 4
+            // currentPage: page,
+            // search
+        });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
     }
+}
+
+exports.Listallproducts = async (req, res) => {
+    await product.find({ unlist: false }).then((result) => {
+        category.find({}).then((data) => {
+            res.render('admin/adminProductsList', { Allproduct: result, categoryList: data });
+        })
+    })
 }
 
 exports.loginpage = async (req, res) => {
@@ -77,20 +88,22 @@ exports.loginpage = async (req, res) => {
     }
 }
 
-exports.addnewone = async (req, res) => {
+exports.addingProducts = async (req, res) => {
     try {
-        let categ = await product.find({}).distinct("choose");
-        res.render('addone', { categ: categ });
+        await category.find({}).then((CategoryData) => {
+            res.render('admin/adminAddProducts', { CategoryList: CategoryData });
+        })
+        // let categ = await product.find({}).distinct("choose");
+        // res.render('addone', { categ: categ });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
     }
 }
 
-exports.catUp = async (req, res) => {
+exports.addCategoryPage = async (req, res) => {
     try {
-        let categ = await product.find({}).distinct("choose");
-        res.render('categoryUpd', { categ: categ });
+        res.render('admin/adminAddCategory');
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -101,10 +114,10 @@ exports.catUp = async (req, res) => {
 exports.updatenewone = async (req, res) => {
     try {
         let id = req.params.id;
-        let formattedId = id.replace(/%20/g, ' ');
-        let categ = await product.find({}).distinct("choose");
+        let formattedId = id.replace(/%20/g, '');
         let EachProduct = await product.findOne({ "_id": formattedId });
-        res.render('updateone', { SpecificProduct: EachProduct, categ: categ });
+        console.log(EachProduct);
+        res.render('admin/adminUpdateProdts', { SpecificProduct: EachProduct });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -113,24 +126,50 @@ exports.updatenewone = async (req, res) => {
 
 exports.userSpec = async (req, res) => {
     try {
-        let alluser = await user.find({ "is_verified": 1 });
-        res.render('adminUserP', { alluser: alluser });
+        let alluser = await user.find({});
+        res.render('admin/adminUsersList', { allUser: alluser });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
     }
 }
 
+
+exports.unblockUser = async (req, res) => {
+    try {
+        let email = req.query.email;
+        await user.updateOne({ "email": email }, { $set: { is_blocked: 0 } }).then((respo) => {
+            res.redirect('/admin/users');
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.blockUser = async (req, res) => {
+    try {
+        let email = req.query.email;
+        await user.updateOne({ "email": email }, { $set: { is_blocked: 1 } }).then((respo) => {
+            res.redirect('/admin/users');
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 exports.userDetailsE = async (req, res) => {
     try {
         let uid = req.params.id;
-        let userSpec = await user.findOne({ "_id": uid });
-        if (userSpec.is_blocked === 0) {
-            var access = 'unblock';
-        } else {
-            var access = 'block';
-        }
-        res.render('adminuserDetail', { userSpec: userSpec, access: access });
+        let userSpec = await user.find({ "_id": uid });
+        // if (userSpec.is_blocked === 0) {
+        //     var access = 'unblock';
+        // } else {
+        //     var access = 'block';
+        // }
+        console.log(userSpec);
+        // res.render('adminuserDetail', { userSpec: userSpec, access: access });
+        res.render('adminuserDetail');
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -151,8 +190,32 @@ exports.userCompDelet = async (req, res) => {
 
 exports.orderList = async (req, res) => {
     try {
-        var addsData = await user.find({ "is_verified": 1, "is_blocked": 0 }).populate("orders.products.product_id");
-        res.render('adminOrder', { FULLDATA: addsData });
+        // var addsData = await user.find({ "is_verified": 1, "is_blocked": 0 }).populate("orders.products.product_id");
+        // res.render('adminOrder', { FULLDATA: addsData });
+        res.render('admin/adminOrdersList');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
+
+exports.deleteImg = async (req, res) => {
+    try {
+        let id = req.query.id;
+        let img = req.query.img;
+        const result = await product.updateOne({ _id: id }, { $pull: { image: img } });
+        if (result) {
+            const imagePath = path.join(__dirname, '..', 'public', 'uploaded', img);
+            fs.unlink(imagePath, (unlinkError) => {
+                if (unlinkError) {
+                    res.status(500).json({ message: 'Error deleting image.' });
+                } else {
+                    res.redirect('/admin');
+                }
+            });
+        } else {
+            console.log(' in img error');
+        }
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -233,6 +296,27 @@ exports.deleteCa = async (req, res) => {
     }
 }
 
+exports.addCategory = async (req, res) => {
+    try {
+        let CategoryData = req.body.category;
+        CategoryData = CategoryData.toLowerCase();
+        let ExistCategory = await category.findOne({ name: { $regex: new RegExp(`^${CategoryData}$`, "i") } });
+        if (!ExistCategory) {
+            let categoryDetail = new category({
+                name: CategoryData,
+            });
+            let resultData = await categoryDetail.save();
+            if (resultData) {
+                res.redirect('/admin');
+            }
+        } else {
+            res.redirect('/admin/products');
+        }
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
 
 exports.deleOrder = async (req, res, next) => {
     try {

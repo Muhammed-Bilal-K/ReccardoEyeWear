@@ -88,6 +88,22 @@
         </div>
         <div id="ast-mobile-header" class="ast-mobile-header-wrap " data-type="dropdown">
       </header>
+      <div class="container" style="position: absolute;margin-top: 9rem;margin-left: 75px;">
+        <div style="width: 150px;">
+          <div style="margin: 3px 0px;">
+            <img style="width: 100%;" src="/uploaded/<%= EachproductDeatil.image[0] %>" alt="" srcset="">
+          </div>
+          <div style="margin: 3px 0px;">
+            <img style="width: 100%;" src="/uploaded/<%= EachproductDeatil.image[1] %>" alt="" srcset="">
+          </div>
+          <div style="margin: 3px 0px;">
+            <img style="width: 100%;" src="/uploaded/<%= EachproductDeatil.image[2] %>" alt="" srcset="">
+          </div>
+          <div style="margin: 3px 0px;">
+            <img style="width: 100%;" src="/uploaded/<%= EachproductDeatil.image[3] %>" alt="" srcset="">
+          </div>
+        </div>
+      </div>
       <div id="content" class="site-content">
         <div class="ast-container">
           <div id="primary" class="content-area primary">
@@ -102,7 +118,9 @@
                       class="woocommerce-product-gallery woocommerce-product-gallery--with-images woocommerce-product-gallery--columns-4 images"
                       data-columns="4" style="opacity: 0; transition: opacity .25s ease-in-out;">
                       <figure class="woocommerce-product-gallery__wrapper">
-                        <div><a href="#"><img width="600" height="600" src="/uploaded/<%= EachproductDeatil.image %>"
+                        <div><a href="#"><img style="margin-left: 9rem;
+                          width: 32rem;
+                          box-shadow: none;" src="/uploaded/<%= EachproductDeatil.image[0] %>"
                               loading="lazy"></a>
                         </div>
                       </figure>

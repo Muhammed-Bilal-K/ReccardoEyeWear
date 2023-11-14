@@ -106,7 +106,7 @@ exports.womencate = async (req, res) => {
         }
 
         var AllProduct = await product.find({
-            "choose": "women",
+            // "choose": "women",
             $or: [
                 {
                     name: {
@@ -136,7 +136,7 @@ exports.mencate = async (req, res) => {
             search = req.query.search;
         }
         var AllProduct = await product.find({
-            "choose": "men",
+            // "choose": "men",
             $or: [
                 {
                     name: {

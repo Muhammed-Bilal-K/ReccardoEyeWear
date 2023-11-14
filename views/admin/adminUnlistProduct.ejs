@@ -1,0 +1,84 @@
+<%- include('../partials/adminPartials/__adminHeader__') %>
+
+    <!-- MAIN -->
+    <main>
+
+        
+
+
+        <div class="table-data">
+            <div class="order">
+                <div class="head">
+                    <h3>Unlist Products</h3>
+                    <i class='bx bx-search'></i>
+                    <i class='bx bx-filter'></i>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Qunatity</th>
+                            <th>Price</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% Allproduct.forEach(proData=> { %>
+                            <tr>
+                                <td>
+                                    <img src="/uploaded/<%= proData.image[0] %>">
+                                    <p>
+                                        <%= proData.name %>
+                                    </p>
+                                </td>
+                                <td>
+                                    <%= proData.qnumber %>
+                                </td>
+                                <td><span>
+                                        <%= proData.price %>
+                                    </span></td>
+
+                                <td><a href="/admin/updateProduct/<%= proData._id %>"><span
+                                            class="status completed">Updated</span></a></td>
+                                <td><a href="/admin/deleteProduct?id=<%= proData._id %>"><span
+                                            class="status pending">Delete</span></a></td>
+                                <td><a href="/admin/list?id=<%= proData._id %>"><span
+                                            class="status process">Restore</span></a></td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <!-- <div class="todo">
+					<div class="head">
+						<h3>Todos</h3>
+						<i class='bx bx-plus' ></i>
+						<i class='bx bx-filter' ></i>
+					</div>
+					<ul class="todo-list">
+						<li class="completed">
+							<p>Todo List</p>
+							<i class='bx bx-dots-vertical-rounded' ></i>
+						</li>
+						<li class="completed">
+							<p>Todo List</p>
+							<i class='bx bx-dots-vertical-rounded' ></i>
+						</li>
+						<li class="not-completed">
+							<p>Todo List</p>
+							<i class='bx bx-dots-vertical-rounded' ></i>
+						</li>
+						<li class="completed">
+							<p>Todo List</p>
+							<i class='bx bx-dots-vertical-rounded' ></i>
+						</li>
+						<li class="not-completed">
+							<p>Todo List</p>
+							<i class='bx bx-dots-vertical-rounded' ></i>
+						</li>
+					</ul>
+				</div> -->
+        </div>
+
+        <%- include('../partials/adminPartials/__adminFooter__') %>
