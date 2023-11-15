@@ -16,6 +16,8 @@ router.get('/addPorducts' , adminMiddleware.loggedIn , adminController.addingPro
 
 router.get('/addCategory', adminMiddleware.loggedIn , adminController.addCategoryPage);
 
+router.get('/category/delete', adminMiddleware.loggedIn , adminController.deleteCategory);
+
 router.get('/updateProduct/:id', adminMiddleware.loggedIn , adminController.updatenewone);
 
 router.get('/unlistedProduct', adminMiddleware.loggedIn , productController.unlistedProduct);
@@ -39,7 +41,11 @@ router.get('/block', adminMiddleware.loggedIn , adminController.blockUser);
 router.get('/user/delete/:id', adminMiddleware.loggedIn , adminController.userCompDelet);
 
 /* POST user's loginppage listing. */
-router.get('/orders', adminMiddleware.loggedIn , adminController.orderList);
+router.get('/orders' , adminController.orderList);
+
+router.get('/view/order', adminMiddleware.loggedIn , adminController.orderView);
+
+router.get('/order/Status', adminMiddleware.loggedIn , adminController.orderStatus);
 
 router.get('/logout', adminController.logoutpage)
 

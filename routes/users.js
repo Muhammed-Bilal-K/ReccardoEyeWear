@@ -58,7 +58,7 @@ router.get('/logout', userController.userlogout);
 
 
 /* POST user's signuppage listing. */
-router.post('/signup/verification', userMiddleware.notLogged  ,userController.createsignuppage);
+router.post('/signup/verification' , userController.createsignuppage);
 
 /* POST user's signuppage listing. */
 router.post('/otp', userController.otpverifiypage);

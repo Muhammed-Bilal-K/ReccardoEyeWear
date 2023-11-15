@@ -91,7 +91,7 @@
                     <% categoryList.forEach(category => { %>
                         <li class="completed">
                             <p><%= category.name %></p>
-                            <i class='bx' >Delete</i>
+                            <a href="/admin/category/delete?name=<%= category.name %>"><i class='bx' >Delete</i></a>
                         </li>
                     <% }) %>
                 </ul>

@@ -58,18 +58,23 @@
 			<div class="card mb-4" style="width: 60rem;">
 				<div class="card-body">
 					<h1>ORDER DETAILS</h1>
+					<h6>Order ID - <%= Fulldata._id %></h6>
 					<HR></HR>
                     <div class="row">
                             <div class="col-md-4">
+								<h4 style="font-weight: 800;">Products</h4>
                                 <% Fulldata.products.forEach(items => { %>
                                     <h4><%= items.product_id.name %></h4>
+									<p><img style="width: 65px;" src="/uploaded/<%= items.product_id.image[0] %>" alt="" srcset=""></p>
                                     <p style="display: inline;" >Qunatity:<%= items.qty %></p>
-                                    <p style="display: inline;">$<%= items.price %></p>
+									<p style="display: inline;" >X $<%= items.product_id.price %></p>
+                                    <p>Total : $<%= items.price %></p>
                                     <p>Status : <%= items.status %></p>
                                     <hr>
                                 <% }) %>
                             </div>
                         <div class="col-md-4">
+							<h4 style="font-weight: 800;">Address Information</h4>
                             <h4><%= Fulldata.address.name %></h4>
                             <p style="display: inline;"><%= Fulldata.email %></p>
                             <p style="display: inline;"><%= Fulldata.address.country %></p>
@@ -78,13 +83,15 @@
                             <p style="display: inline;"><%= Fulldata.address.state %></p>
                             <p style="display: inline;"><%= Fulldata.address.zipcode %></p>
                             <hr>
-                            <h4>Total : $<%= Fulldata.totalamount %></h4>
-                            <h4>Payment :<%= Fulldata.paymentmethod %></h4>
+							<h4 style="font-weight: 800;">Bill Details</h4>
+                            <h5>Total : $<%= Fulldata.totalamount %></h5>
+                            <h5>Payment :<%= Fulldata.paymentmethod %></h5>
                             <hr>
                         </div>
                         <div class="col-md-4">
                             <!-- <p><a href="/settings/useradd/update/" class="card-link"></a></p> -->
-                            <p><a href="/order/delete/<%= Fulldata._id %>>" class="card-link">cancel</a></p>
+							<p><a href="/order/delete/<%= Fulldata._id %>>" class="card-link">Cancel</a></p>
+							<p><a href="/order/delete/<%= Fulldata._id %>>" class="card-link">Return</a></p>
                         </div>
                     </div>
 				</div>

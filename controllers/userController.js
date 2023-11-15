@@ -1,5 +1,6 @@
 var user = require('../models/usersdb');
 var product = require('../models/productdb');
+let category = require('../models/categorydb');
 var otps = require('../models/otpdb');
 var nodemailer = require('nodemailer');
 var otpverifymake = null;
@@ -105,8 +106,10 @@ exports.womencate = async (req, res) => {
             search = req.query.search;
         }
 
+        let categoryData = await category.findOne({name:'woman'});
+                    console.log(categoryData);
         var AllProduct = await product.find({
-            // "choose": "women",
+            category:"woman",
             $or: [
                 {
                     name: {
@@ -122,7 +125,7 @@ exports.womencate = async (req, res) => {
                 }
             ]
         });
-        res.render('women', { productDeatil: AllProduct });
+        res.render('men', { productDeatil: AllProduct ,categoryList : categoryData});
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -135,8 +138,11 @@ exports.mencate = async (req, res) => {
         if (req.query.search) {
             search = req.query.search;
         }
+
+        let categoryData = await category.findOne({name:'men'});
+            console.log(categoryData);
         var AllProduct = await product.find({
-            // "choose": "men",
+            category:"men",
             $or: [
                 {
                     name: {
@@ -152,7 +158,7 @@ exports.mencate = async (req, res) => {
                 }
             ]
         });
-        res.render('men', { productDeatil: AllProduct });
+        res.render('men', { productDeatil: AllProduct , categoryList : categoryData});
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -162,7 +168,15 @@ exports.mencate = async (req, res) => {
 
 exports.loginpage = async (req, res) => {
     try {
-        res.render('login', { errMSG: req.session.loginErr, is_veri: req.session.is_verified, is_block: req.session.is_blocked });
+        res.render('login', { errMSG: req.session.loginErr, is_veri: req.session.is_verified, is_block: req.session.is_blocked },(err,html)=>{
+            if (err) {
+                console.log(err);
+                res.send('internal error');
+            }else{
+                delete req.session.loginErr;
+                res.send(html);
+            }
+        });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);

@@ -120,8 +120,7 @@
                       <figure class="woocommerce-product-gallery__wrapper">
                         <div><a href="#"><img style="margin-left: 9rem;
                           width: 32rem;
-                          box-shadow: none;" src="/uploaded/<%= EachproductDeatil.image[0] %>"
-                              loading="lazy"></a>
+                          box-shadow: none;" src="/uploaded/<%= EachproductDeatil.image[0] %>" loading="lazy"></a>
                         </div>
                       </figure>
                       <div id="ast-gallery-thumbnails" class="slider-disabled "></div>
@@ -158,15 +157,14 @@
                           <label class="screen-reader-text" for="plus_qty"> Plus Quantity</label>
                           <button type="button" href="" id="plus_qty" class="plus">+</button>
                         </div>
-                        <% if ( EachproductDeatil.qnumber === 0) { %>
-                            <h4>Out Of Stock</h4>
-                        <% } else { %>
-                          <button type="submit" value="" class="">Add to cart</button>
-                          <% } %>
-                        quantity :
-                        <input type="number" name="equantity" id=""
-                          value="<%= EachproductDeatil.qnumber %>">
-                        <br>
+                        <% if ( EachproductDeatil.qnumber===0) { %>
+                          <h4>Out Of Stock</h4>
+                          <% } else { %>
+                            <button type="submit" value="" class="">Add to cart</button>
+                            <% } %>
+                              quantity :
+                              <input type="number" name="equantity" id="" value="<%= EachproductDeatil.qnumber %>">
+                              <br>
                       </form>
                       <div class="ast-woocommerce-accordion woocommerce-tabs ast-woocommerce-tabs">
                         <div class="ast-single-tab">

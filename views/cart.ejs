@@ -115,18 +115,17 @@
                                             <th scope="row">
                                                 <%= x.product_id.name %>
                                             </th>
-                                            <td id="<%= x.product_id.price %>">
+                                            <td id="productPrice">
                                                 <%= x.product_id.price %>
                                             </td>
                                             <td>
+
+
                                                 <button type="button" id="minus_qty" class="minus"
                                                     style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
     
-                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','-1','<%= x.totalPrice %>','<%= x.product_id.price %>','<%= total %>','sum')">-</button>
+                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','-1','<%= x.totalPrice %>','productPrice','sub-total','sum')">-</button>
                                                     
-                                                <label class="screen-reader-text" for="quantity_6533da973faef">Product
-                                                    Name
-                                                    1 quantity</label>
                                                 <input type="number" class="" name="quantity" style="border: 1px solid rgb(245, 230, 230);
                                                     height: 1rem;
                                                     text-align: center;
@@ -135,7 +134,9 @@
                                                 <label class="screen-reader-text" for="plus_qty"> Plus Quantity</label>
                                                 <button type="button" href="" id="plus_qty" class="plus"
                                                     style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
-                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','+1','<%= x.totalPrice %>','<%= x.product_id.price %>','<%= total %>','sum')">+</button>
+                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','+1','<%= x.totalPrice %>','productPrice','sub-total','sum')">+</button>
+
+
                                             </td>
                                             <td id="<%= x.totalPrice %>">
                                                 <%= x.totalPrice %>
@@ -160,7 +161,7 @@
                                 <tbody>
                                     <tr>
                                         <th scope="row">SubTotal</th>
-                                        <td id="<%= total %>">
+                                        <td id="sub-total">
                                             <%= total %>
                                         </td>
                                     </tr>
@@ -243,3 +244,44 @@
     </body>
 
 </html>
+
+<!-- 
+function changeQuantity(proid, userID, count, totalP, pPrice, allP, sum) {
+    let quantity = parseInt(document.getElementById(proid).value);
+    let tP = parseInt(document.getElementById(totalP).innerText);
+    let pp = parseInt(document.getElementById(pPrice).innerText);
+    let ALLprice = parseInt(document.getElementById(allP).innerText);
+    let sumss = parseInt(document.getElementById(sum).innerText);
+    $.ajax({
+        url: '/change-product-q',
+        data: {
+            pro: proid,
+            user: userID,
+            count: count,
+            quantity: quantity,
+        },
+        method: 'post',
+        success: (response) => {
+            if (response.status) {
+                var num = parseInt(quantity) + parseInt(count);
+                if (parseInt(count) === 1) {
+                    var Psum = tP + pp;
+                    var ALLp = ALLprice + pp;
+                    var summm = sumss + pp;
+                } else {
+                    var Psum = tP - pp;
+                    var ALLp = ALLprice - pp;
+                    var summm = sumss - pp;
+                }
+                document.getElementById(proid).value = num;
+                document.getElementById(totalP).innerHTML = Psum;
+                document.getElementById(allP).innerHTML = ALLp;
+                document.getElementById(sum).innerHTML = summm;
+            }else{
+                alert("Out of Stock or You reach maximum");
+            }
+        }
+    })
+}    
+
+-->

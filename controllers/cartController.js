@@ -36,13 +36,13 @@ exports.addTocarts = async (req, res) => {
                 $inc: { "cart.$.qty": quantity, "cart.$.totalPrice": total }
             })
         }
-        if (quantity > equantity) {
-            mqty = equantity;
-            await product.updateOne({ "_id": pid }, { $inc: { qnumber: -mqty } });
-        } else {
-            mqty = equantity - quantity;
-            await product.updateOne({ "_id": pid }, { $set: { qnumber: mqty } });
-        }
+        // if (quantity > equantity) {
+        //     mqty = equantity;
+        //     // await product.updateOne({ "_id": pid }, { $inc: { qnumber: -mqty } });
+        // } else {
+        //     mqty = equantity - quantity;
+        //     // await product.updateOne({ "_id": pid }, { $set: { qnumber: mqty } });
+        // }
         res.redirect('/cart');
     } catch (error) {
         const statusCode = error.status || 500;
@@ -69,6 +69,7 @@ exports.processDelivery = async (req, res) => {
             }
         }
         let productsArray = productData.cart;
+        console.log(productsArray);
         let products = productsArray.map(data => ({
             product_id: data.product_id._id,
             qty: data.qty,
@@ -76,6 +77,11 @@ exports.processDelivery = async (req, res) => {
             status: 'pending',
             returned: false,
         }));
+        productsArray.map(data => {
+            product.updateOne({"_id":data.product_id._id},{$inc:{qnumber:-data.qty}}).then((respo)=>{
+                console.log(respo);
+            })
+        })
         let order = {
             products,
             totalamount: req.body.totalamount,
@@ -114,9 +120,9 @@ exports.cart = async (req, res) => {
 
 exports.changeQUA = async (req, res, next) => {
     try {
-        var count = req.body.count;
-        var proID = req.body.pro;
-        var quantity = req.body.quantity;
+        let count = req.body.count;
+        let proID = req.body.pro;
+        let quantity = req.body.quantity;
 
         if (count === '-1' && quantity === '1') {
             return res.json({ status: false })
@@ -124,10 +130,9 @@ exports.changeQUA = async (req, res, next) => {
         if (count === '+1') {
             var ccount = 1;
         }
-        var data = await product.findOne({ _id: proID });
-        console.log(data.qnumber);
+        let data = await product.findOne({ _id: proID });
         quantity = parseInt(req.body.quantity);
-        if (data.qnumber <= quantity && ccount === 1 && data.qnumber === 0) {
+        if (data.qnumber <= quantity && ccount === 1) {
             return res.json({ status: false })
         }
         count = parseInt(req.body.count);
@@ -137,10 +142,10 @@ exports.changeQUA = async (req, res, next) => {
         if (cartItem) {
             if (count === 1) {
                 var total = cartItem.productPrice;
-                await product.updateOne({ "_id": proID }, { $inc: { "qnumber": -1 } })
+                // await product.updateOne({ "_id": proID }, { $inc: { "qnumber": -1 } })
             } else {
                 var total = -cartItem.productPrice;
-                await product.updateOne({ "_id": proID }, { $inc: { "qnumber": 1 } })
+                // await product.updateOne({ "_id": proID }, { $inc: { "qnumber": 1 } })
             }
             await user.updateOne({ "_id": req.body.user, "cart.product_id": req.body.pro }, {
                 $inc: { "cart.$.qty": count, "cart.$.totalPrice": total }

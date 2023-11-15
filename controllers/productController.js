@@ -94,7 +94,6 @@ exports.updateNewSpecific = async (req, res) => {
                 });
             } else {
                 // If only one image is uploaded, keep the existing images and add the new one
-                img = req.body.pimage ? [...req.body.pimage] : [];
 
                 const randomName = generateRandomName();
                 const newImageName = randomName;
@@ -118,9 +117,12 @@ exports.updateNewSpecific = async (req, res) => {
                         price: req.body.pprice,
                         category: req.body.pcategory,
                         description: req.body.pdescription,
-                        image: img,
+                        
+                    },$push:{
+                        image: { $each: img } 
                     }
-                }
+                },
+    
             );
 
 

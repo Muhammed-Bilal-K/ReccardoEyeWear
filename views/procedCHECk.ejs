@@ -73,7 +73,7 @@
 
         </header>
         <!--Main layout-->
-        <main class="mt-5 pt-4">
+        <main class="pt-4">
             <div class="container">
                 <!-- Heading -->
                 <h2 class="my-5 text-center">Checkout Details</h2>
@@ -83,19 +83,20 @@
                         <!--Grid column-->
                         <div class="col-md-8 mb-4">
                             <!--Card-->
-                            <div class="card p-4">
+                            <div class="card p-4" style="margin-right: 100px; box-shadow: 6px 17px 26px #cdc4c4;">
                                 <!-- first data -->
-                                <h3>CUSTOMER INFORMATION</h3>
+                                <h5>CUSTOMER INFORMATION</h5>
                                 <label>Email Address</label>
                                 <div class="input-group mb-4">
-                                    <h2 style="font-size: 25px;"><%= emailData.email %></h2>
+                                    <h6><%= emailData.email %></h6>
                                 </div>
                                 <!-- first data -->
-                                <h3>BILLING DETAILS</h3>
+                                <h5>BILLING DETAILS</h5>
+                                <hr>
                                 <div class="row mb-3">
                                     <!--Grid column-->
                                     <h6>Select the Address</h4>
-                                        <select class="browser-default custom-select mb-3" name="address">
+                                        <select class="browser-default custom-select mb-3" name="address" required>
                                             <option>please select address</option>
                                             <% for( let i=0; i < address.length; i++ ) { %>
                                                 <option value="<%= address[i]._id %>">
@@ -112,8 +113,11 @@
                             </div>
                             <div class="form-outline mb-4">
                                 <hr />
-                                <h3>PAYMENT</h3>
-                                <div class="my-3">
+                                <h4 class="my-4">PAYMENT</h4>
+                                <div class="my-3" style="box-shadow: 3px 6px 26px #ffc4c4;
+                                padding: 20px;
+                                margin-right: 459px;
+                                border-radius: 13px;">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="radio"
                                             id="flexRadioDefault1" checked  value="Card"/>
@@ -231,7 +235,7 @@
                     <!-- Cart -->
 
                     <!-- Promo code -->
-                    <!-- <form class="card p-2">
+                    <form class="card p-2">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control" placeholder="Promo code" aria-label="Promo code"
                                     aria-describedby="button-addon2" />
@@ -240,7 +244,7 @@
                                     redeem
                                 </button>
                             </div>
-                        </form> -->
+                        </form>
                     <!-- Promo code -->
                 </div>
                 <!--Grid column-->

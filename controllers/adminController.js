@@ -110,6 +110,17 @@ exports.addCategoryPage = async (req, res) => {
     }
 }
 
+exports.deleteCategory = async (req, res) => {
+    try {
+        let categoryData = req.query.name;
+        await category.deleteOne({ name: categoryData }).then(() => {
+            res.redirect('/admin/products');
+        })
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
 
 exports.updatenewone = async (req, res) => {
     try {
@@ -190,9 +201,38 @@ exports.userCompDelet = async (req, res) => {
 
 exports.orderList = async (req, res) => {
     try {
-        // var addsData = await user.find({ "is_verified": 1, "is_blocked": 0 }).populate("orders.products.product_id");
-        // res.render('adminOrder', { FULLDATA: addsData });
-        res.render('admin/adminOrdersList');
+        let userOrders = await user.find({}).populate('orders.products.product_id');
+        let cartExist = userOrders.filter((data) => {
+            return data.orders.length != 0;
+        })
+        console.log(cartExist);
+        res.render('admin/adminOrdersList', { FULLDATA: cartExist });
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
+
+
+exports.orderView = async (req, res) => {
+    let id = req.query.id;
+    let userOrders = await user.findOne({ "_id": id }).populate('orders.products.product_id');
+    res.render('admin/adminEachOrdderView', { FULLDATA: userOrders.orders, Userid: id });
+}
+
+exports.orderStatus = async (req, res) => {
+    try {
+        let userid = req.query.userid;
+        let proid = req.query.proid;
+        let orderid = req.query.orderid;
+        let userData = await user.findOne({ "_id": userid }).populate('orders.products.product_id');
+        let result = userData.orders.find((data) => data._id == orderid);
+        let statusData = result.products.find((datas) => datas._id == proid);
+        if (statusData.status == 'pending') {
+            statusData.status = 'Delivered'
+        }
+        await userData.save();
+        res.redirect(`/admin/view/order?id=${userid}`);
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
