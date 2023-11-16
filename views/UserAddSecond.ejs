@@ -56,7 +56,9 @@
 	<!-- CONTENT -->
 	<section id="content" style="margin: 3rem 9rem;">
 		<% for( let i=0; i < addList.length; i++ ) { %>
-			<div class="card mb-4" style="width: 60rem;">
+			<div class="card mb-4" style="width: 60rem;
+			border-radius: 15px;
+			box-shadow: 6px 3px 21px #909090;">
 				<div class="card-body">
 					<h5 class="card-title"><%= addList[i].name %></h5>
 					<h6 class="card-subtitle mb-2 text-muted"><%= addList[i].email %></h6>

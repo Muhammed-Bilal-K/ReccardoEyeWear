@@ -54,7 +54,7 @@ exports.addaProducts = async (req, res) => {
         const productDetail = new product({
             name: req.body.pname,
             qnumber: parseInt(req.body.pquantity),
-            price: req.body.pprice,
+            price: parseInt(req.body.pprice),
             category: req.body.pcategory,
             description: req.body.pdescription,
             image: img,
@@ -114,7 +114,7 @@ exports.updateNewSpecific = async (req, res) => {
                     $set: {
                         name: req.body.pname,
                         qnumber: parseInt(req.body.pquantity),
-                        price: req.body.pprice,
+                        price: parseInt(req.body.pprice),
                         category: req.body.pcategory,
                         description: req.body.pdescription,
                         

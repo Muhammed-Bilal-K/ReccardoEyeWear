@@ -5,6 +5,7 @@ var otps = require('../models/otpdb');
 var nodemailer = require('nodemailer');
 var otpverifymake = null;
 var emailOtpCheck = null;
+var passChangeEmail = null;
 
 
 const sendVerifyMail = async (email) => {
@@ -88,10 +89,21 @@ exports.otpResend = async (req, res) => {
     }
 }
 
+exports.forgetPassword = async (req, res) => {
+    try {
+        res.render('user/userForgetPadd');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
 
 exports.homepage = async (req, res) => {
     try {
-        res.render('home', { logCheck: req.session.userData });
+        await category.find({}).then((categoryData) => {
+            console.log(categoryData);
+            res.render('home', { logCheck: req.session.userData, categoryList: categoryData });
+        })
     } catch (error) {
         console.log('homepage');
         const statusCode = error.status || 500;
@@ -102,14 +114,19 @@ exports.homepage = async (req, res) => {
 exports.womencate = async (req, res) => {
     try {
         var search = '';
+        var limit = 4;
+        var page = 1;
         if (req.query.search) {
             search = req.query.search;
         }
 
-        let categoryData = await category.findOne({name:'woman'});
-                    console.log(categoryData);
+        if (req.query.page) {
+            page = req.query.page;
+        }
+
+        let categoryData = await category.findOne({ name: 'woman' });
         var AllProduct = await product.find({
-            category:"woman",
+            category: "woman",
             $or: [
                 {
                     name: {
@@ -124,8 +141,31 @@ exports.womencate = async (req, res) => {
                     }
                 }
             ]
+        }).limit(limit * 1).skip((page - 1) * limit).exec();
+
+        var count = await product.find({
+            category: "woman",
+            $or: [
+                {
+                    name: {
+                        $regex: '.*' + search + '.*',
+                        $options: 'i'
+                    }
+                },
+                {
+                    price: {
+                        $regex: '.*' + search + '.*',
+                        $options: 'i'
+                    }
+                }
+            ]
+        }).countDocuments();
+
+        res.render('men', {
+            productDeatil: AllProduct, categoryList: categoryData, totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            search,
         });
-        res.render('men', { productDeatil: AllProduct ,categoryList : categoryData});
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -134,31 +174,80 @@ exports.womencate = async (req, res) => {
 
 exports.mencate = async (req, res) => {
     try {
-        var search = '';
-        if (req.query.search) {
-            search = req.query.search;
+        var limit = 6;
+        var page = 1;
+        let categoryData = await category.findOne({ name: 'men' });
+        if (req.query.search || req.query.price || req.query.page) {
+            var search = req.query.search;
+            page = req.query.page;
+            if (req.query.price) {
+                var price = req.query.price;
+                if (price != 'all') {
+                    var [minPrice, maxPrice] = price.split('-').map(Number);
+                } else {
+                    var minPrice = 0;
+                    var maxPrice = 1000;
+                }
+            }
+            if (search) {
+                var AllProduct = await product.find({
+                    category: "men",
+                    $or: [
+                        {
+                            name: {
+                                $regex: '.*' + search + '.*',
+                                $options: 'i'
+                            }
+                        },
+                    ]
+                }).limit(limit * 1).skip((page - 1) * limit);
+
+                var count = await product.find({
+                    category: "men",
+                    $or: [
+                        { name: { $regex: '.*' + search + '.*', $options: 'i' } },
+                    ]
+                }).countDocuments();
+
+            } else {
+                var AllProduct = await product.find({
+                    category: "men",
+                    $or: [
+                        {
+                            price: {
+                                $gte: minPrice, $lte: maxPrice
+                            }
+                        },
+                    ]
+                }).limit(limit * 1).skip((page - 1) * limit);
+
+                var count = await product.find({
+                    category: "men",
+                    $or: [
+                        {
+                            price: {
+                                $gte: minPrice, $lte: maxPrice
+                            }
+                        },
+                    ]
+                }).countDocuments();
+            }
+        } else {
+            var AllProduct = await product.find({ category: "men" });
+            console.log(AllProduct);
         }
 
-        let categoryData = await category.findOne({name:'men'});
-            console.log(categoryData);
-        var AllProduct = await product.find({
-            category:"men",
-            $or: [
-                {
-                    name: {
-                        $regex: '.*' + search + '.*',
-                        $options: 'i'
-                    }
-                },
-                {
-                    price: {
-                        $regex: '.*' + search + '.*',
-                        $options: 'i'
-                    }
-                }
-            ]
+
+        console.log(AllProduct);
+
+        res.render('men', {
+            productDeatil: AllProduct,
+            categoryList: categoryData,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            search,
+            price,
         });
-        res.render('men', { productDeatil: AllProduct , categoryList : categoryData});
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -168,11 +257,11 @@ exports.mencate = async (req, res) => {
 
 exports.loginpage = async (req, res) => {
     try {
-        res.render('login', { errMSG: req.session.loginErr, is_veri: req.session.is_verified, is_block: req.session.is_blocked },(err,html)=>{
+        res.render('login', { errMSG: req.session.loginErr, is_veri: req.session.is_verified, is_block: req.session.is_blocked }, (err, html) => {
             if (err) {
                 console.log(err);
                 res.send('internal error');
-            }else{
+            } else {
                 delete req.session.loginErr;
                 res.send(html);
             }
@@ -292,8 +381,6 @@ exports.createloginpage = async (req, res) => {
             req.session.login = true;
             req.session.userData = loginVerify._id;
             res.redirect('/');
-        } else {
-            throw new Error('Invalid Passowrd or Email');
         }
     } catch (error) {
         const statusCode = error.status || 500;
@@ -301,6 +388,70 @@ exports.createloginpage = async (req, res) => {
     }
 }
 
+exports.forgetPassChange = async (req, res) => {
+    try {
+        let checkExistEmial = req.body.email;
+        await user.findOne({ email: checkExistEmial }).then((respo) => {
+            if (respo) {
+                console.log(respo.email);
+                passChangeEmail = respo.email;
+                sendVerifyMail(passChangeEmail);
+                res.render('user/passOtp', { error: null });
+            } else {
+                res.redirect('/forgetpassword');
+            }
+        })
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
+
+exports.passOtpCheck = async (req, res) => {
+    try {
+        let veriOtp = req.body.otp;
+        if (!veriOtp) {
+            throw new Error('Otp empty');
+        } else {
+            let otpverify = await otps.findOne({ otps: veriOtp });
+            if (otpverify) {
+                let { expiresAt } = otpverify;
+                let savedOtp = otpverify.otps;
+                if (expiresAt < Date.now()) {
+                    await otps.deleteOne({ otps: savedOtp });
+                    throw new Error('otp expired');
+                } else {
+                    otpverify = null;
+                    emailOtpCheck = null;
+                    res.render('user/ForgetUserPass');
+                }
+            } else {
+                throw new Error('Invalid OTP');
+            }
+        }
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
+
+exports.setPassword = async (req, res) => {
+    try {
+        let p = req.body.password;
+        let cp = req.body.confirmPassword;
+        console.log(passChangeEmail);
+        console.log(p);
+        console.log(cp);
+        if (p == cp) {
+            await user.updateOne({ email: passChangeEmail }, {$set:{password:cp}}).then(() => {
+                res.redirect('/login');
+            })
+        }
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
 
 exports.newAddress = async (req, res) => {
     var userId = req.session.userData;

@@ -14,40 +14,20 @@
 
 <body>
 
-    <%- include('partials/__signup__') %>
+    <%- include('../partials/__signup__') %>
 
-    <% if (errMSG) { %>
-        <div style="text-align: center; margin: 0px 36rem;">
-            <h3 class="alert alert-info" role="alert" style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">no user</h3>
-        </div>
-    <% } %>
-    <% if (is_veri) { %>
-        <div style="text-align: center; margin: 0px 36rem;">
-            <h3 class="alert alert-info" role="alert" style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">user account not verified yet.</h3>
-        </div>
-    <% } %>
-    <% if (is_block) { %>
-        <div style="text-align: center; margin: 0px 36rem;">
-            <h3 class="alert alert-info" role="alert" style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">your account is suspended</h3>
-        </div>
-    <% } %>
     
-        <form action="/login" method="post" style="box-shadow: 12px 23px 45px #939393; border-radius: 25px;">
-            <h1 style="font-size: 3rem;">Login</h1>
+    
+        <form action="/forgetemailverify" method="post" style="box-shadow: 7px 8px 27px #cbc0b2;">
+            <h5 style="font-size: 1rem;">Enter Your Mail</h5>
             <div><label for="email">Email:</label>
-                <input style="border-radius: 16px;" type="email" name="email" id="email" required>
+                <input type="email" name="email" id="email" required>
                 <!-- pattern="[A-Za-z0-9]*[@](gmail)*[\.](com)$" -->
             </div>
-            <div>
-                <label for="password">Password:</label> <input style="border-radius: 16px;" type="password" name="password" id="Password" required>
-                <p style="color: black; margin-top: 10px;">forget password? <a href="/forgetpassword">click</a></p>
-            </div>
-            <div><input style="border-radius: 30px;" type="submit" value="Login"></div>
-            <!-- onclick=" return confirm('delete')" -->
-            <p style="color: #bf360c;">you don't have an account ? <a class="loginPagesSty" href="/signup">singup</a></p>
+            <div><input type="submit" value="Get OTP"></div>
         </form>
 
-        <!-- <%- include('partials/__signupfooter__') %> -->
+        <!-- <%- include('../partials/__signupfooter__') %> -->
             <script id="astra-theme-js-js-extra">
                 var astra = { "break_point": "921", "isRtl": "", "is_scroll_to_id": "", "is_scroll_to_top": "", "is_header_footer_builder_active": "1", "edit_post_url": "https:\/\/websitedemos.net\/eyewear-store-04\/wp-admin\/post.php?post={{id}}&action=edit", "ajax_url": "https:\/\/websitedemos.net\/eyewear-store-04\/wp-admin\/admin-ajax.php", "shop_infinite_count": "2", "shop_infinite_total": "0", "shop_pagination": "infinite", "shop_infinite_scroll_event": "scroll", "shop_no_more_post_message": "No more products to show.", "checkout_prev_text": "Back to my details", "checkout_next_text": "Proceed to payment", "show_comments": "Show Comments", "shop_quick_view_enable": "on-image", "shop_quick_view_stick_cart": "1", "shop_quick_view_auto_height": "1", "woo_cart_empty_featured_product": "", "single_product_qty_ajax_nonce": "c48c5b3727", "single_product_ajax_add_to_cart": "1", "is_cart": "", "is_single_product": "", "view_cart": "View cart", "cart_url": "https:\/\/websitedemos.net\/eyewear-store-04\/cart\/", "checkout_url": "https:\/\/websitedemos.net\/eyewear-store-04\/checkout\/", "add_to_cart_options_single": "rt_add_to_cart", "is_astra_pro": "1" };
             </script>

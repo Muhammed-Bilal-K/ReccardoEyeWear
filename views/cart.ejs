@@ -84,7 +84,8 @@
                 <div class="EachSection"
                     style="display: flex;justify-content: center;gap: 2rem;padding: 4rem 3rem 2rem;">
                     <div>
-                        <h3>Shopping cart</h3>
+                        <h3 style="font-weight: 800;
+                        ">Shopping cart</h3>
                     </div>
                     <!-- <div>
                         <h3>2 shopping cart</h3>
@@ -101,22 +102,26 @@
                         <div class="col-md-8" style="text-align: center;">
                             <table class="table">
                                 <thead class="thead-light">
-                                    <tr>
-                                        <th style="background-color: #f1f1f1;" scope="col">Product</th>
-                                        <th style="background-color: #f1f1f1;" scope="col">Price</th>
-                                        <th style="background-color: #f1f1f1;" scope="col">Quantity</th>
-                                        <th style="background-color: #f1f1f1;" scope="col">Total</th>
-                                        <th style="background-color: #f1f1f1;" scope="col"></th>
+                                    <tr style="border: 1px solid burlywood;">
+                                        <th style="background-color: #e7e7e7" scope="col">Product</th>
+                                        <th style="background-color: #e7e7e7" scope="col">Price</th>
+                                        <th style="background-color: #e7e7e7" scope="col">Quantity</th>
+                                        <th style="background-color: #e7e7e7" scope="col">Total</th>
+                                        <th style="background-color: #e7e7e7" scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% for(var x of userCart) { %>
-                                        <tr>
+                                        <tr style="border: 1px solid burlywood;">
                                             <th scope="row">
                                                 <%= x.product_id.name %>
+                                                <img style="margin-left: 12px;
+                                                border: 1px solid #80c7af;
+                                                width: 50px;
+                                                border-radius: 16px;" src="/uploaded/<%= x.product_id.image[0] %>" alt="" srcset="">
                                             </th>
                                             <td id="productPrice">
-                                                <%= x.product_id.price %>
+                                                $<%= x.product_id.price %>
                                             </td>
                                             <td>
 
@@ -139,7 +144,7 @@
 
                                             </td>
                                             <td id="<%= x.totalPrice %>">
-                                                <%= x.totalPrice %>
+                                                $<%= x.totalPrice %>
                                             </td>
                                             <td>
                                                 <form action="/cart/delete/<%= x._id %>" method="post">
@@ -154,26 +159,38 @@
                         <div class="col-md-4" style="text-align: center;">
                             <table class="table">
                                 <thead>
-                                    <tr>
-                                        <th style="background-color: #f1f1f1;" scope="col">ALL PRICE</th>
+                                    <tr style="border: 1px solid #a8a2a2">
+                                        <th colspan="2" style="background-color: #e7e7e7;" scope="col">ALL PRICE</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr style="border: 1px solid burlywood;">
                                         <th scope="row">SubTotal</th>
                                         <td id="sub-total">
-                                            <%= total %>
+                                            $<%= total %>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr style="border: 1px solid burlywood;">
+                                        <th scope="row">Shipping Charge</th>
+                                        <td id="sub-total">
+                                            $0
+                                        </td>
+                                    </tr>
+                                    <tr style="border: 1px solid burlywood;">
                                         <th scope="row">Total</th>
                                         <td id="sum">
-                                            <%= total %>
+                                            $<%= total %>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <a style="color: #7f2525;text-decoration: none;font-size: 14px;font-weight: 700;" type="submit" href="/cart/procesCheck">PROCEED TO CHECKOUT</a>
+                            <a style="color: #291818;
+                            text-decoration: none;
+                            font-size: 14px;
+                            background: #cbbda7;
+                            font-weight: 700;
+                            border-radius: 17px;
+                            padding: 16px 38px;" type="submit" href="/cart/procesCheck">PROCEED TO CHECKOUT</a>
                         </div>
                     </div>
                 <% } %>    

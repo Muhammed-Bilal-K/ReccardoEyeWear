@@ -12,14 +12,14 @@
 </head>
 
 <body>
-    <%- include('partials/__otp__') %>
+    <%- include('../partials/__otp__') %>
         <% if (error) { %>
-            <p style="color: red;text-align: center;">
+            <p style="color: red;">
                 <%= error %>
             </p>
             <% } %>
-                <form action="/otp" method="post">
-                    <h1 style="font-size: 3rem;">Email Verification</h1>
+                <form action="/passOtpverify" method="post">
+                    <h5 style="font-size: 1rem;">Email Verification</h5>
                     <div style="text-align: center;">
                         <label for="otp">OTP</label>
                         <input type="number" name="otp" id="Password" required>

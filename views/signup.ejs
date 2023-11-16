@@ -26,23 +26,23 @@
             <h3 class="alert alert-info" role="alert" style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">Password Not Match</h3>
         </div>
     <% } %>
-        <form action="/signup/verification" method="post" style="box-shadow: 7px 8px 27px #cbc0b2;">
+        <form action="/signup/verification" method="post" style="box-shadow: 7px 8px 27px #cbc0b2;margin-top: -30px;">
             <h1 style="font-size: 3rem;">Sign Up</h1>
             <div>
                 <label for="name">Name:</label>
-                <input type="text" name="name" id="name" required style="height: 35px;">
+                <input type="text" name="name" id="name" required style="height: 35px;border-radius: 16px;">
             </div>
             <div><label for="email">Email:</label>
-                <input type="email" name="email" id="email" required style="height: 35px;">
+                <input type="email" name="email" id="email" required style="height: 35px;border-radius: 16px;">
                 <!-- pattern="[A-Za-z0-9]*[@](gmail)*[\.](com)$" -->
             </div>
             <div><label for="phone_number">Phone Number: </label><input type="tel" name="p_number" id="phone_number"
-                pattern="[0-9]{10}" required title="Please enter a 10-digit phone number" style="height: 35px;"></div>
+                pattern="[0-9]{10}" required title="Please enter a 10-digit phone number" style="height: 35px; border-radius: 16px;"></div>
             <div>
-                <label for="password">Password:</label> <input type="password" name="password" id="Password" required>
+                <label for="password">Password:</label> <input type="password" name="password" id="Password" required style="border-radius: 16px;">
             </div>
             <div><label for="confirm_password">Confirm Password:</label> <input type="password" name="c_password"
-                    id="confirm_password" required style="height: 35px;"></label></div>
+                    id="confirm_password" required style="height: 40px;border-radius: 16px;"></label></div>
             <div><input type="submit" value="Verify Now" style="border-radius: 30px;margin-top: 15px;"></div>
             <p style="color: #bf360c;">already have an account ? <a class="loginPagesSty" href="/login">login</a></p>
         </form>

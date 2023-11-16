@@ -10,7 +10,7 @@ const ProductSchema = new mongoose.Schema({
         required: 'This field is required.'
     },
     price:{
-        type: String,
+        type: Number,
         required: 'This field is required.'
     },
     category: {

@@ -58,7 +58,9 @@
 		<h2>Order History</h2>
 		<hr style="width: 12rem;">
 		<% Alldata.forEach(data=> { %>
-			<div class="card mb-4" style="width: 60rem;">
+			<div class="card mb-4" style="width: 60rem;
+			border-radius: 15px;
+			box-shadow: 6px 3px 25px #909090;">
 				<div class="card-body">
 					<div class="container" style="padding: 3rem 2rem;">
 						<% data.products.forEach(sdata=> { %>
@@ -73,7 +75,9 @@
 								</div>
 								<div class="col">
 									<div>
-										<h4><img style="width: 65px; height: 65px;"
+										<h4><img style="width: 65px; height: 65px; margin-left: 12px;
+											border: 1px solid #80c7af;
+											border-radius: 16px"
 												src="/uploaded/<%= sdata.product_id.image[0] %>" alt="" srcset=""></h4>
 									</div>
 								</div>

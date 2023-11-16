@@ -21,6 +21,11 @@ router.get('/product-category/women', userController.womencate);
 router.get('/product-category/men', userController.mencate);
 
 /* GET user' homepage listing. */
+// router.get('/product-category', userController.mencate);
+
+router.get('/forgetpassword', userController.forgetPassword);
+
+/* GET user' homepage listing. */
 router.get('/product-category/women/view/:id', userMiddleware.loggedIn , userController.eachProductv);
 
 /* GET user' homepage listing. */
@@ -62,6 +67,12 @@ router.post('/signup/verification' , userController.createsignuppage);
 
 /* POST user's signuppage listing. */
 router.post('/otp', userController.otpverifiypage);
+
+router.post('/forgetemailverify', userController.forgetPassChange);
+
+router.post('/passOtpverify', userController.passOtpCheck);
+
+router.post('/setNewPassword', userController.setPassword);
 
 router.post('/resendOtp', userController.otpResend);
 
