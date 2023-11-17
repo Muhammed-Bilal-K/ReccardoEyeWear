@@ -49,6 +49,7 @@ const USERSSchema = new mongoose.Schema({
             city: String,
             state: String,
             zipcode: Number,
+            phone:Number,
         }]
     },
     orders:[{
@@ -82,7 +83,8 @@ const USERSSchema = new mongoose.Schema({
             address: String,
             city: String,
             state:String,
-            zipcode: Number
+            zipcode: Number,
+            phone:Number,
         },
     }]
 });

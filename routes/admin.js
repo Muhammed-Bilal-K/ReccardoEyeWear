@@ -61,22 +61,22 @@ router.post('/admin/addProducts', adminMiddleware.loggedIn, productController.ad
 router.post('/Productupdate/:id', adminMiddleware.loggedIn, productController.updateNewSpecific);
 
 
-router.get('/unlist', productController.unlistProduct);
+router.get('/unlist',  adminMiddleware.loggedIn, productController.unlistProduct);
 
-router.get('/list', productController.listProduct)
+router.get('/list',  adminMiddleware.loggedIn, productController.listProduct)
 
 
 /* POST user's loginppage listing. */
 router.post('/updateUser/:id', adminMiddleware.loggedIn, adminController.userUpdateDetail);
 
 /* POST user's loginppage listing. */
-router.post('/admin/addCategory', adminController.addCategory);
+router.post('/admin/addCategory',  adminMiddleware.loggedIn, adminController.addCategory);
 
 /* POST user's loginppage listing. */
 router.post('/deletecat', adminController.deleteCa);
 
 /* POST user's loginppage listing. */
-router.post('/admin/dorder', adminController.deleOrder);
+router.post('/admin/dorder',  adminMiddleware.loggedIn, adminController.deleOrder);
 
 
 

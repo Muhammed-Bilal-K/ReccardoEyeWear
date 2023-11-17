@@ -175,7 +175,7 @@ exports.homepage = async (req, res) => {
 
 exports.womencate = async (req, res) => {
     try {
-        var limit = 6;
+        var limit = 4;
         var page = 1;
         let categoryData = await category.findOne({ name: 'woman' });
         if (req.query.search || req.query.price || req.query.page) {
@@ -234,8 +234,14 @@ exports.womencate = async (req, res) => {
                 }).countDocuments();
             }
         } else {
-            var AllProduct = await product.find({ category: "woman" });
-            console.log(AllProduct);
+            limit = 4;
+            page = 1 ;
+            if (req.query.page) {
+                page = req.query.page;
+            }
+
+            var AllProduct = await product.find({ category: "woman" }).limit(limit * 1).skip((page - 1) * limit).exec();
+            var count = await product.find({ category: "woman" }).countDocuments();
         }
 
 
@@ -257,10 +263,13 @@ exports.womencate = async (req, res) => {
 
 exports.mencate = async (req, res) => {
     try {
-        var limit = 6;
+        var limit = 4;
         var page = 1;
         let categoryData = await category.findOne({ name: 'men' });
-        if (req.query.search || req.query.price || req.query.page) {
+
+
+
+        if (req.query.search || req.query.price ) {
             var search = req.query.search;
             page = req.query.page;
             if (req.query.price) {
@@ -316,12 +325,15 @@ exports.mencate = async (req, res) => {
                 }).countDocuments();
             }
         } else {
-            var AllProduct = await product.find({ category: "men" });
-            console.log(AllProduct);
+            limit = 4;
+            page = 1 ;
+            if (req.query.page) {
+                page = req.query.page;
+            }
+
+            var AllProduct = await product.find({ category: "men" }).limit(limit * 1).skip((page - 1) * limit).exec();
+            var count = await product.find({ category: "men" }).countDocuments();
         }
-
-
-        console.log(AllProduct);
 
         res.render('men', {
             productDeatil: AllProduct,
@@ -464,6 +476,8 @@ exports.createloginpage = async (req, res) => {
             req.session.login = true;
             req.session.userData = loginVerify._id;
             res.redirect('/');
+        } else {
+            res.redirect('/login');
         }
     } catch (error) {
         const statusCode = error.status || 500;
@@ -526,7 +540,7 @@ exports.setPassword = async (req, res) => {
         console.log(p);
         console.log(cp);
         if (p == cp) {
-            await user.updateOne({ email: passChangeEmail }, {$set:{password:cp}}).then(() => {
+            await user.updateOne({ email: passChangeEmail }, { $set: { password: cp } }).then(() => {
                 res.redirect('/login');
             })
         }
@@ -537,6 +551,7 @@ exports.setPassword = async (req, res) => {
 }
 
 exports.newAddress = async (req, res) => {
+    console.log(req.body);
     var userId = req.session.userData;
     var UserAddss = await user.findOne({ "_id": userId });
     try {
@@ -550,7 +565,8 @@ exports.newAddress = async (req, res) => {
                         address: req.body.address,
                         city: req.body.city,
                         state: req.body.state,
-                        zipcode: req.body.zipcode
+                        zipcode: req.body.zipcode,
+                        phone: req.body.phone,
                     }
                 }
             })
@@ -579,6 +595,7 @@ exports.updateAdds = async (req, res) => {
                     'address.$.city': req.body.city,
                     'address.$.state': req.body.state,
                     'address.$.zipcode': req.body.zipcode,
+                    'address.$.phone': req.body.phone,
                 }
             })
         } else {
@@ -599,6 +616,7 @@ exports.deleteAdds = async (req, res) => {
         let addsList = UserAddss.address.find(data => data._id.toString() === addID);
         if (addsList) {
             await user.updateOne({ "_id": userId }, { $pull: { "address": { "_id": addID } } });
+            res.redirect('/settings/addrs');
         }
     } catch (error) {
         const statusCode = error.status || 500;
@@ -622,7 +640,7 @@ exports.deleteCartItem = async (req, res) => {
 }
 
 
-exports.successPage = async (req,res) => {
+exports.successPage = async (req, res) => {
     res.render('OrderComplete');
 }
 

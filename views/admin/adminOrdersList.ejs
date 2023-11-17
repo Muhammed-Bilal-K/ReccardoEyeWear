@@ -15,8 +15,8 @@
                         <thead>
                             <tr>
                                 <th>User</th>
-                                <th>Date Order</th>
-                                <th>Status</th>
+                                <th>Mail</th>
+                                <!-- <th>Status</th> -->
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -24,14 +24,14 @@
                             <% for( let i = 0; i < FULLDATA.length; i++ ) { %>
                                 <tr>
                                     <td>
-                                        <img src="img/people.png">
+                                        <!-- <img src="img/people.png"> -->
                                         <p><%= FULLDATA[i].name %></p>
                                     </td>
-                                    <td>01-10-2021</td>
-                                    <td>01-10-2021</td>
-                                    <td><span class="status pending">pending</span>
+                                    <td><%= FULLDATA[i].email %></td>
+                                    <!-- <td></td> -->
+                                    <!-- <td><span class="status pending">pending</span>
                                         <span class="status completed">Completed</span>
-                                    </td>
+                                    </td> -->
                                     <td><span class="status completed"><a style="color: wheat;" href="/admin/view/order?id=<%= FULLDATA[i]._id %>">View</a></span></td>
                                 </tr>
                             <% } %>

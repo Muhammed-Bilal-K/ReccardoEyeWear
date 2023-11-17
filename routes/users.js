@@ -55,7 +55,7 @@ router.get('/settings/useradd/update/:id', userMiddleware.loggedIn , userControl
 /* GET user' homepage listing. :id*/
 router.get('/settings/useradd/delete/:id', userMiddleware.loggedIn , userController.deleteAdds);
 
-router.get('/ordersuccess', userController.successPage);
+router.get('/ordersuccess',  userController.successPage);
 
 /* GET user' homepage listing. */
 router.get('/logout', userController.userlogout);

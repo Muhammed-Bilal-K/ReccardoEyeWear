@@ -55,6 +55,7 @@
 
 	<!-- CONTENT -->
 	<section id="content" style="margin: 3rem 9rem;">
+		<h2 style="padding-bottom: 2rem;">User Address</h2>
 		<% for( let i=0; i < addList.length; i++ ) { %>
 			<div class="card mb-4" style="width: 60rem;
 			border-radius: 15px;
@@ -63,7 +64,7 @@
 					<h5 class="card-title"><%= addList[i].name %></h5>
 					<h6 class="card-subtitle mb-2 text-muted"><%= addList[i].email %></h6>
 					<h6 class="card-subtitle mb-2 text-muted"><%= addList[i].select %></h6>
-					<p class="card-text"> <%= addList[i].address %> , <%= addList[i].city %> , <%= addList[i].state %> , <%= addList[i].zipcode %> </p>
+					<p class="card-text"> <%= addList[i].address %> , <%= addList[i].city %> , <%= addList[i].state %> , <%= addList[i].zipcode %> <%= addList[i].phone %></p>
 					<!-- idid -->
 					<a href="/settings/useradd/update/<%= addList[i]._id %>" class="card-link">Edit</a>
 					<a href="/settings/useradd/delete/<%= addList[i]._id %>" class="card-link">Delete</a>

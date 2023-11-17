@@ -70,7 +70,8 @@ exports.processDelivery = async (req, res) => {
                 address: addres.address,
                 city: addres.city,
                 state: addres.state,
-                zipcode: addres.zipcode
+                zipcode: addres.zipcode,
+                phone:addres.phone
             }
         }
         let productsArray = productData.cart;
@@ -94,8 +95,7 @@ exports.processDelivery = async (req, res) => {
             });
 
             productsArray.map(data => {
-                product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then((respo) => {
-                    console.log(respo);
+                product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then(() => {
                 })
             })
             let order = {
@@ -319,7 +319,7 @@ exports.processDelivery = async (req, res) => {
 
 
 exports.deliveredOnline = async (req,res) =>{
-    console.log(req.body);
+    console.log(req.body,'hi');
 }
 
 
@@ -390,7 +390,6 @@ exports.orderProceed = async (req, res) => {
         var count = 0;
         var emailData = await user.findOne({ "_id": userId }, { "email": 1 });
         var allDeta = await user.findOne({ "_id": userId }).populate('cart.product_id');
-        console.log(allDeta.address);
         var f = allDeta.cart;
         for (var x of f) {
             sumP = sumP + x.totalPrice;

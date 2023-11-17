@@ -172,7 +172,8 @@ exports.blockUser = async (req, res) => {
 exports.userDetailsE = async (req, res) => {
     try {
         let uid = req.params.id;
-        let userSpec = await user.find({ "_id": uid });
+        let userSpec = await user.findOne({ "_id": uid });
+        console.log(userSpec);
         // if (userSpec.is_blocked === 0) {
         //     var access = 'unblock';
         // } else {
@@ -180,7 +181,7 @@ exports.userDetailsE = async (req, res) => {
         // }
         console.log(userSpec);
         // res.render('adminuserDetail', { userSpec: userSpec, access: access });
-        res.render('adminuserDetail');
+        res.render('admin/adminUserView',{userSpec: userSpec});
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
