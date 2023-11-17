@@ -55,6 +55,8 @@ router.get('/settings/useradd/update/:id', userMiddleware.loggedIn , userControl
 /* GET user' homepage listing. :id*/
 router.get('/settings/useradd/delete/:id', userMiddleware.loggedIn , userController.deleteAdds);
 
+router.get('/ordersuccess', userController.successPage);
+
 /* GET user' homepage listing. */
 router.get('/logout', userController.userlogout);
 
@@ -91,5 +93,7 @@ router.post('/user/addNew/:id', userMiddleware.loggedIn, userController.updateAd
 router.post('/cart/delete/:id', userController.deleteCartItem);
 
 router.post('/getAdd', cartController.processDelivery)
+
+router.post('/verify-payment', cartController.deliveredOnline)
 
 module.exports = router;

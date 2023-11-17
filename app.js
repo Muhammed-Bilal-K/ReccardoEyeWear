@@ -1,17 +1,18 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
 const session = require('express-session');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var fileUpload = require('express-fileupload');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
+let fileUpload = require('express-fileupload');
+let sharp = require('sharp');
 
 require('nocache');
 require('dotenv').config();
 require('./config/database');
 
-var usersRouter = require('./routes/users');
-var adminRouter = require('./routes/admin');
+let usersRouter = require('./routes/users');
+let adminRouter = require('./routes/admin');
 
 var app = express();
 

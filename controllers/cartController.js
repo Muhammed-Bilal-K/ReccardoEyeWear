@@ -1,5 +1,10 @@
 let user = require('../models/usersdb');
 let product = require('../models/productdb');
+const Razorpay = require('razorpay');
+var instance = new Razorpay({
+    key_id: 'rzp_test_w6dIwCMt6fH2NS',
+    key_secret: 'enJXg6YSPYMvparSvXKmiWUG',
+});
 
 exports.addTocarts = async (req, res) => {
     let userId = req.session.userData;
@@ -69,7 +74,7 @@ exports.processDelivery = async (req, res) => {
             }
         }
         let productsArray = productData.cart;
-        console.log(productsArray);
+        // console.log(productsArray);
         let products = productsArray.map(data => ({
             product_id: data.product_id._id,
             qty: data.qty,
@@ -77,28 +82,246 @@ exports.processDelivery = async (req, res) => {
             status: 'pending',
             returned: false,
         }));
-        productsArray.map(data => {
-            product.updateOne({"_id":data.product_id._id},{$inc:{qnumber:-data.qty}}).then((respo)=>{
-                console.log(respo);
+
+        if (req.body.paymentmethod != 'COD') {
+            
+            const amountInPaise = Math.round(req.body.totalamount * 100);
+            const razorpayOrder = await instance.orders.create({
+                amount: amountInPaise,
+                currency: 'INR', // Update with your currency
+                receipt: '' + new Date().getTime(),
+                payment_capture: 1, // Auto capture payment
+            });
+
+            productsArray.map(data => {
+                product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then((respo) => {
+                    console.log(respo);
+                })
             })
-        })
-        let order = {
-            products,
-            totalamount: req.body.totalamount,
-            paymentmethod: req.body.radio,
-            address,
+            let order = {
+                products,
+                totalamount: req.body.totalamount,
+                paymentmethod: req.body.paymentmethod,
+                address,
+            }
+            await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+            productData.cart = [];
+            await productData.save();
+
+            res.json({ status: true, razorpay_order_id: razorpayOrder.id });
+
+        }else{
+
+            productsArray.map(data => {
+                product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then((respo) => {
+                    console.log(respo);
+                })
+            })
+            let order = {
+                products,
+                totalamount: req.body.totalamount,
+                paymentmethod: req.body.paymentmethod,
+                address,
+            }
+            await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+            productData.cart = [];
+            await productData.save();
+            res.json({ codSuccuss: true })
         }
-        await user.updateOne({ "_id": userID }, { $push: { orders: order } });
-        productData.cart = [];
-        await productData.save();
-        res.render('OrderComplete');
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
     }
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+
+// exports.processDelivery = async (req, res) => {
+//     try {
+//         let userID = req.session.userData;
+//         let productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
+//         let orderadd = productData.address;
+//         const addres = orderadd.find(add => add._id.equals(req.body.address));
+//         if (addres) {
+//             var address = {
+//                 name: addres.name,
+//                 email: addres.email,
+//                 country: addres.select,
+//                 address: addres.address,
+//                 city: addres.city,
+//                 state: addres.state,
+//                 zipcode: addres.zipcode
+//             }
+//         }
+//         let productsArray = productData.cart;
+//         console.log(productsArray);
+//         let products = productsArray.map(data => ({
+//             product_id: data.product_id._id,
+//             qty: data.qty,
+//             price: data.totalPrice,
+//             status: 'pending',
+//             returned: false,
+//         }));
+//         productsArray.map(data => {
+//             product.updateOne({"_id":data.product_id._id},{$inc:{qnumber:-data.qty}}).then((respo)=>{
+//                 console.log(respo);
+//             })
+//         })
+//         let order = {
+//             products,
+//             totalamount: req.body.totalamount,
+//             paymentmethod: req.body.paymentmethod,
+//             address,
+//         }
+//         await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+//         productData.cart = [];
+//         await productData.save();
+//         res.json({ status: true })
+//     } catch (error) {
+//         const statusCode = error.status || 500;
+//         res.status(statusCode).send(error.message);
+//     }
+// }
+
+
+
+/////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+// exports.processDelivery = async (req, res) => {
+//     try {
+//         let userID = req.session.userData;
+//         console.log(req.body);
+//         console.log('hi');
+//         let productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
+//         let orderadd = productData.address;
+//         const addres = orderadd.find(add => add._id.equals(req.body.address));
+//         if (addres) {
+//             var address = {
+//                 name: addres.name,
+//                 email: addres.email,
+//                 country: addres.select,
+//                 address: addres.address,
+//                 city: addres.city,
+//                 state: addres.state,
+//                 zipcode: addres.zipcode
+//             }
+//         }
+//         let productsArray = productData.cart;
+//         console.log(productsArray);
+//         let products = productsArray.map(data => ({
+//             product_id: data.product_id._id,
+//             qty: data.qty,
+//             price: data.totalPrice,
+//             status: 'pending',
+//             returned: false,
+//         }));
+//         productsArray.map(data => {
+//             product.updateOne({"_id":data.product_id._id},{$inc:{qnumber:-data.qty}}).then((respo)=>{
+//                 console.log(respo);
+//             })
+//         })
+//         let order = {
+//             products,
+//             totalamount: req.body.totalamount,
+//             paymentmethod: req.body.paymentmethod,
+//             address,
+//         }
+//         await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+//         productData.cart = [];
+//         await productData.save();
+//         res.render('OrderComplete');
+
+//     } catch (error) {
+//         const statusCode = error.status || 500;
+//         res.status(statusCode).send(error.message);
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+// exports.processDelivery = async (req, res) => {
+//     try {
+//         let userID = req.session.userData;
+//         if (req.body.paymentmethod == 'COD') {
+
+//         } else {
+//             let productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
+//             let orderadd = productData.address;
+//             const addres = orderadd.find(add => add._id.equals(req.body.address));
+//             if (addres) {
+//                 var address = {
+//                     name: addres.name,
+//                     email: addres.email,
+//                     country: addres.select,
+//                     address: addres.address,
+//                     city: addres.city,
+//                     state: addres.state,
+//                     zipcode: addres.zipcode
+//                 }
+//             }
+//             let productsArray = productData.cart;
+//             let products = productsArray.map(data => ({
+//                 product_id: data.product_id._id,
+//                 qty: data.qty,
+//                 price: data.totalPrice,
+//                 status: 'pending',
+//                 returned: false,
+//             }));
+//             productsArray.map(data => {
+//                 product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then(() => {
+//                 })
+//             })
+
+//             let order = {
+//                 products,
+//                 totalamount: req.body.totalamount,
+//                 paymentmethod: req.body.paymentmethod,
+//                 address,
+//             };
+
+//             const amountInPaise = Math.round(req.body.totalamount * 100);
+//             const razorpayOrder = await instance.orders.create({
+//                 amount: amountInPaise,
+//                 currency: 'INR', // Update with your currency
+//                 receipt: '' + new Date().getTime(),
+//                 payment_capture: 1, // Auto capture payment
+//             });
+
+
+//             order.razorpay_order_id = razorpayOrder.id;
+//             order.razorpay_payment_id = null;
+//             order.razorpay_signature = null;
+
+//                 await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+//                 productData.cart = [];
+//                 await productData.save();
+//             res.render('procedCHECk',{order});
+//         }
+//     } catch (error) {
+//         const statusCode = error.status || 500;
+//         res.status(statusCode).send(error.message);
+//     }
+// }
+
 ////////////////////////////////////////GET////////////////////////////////////////////
+
+
+exports.deliveredOnline = async (req,res) =>{
+    console.log(req.body);
+}
+
 
 exports.cart = async (req, res) => {
     try {
@@ -182,10 +405,10 @@ exports.orderProceed = async (req, res) => {
 
 exports.userAdd = async (req, res) => {
     try {
-            var uid = req.session.userData;
-            var userInfo = await user.findOne({ "_id": uid }, { "name": 1, "email": 1, "p_number": 1 });
-            console.log(userInfo);
-            res.render('UserAddFirst', { userInfo: userInfo });
+        var uid = req.session.userData;
+        var userInfo = await user.findOne({ "_id": uid }, { "name": 1, "email": 1, "p_number": 1 });
+        console.log(userInfo);
+        res.render('UserAddFirst', { userInfo: userInfo });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -194,9 +417,9 @@ exports.userAdd = async (req, res) => {
 
 exports.specicAdd = async (req, res) => {
     try {
-            var ID = req.session.userData;
-            var addsData = await user.findOne({ "_id": ID });
-            res.render('UserAddSecond', { addList: addsData.address });
+        var ID = req.session.userData;
+        var addsData = await user.findOne({ "_id": ID });
+        res.render('UserAddSecond', { addList: addsData.address });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -205,7 +428,7 @@ exports.specicAdd = async (req, res) => {
 
 exports.newuserAdd = async (req, res) => {
     try {
-            res.render('addnewUr');
+        res.render('addnewUr');
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -214,10 +437,10 @@ exports.newuserAdd = async (req, res) => {
 
 exports.listOrder = async (req, res) => {
     try {
-            var ID = req.session.userData;
-            var addsData = await user.findOne({ "_id": ID }).populate("orders.products.product_id");
-            console.log(addsData);
-            res.render('userordersList', { Alldata: addsData.orders });
+        var ID = req.session.userData;
+        var addsData = await user.findOne({ "_id": ID }).populate("orders.products.product_id");
+        console.log(addsData);
+        res.render('userordersList', { Alldata: addsData.orders });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -226,11 +449,11 @@ exports.listOrder = async (req, res) => {
 
 exports.viewEach = async (req, res) => {
     try {
-            var ID = req.params.id;
-            UID = req.session.userData;
-            var addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
-            var shopItem = addsData.orders.find(item => item._id == ID);
-            res.render('DVProduct', { Fulldata: shopItem });
+        var ID = req.params.id;
+        UID = req.session.userData;
+        var addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
+        var shopItem = addsData.orders.find(item => item._id == ID);
+        res.render('DVProduct', { Fulldata: shopItem });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);

@@ -121,7 +121,7 @@
                                                 border-radius: 16px;" src="/uploaded/<%= x.product_id.image[0] %>" alt="" srcset="">
                                             </th>
                                             <td id="productPrice">
-                                                $<%= x.product_id.price %>
+                                                <%= x.product_id.price %>
                                             </td>
                                             <td>
 
@@ -144,7 +144,7 @@
 
                                             </td>
                                             <td id="<%= x.totalPrice %>">
-                                                $<%= x.totalPrice %>
+                                                <%= x.totalPrice %>
                                             </td>
                                             <td>
                                                 <form action="/cart/delete/<%= x._id %>" method="post">
@@ -167,19 +167,19 @@
                                     <tr style="border: 1px solid burlywood;">
                                         <th scope="row">SubTotal</th>
                                         <td id="sub-total">
-                                            $<%= total %>
+                                            <%= total %>
                                         </td>
                                     </tr>
                                     <tr style="border: 1px solid burlywood;">
                                         <th scope="row">Shipping Charge</th>
                                         <td id="sub-total">
-                                            $0
+                                            0
                                         </td>
                                     </tr>
                                     <tr style="border: 1px solid burlywood;">
                                         <th scope="row">Total</th>
                                         <td id="sum">
-                                            $<%= total %>
+                                            <%= total %>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -221,11 +221,11 @@
             crossorigin="anonymous"></script>
         <script>
             function changeQuantity(proid, userID, count, totalP, pPrice, allP, sum) {
-                let quantity = parseInt(document.getElementById(proid).value);
-                let tP = parseInt(document.getElementById(totalP).innerText);
-                let pp = parseInt(document.getElementById(pPrice).innerText);
-                let ALLprice = parseInt(document.getElementById(allP).innerText);
-                let sumss = parseInt(document.getElementById(sum).innerText);
+                var quantity = parseInt(document.getElementById(proid).value);
+                var tP = parseInt(document.getElementById(totalP).innerText);
+                var pp = parseInt(document.getElementById(pPrice).innerText);
+                var ALLprice = parseInt(document.getElementById(allP).innerText);
+                var sumss = parseInt(document.getElementById(sum).innerText);
                 $.ajax({
                     url: '/change-product-q',
                     data: {
@@ -239,7 +239,7 @@
                         if (response.status) {
                             var num = parseInt(quantity) + parseInt(count);
                             if (parseInt(count) === 1) {
-                                var Psum = tP + pp;
+                                var Psum = parseInt(tP) + parseInt(pp);
                                 var ALLp = ALLprice + pp;
                                 var summm = sumss + pp;
                             } else {

@@ -1,6 +1,7 @@
 let product = require('../models/productdb');
 let fs = require('fs').promises;
 let path = require('path');
+let sharp = require('sharp');
 
 function generateRandomName() {
     const letters = 'abcdefgh';
@@ -31,6 +32,8 @@ exports.addaProducts = async (req, res) => {
                 let randomName = generateRandomName();
                 let newImageName = randomName;
                 let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
+                let croppedImages = require('path').resolve('./') + '/public/uploaded/croppedImage' + newImageName;
+                sharp(file.data).resize(300,300).toFile(croppedImages);
                 file.mv(uploadPath, (err) => {
                     if (err) {
                         return res.status(500).json({ message: 'Error uploading files.' });
@@ -43,6 +46,8 @@ exports.addaProducts = async (req, res) => {
             let randomName = generateRandomName();
             let newImageName = randomName;
             let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
+            let croppedImages = require('path').resolve('./') + '/public/uploaded/croppedImage' + newImageName;
+            await sharp(ImageUpload).resize(300,300).toFile(croppedImages);
             ImageUpload.mv(uploadPath, err => {
                 if (err) {
                     return res.status(500).json({ message: 'Error uploading file.' });
@@ -73,41 +78,33 @@ exports.updateNewSpecific = async (req, res) => {
         let id = req.params.id;
         let formattedId = id.replace(/%20/g, '');
         if (req.files) {
-
             const ImageUpload = req.files.image;
             let img = [];
-
             if (Array.isArray(ImageUpload)) {
                 // If multiple images are uploaded, append them to the existing images
                 ImageUpload.forEach(file => {
                     const randomName = generateRandomName();
                     const newImageName = randomName;
                     const uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
-
                     file.mv(uploadPath, (err) => {
                         if (err) {
                             return res.status(500).json({ message: 'Error uploading files.' });
                         }
                     });
-
                     img.push(newImageName);
                 });
             } else {
                 // If only one image is uploaded, keep the existing images and add the new one
-
                 const randomName = generateRandomName();
                 const newImageName = randomName;
                 const uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
-
                 ImageUpload.mv(uploadPath, err => {
                     if (err) {
                         return res.status(500).json({ message: 'Error uploading file.' });
                     }
                 });
-
                 img.push(newImageName);
             }
-
             await product.updateOne(
                 { "_id": formattedId },
                 {
@@ -124,45 +121,6 @@ exports.updateNewSpecific = async (req, res) => {
                 },
     
             );
-
-
-
-            // ImageUpload = req.files.image;
-            // let img = [];
-            // if (Array.isArray(ImageUpload)) {
-            //     ImageUpload.forEach(file => {
-            //         let randomName = generateRandomName();
-            //         let newImageName = randomName;
-            //         let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
-            //         file.mv(uploadPath, (err) => {
-            //             if (err) {
-            //                 return res.status(500).json({ message: 'Error uploading files.' });
-            //             }
-            //         });
-            //         img.push(newImageName);
-            //     });
-            // } else {
-            //     let randomName = generateRandomName();
-            //     let newImageName = randomName;
-            //     let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
-            //     ImageUpload.mv(uploadPath, err => {
-            //         if (err) {
-            //             return res.status(500).json({ message: 'Error uploading file.' });
-            //         }
-            //     });
-            //     img.push(newImageName);
-            // }
-
-            // await product.updateOne({ "_id": formattedId }, {
-            //     $set: {
-            //         name: req.body.pname,
-            //         qnumber: parseInt(req.body.pquantity),
-            //         price: req.body.pprice,
-            //         category: req.body.pcategory,
-            //         description: req.body.pdescription,
-            //         image: img,
-            //     }
-            // })
         } else {
             await product.updateOne({ "_id": formattedId }, {
                 $set: {

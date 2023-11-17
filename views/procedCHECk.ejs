@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.rtl.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -81,7 +86,8 @@
                 border: 0;
                 height: 2px;
                 margin-bottom: 1.5em;">
-                <form action="/getAdd" method="post">
+                <!-- <form action="/getAdd" method="post"> -->
+                <form action="" id="checkout-form">
                     <!--Grid row-->
                     <div class="row">
                         <!--Grid column-->
@@ -92,7 +98,9 @@
                                 <h5>CUSTOMER INFORMATION</h5>
                                 <label>Email Address</label>
                                 <div class="input-group mb-4">
-                                    <h6><%= emailData.email %></h6>
+                                    <h6>
+                                        <%= emailData.email %>
+                                    </h6>
                                 </div>
                                 <!-- first data -->
                                 <h5>BILLING DETAILS</h5>
@@ -100,8 +108,8 @@
                                 <div class="row mb-3">
                                     <!--Grid column-->
                                     <h6>Select the Address</h4>
-                                        <select class="browser-default custom-select mb-3" name="address" required>
-                                            <option>please select address</option>
+                                        <select class="browser-default custom-select mb-3" name="address">
+                                            <option>select address</option>
                                             <% for( let i=0; i < address.length; i++ ) { %>
                                                 <option value="<%= address[i]._id %>">
                                                     <%= address[i].name %>
@@ -112,7 +120,7 @@
                                                 <% } %>
                                         </select>
                                 </div>
-                    
+
 
                             </div>
                             <div class="form-outline mb-4">
@@ -123,24 +131,23 @@
                                 margin-right: 459px;
                                 border-radius: 13px;">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radio"
-                                            id="flexRadioDefault1" checked  value="Card"/>
+                                        <input class="form-check-input" type="radio" name="paymentmethod"
+                                            id="flexRadioDefault1" checked value="Card" />
                                         <label class="form-check-label" for="flexRadioDefault1"> Credit card </label>
                                     </div>
-
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radio"
+                                        <input class="form-check-input" type="radio" name="paymentmethod"
                                             id="flexRadioDefault2" />
                                         <label class="form-check-label" for="flexRadioDefault2"> Debit card </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radio"
+                                        <input class="form-check-input" type="radio" name="paymentmethod"
                                             id="flexRadioDefault3" />
                                         <label class="form-check-label" for="flexRadioDefault3"> Paypal & UPI</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radio"
-                                            id="flexRadioDefault3" value="COD"/>
+                                        <input class="form-check-input" type="radio" name="paymentmethod"
+                                            id="flexRadioDefault3" value="COD" />
                                         <label class="form-check-label" for="flexRadioDefault3"> COD </label>
                                     </div>
                                 </div>
@@ -186,9 +193,12 @@
                                 </div>
                             </div> -->
                                 <hr class="mb-4" />
+
+                                <input type="text" hidden name="totalamount" value="<%= sumP %>">
+
                                 <!-- <button class="btn btn-primary" type="button">Continue to checkout</button> -->
-                                <button type="submit" class="button alt" name="totalamount"
-                                    id="place_order" value="<%= sumP %>">Place
+                                <button type="submit" class="button alt" name="totalamount" id="placeholder"
+                                    value="<%= sumP %>">Place
                                     Order $<%= sumP %>.00</button>
                             </div>
                             <!--/.Card-->
@@ -240,15 +250,15 @@
 
                     <!-- Promo code -->
                     <form class="card p-2">
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Promo code" aria-label="Promo code"
-                                    aria-describedby="button-addon2" />
-                                <button class="btn btn-primary" type="button" id="button-addon2"
-                                    data-mdb-ripple-color="dark">
-                                    redeem
-                                </button>
-                            </div>
-                        </form>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Promo code" aria-label="Promo code"
+                                aria-describedby="button-addon2" />
+                            <button class="btn btn-primary" type="button" id="button-addon2"
+                                data-mdb-ripple-color="dark">
+                                redeem
+                            </button>
+                        </div>
+                    </form>
                     <!-- Promo code -->
                 </div>
                 <!--Grid column-->
@@ -261,6 +271,62 @@
         <!-- footer -->
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
+        <script>
+            $("#checkout-form").submit((e) => {
+                e.preventDefault()
+                $.ajax({
+                    url: '/getAdd',
+                    method: 'post',
+                    data: $('#checkout-form').serialize(),
+                    success: (response) => {
+                        if (response.codSuccuss) {
+                            location.href = '/ordersuccess'
+                        } else {
+                            razorpayPayment(response)
+                        }
+                    }
+                })
+            })
+            function razorpayPayment(order) {
+                var options = {
+                    "key": "rzp_test_w6dIwCMt6fH2NS", // Enter the Key ID generated from the Dashboard
+                    "amount": "<%= sumP %>", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "currency": "INR",
+                    "name": "ReccardoEyeWear", //your business name
+                    "description": "Test Transaction",
+                    "image": "",
+                    "order_id": order.razorpay_order_id , //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "handler": function (response) {
+                        verifyPayment(response,order)
+                    },
+                    "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+                        "name": "", //your customer's name
+                        "email": "",
+                        "contact": "9000090000"  //Provide the customer's phone number for better conversion rates 
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                var rzp = new Razorpay(options);
+                rzp.open();
+            }
+
+            function verifyPayment(payment,order){
+                $.ajax({
+                    url:'/verify-payment',
+                    data:{
+                        payment,
+                        order
+                    },
+                    method:'post'
+                })
+            }
+
+        </script>
 </body>
 
 </html>

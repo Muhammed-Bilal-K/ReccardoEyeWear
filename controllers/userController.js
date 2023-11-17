@@ -65,6 +65,7 @@ exports.otpverifiypage = async (req, res) => {
                     await user.updateOne({ email: emailOtpCheck }, { $set: { is_verified: 1 } });
                     otpverify = null;
                     emailOtpCheck = null;
+                    // await otps.deleteOne({otps:veriOtp});
                     res.redirect('/login');
                 }
             } else {
@@ -111,60 +112,142 @@ exports.homepage = async (req, res) => {
     }
 }
 
+// exports.womencate = async (req, res) => {
+//     try {
+//         var search = '';
+//         var limit = 4;
+//         var page = 1;
+//         if (req.query.search) {
+//             search = req.query.search;
+//         }
+
+//         if (req.query.page) {
+//             page = req.query.page;
+//         }
+
+//         let categoryData = await category.findOne({ name: 'woman' });
+//         var AllProduct = await product.find({
+//             category: "woman",
+//             $or: [
+//                 {
+//                     name: {
+//                         $regex: '.*' + search + '.*',
+//                         $options: 'i'
+//                     }
+//                 },
+//                 {
+//                     price: {
+//                         $regex: '.*' + search + '.*',
+//                         $options: 'i'
+//                     }
+//                 }
+//             ]
+//         }).limit(limit * 1).skip((page - 1) * limit).exec();
+
+//         var count = await product.find({
+//             category: "woman",
+//             $or: [
+//                 {
+//                     name: {
+//                         $regex: '.*' + search + '.*',
+//                         $options: 'i'
+//                     }
+//                 },
+//                 {
+//                     price: {
+//                         $regex: '.*' + search + '.*',
+//                         $options: 'i'
+//                     }
+//                 }
+//             ]
+//         }).countDocuments();
+
+//         res.render('men', {
+//             productDeatil: AllProduct, categoryList: categoryData, totalPages: Math.ceil(count / limit),
+//             currentPage: page,
+//             search,
+//         });
+//     } catch (error) {
+//         const statusCode = error.status || 500;
+//         res.status(statusCode).send(error.message);
+//     }
+// }
+
 exports.womencate = async (req, res) => {
     try {
-        var search = '';
-        var limit = 4;
+        var limit = 6;
         var page = 1;
-        if (req.query.search) {
-            search = req.query.search;
-        }
-
-        if (req.query.page) {
-            page = req.query.page;
-        }
-
         let categoryData = await category.findOne({ name: 'woman' });
-        var AllProduct = await product.find({
-            category: "woman",
-            $or: [
-                {
-                    name: {
-                        $regex: '.*' + search + '.*',
-                        $options: 'i'
-                    }
-                },
-                {
-                    price: {
-                        $regex: '.*' + search + '.*',
-                        $options: 'i'
-                    }
+        if (req.query.search || req.query.price || req.query.page) {
+            var search = req.query.search;
+            page = req.query.page;
+            if (req.query.price) {
+                var price = req.query.price;
+                if (price != 'all') {
+                    var [minPrice, maxPrice] = price.split('-').map(Number);
+                } else {
+                    var minPrice = 0;
+                    var maxPrice = 1000;
                 }
-            ]
-        }).limit(limit * 1).skip((page - 1) * limit).exec();
+            }
+            if (search) {
+                var AllProduct = await product.find({
+                    category: "woman",
+                    $or: [
+                        {
+                            name: {
+                                $regex: '.*' + search + '.*',
+                                $options: 'i'
+                            }
+                        },
+                    ]
+                }).limit(limit * 1).skip((page - 1) * limit);
 
-        var count = await product.find({
-            category: "woman",
-            $or: [
-                {
-                    name: {
-                        $regex: '.*' + search + '.*',
-                        $options: 'i'
-                    }
-                },
-                {
-                    price: {
-                        $regex: '.*' + search + '.*',
-                        $options: 'i'
-                    }
-                }
-            ]
-        }).countDocuments();
+                var count = await product.find({
+                    category: "woman",
+                    $or: [
+                        { name: { $regex: '.*' + search + '.*', $options: 'i' } },
+                    ]
+                }).countDocuments();
+
+            } else {
+                var AllProduct = await product.find({
+                    category: "woman",
+                    $or: [
+                        {
+                            price: {
+                                $gte: minPrice, $lte: maxPrice
+                            }
+                        },
+                    ]
+                }).limit(limit * 1).skip((page - 1) * limit);
+
+                var count = await product.find({
+                    category: "woman",
+                    $or: [
+                        {
+                            price: {
+                                $gte: minPrice, $lte: maxPrice
+                            }
+                        },
+                    ]
+                }).countDocuments();
+            }
+        } else {
+            var AllProduct = await product.find({ category: "woman" });
+            console.log(AllProduct);
+        }
+
+
+        console.log(AllProduct);
 
         res.render('men', {
-            productDeatil: AllProduct, categoryList: categoryData, totalPages: Math.ceil(count / limit),
+            productDeatil: AllProduct,
+            categoryList: categoryData,
+            totalPages: Math.ceil(count / limit),
             currentPage: page,
             search,
+            price,
         });
     } catch (error) {
         const statusCode = error.status || 500;
@@ -539,7 +622,9 @@ exports.deleteCartItem = async (req, res) => {
 }
 
 
-
+exports.successPage = async (req,res) => {
+    res.render('OrderComplete');
+}
 
 
 
