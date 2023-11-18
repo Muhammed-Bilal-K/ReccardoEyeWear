@@ -90,10 +90,12 @@ router.post('/user/addNew', userMiddleware.loggedIn, userController.newAddress);
 
 router.post('/user/addNew/:id', userMiddleware.loggedIn, userController.updateAdds);
 
-router.post('/cart/delete/:id', userController.deleteCartItem);
+router.post('/cart/delete/:id', userMiddleware.loggedIn, userController.deleteCartItem);
 
-router.post('/getAdd', cartController.processDelivery)
+router.post('/getAdd', cartController.processDelivery);
 
-router.post('/verify-payment', cartController.deliveredOnline)
+router.post('/verify-payment', cartController.deliveredOnline);
+
+router.get('/order/return', cartController.returnProducts);
 
 module.exports = router;

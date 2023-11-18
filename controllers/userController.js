@@ -245,8 +245,6 @@ exports.womencate = async (req, res) => {
         }
 
 
-        console.log(AllProduct);
-
         res.render('men', {
             productDeatil: AllProduct,
             categoryList: categoryData,
@@ -266,8 +264,6 @@ exports.mencate = async (req, res) => {
         var limit = 4;
         var page = 1;
         let categoryData = await category.findOne({ name: 'men' });
-
-
 
         if (req.query.search || req.query.price ) {
             var search = req.query.search;
@@ -374,7 +370,8 @@ exports.signuppage = async (req, res) => {
         req.session.loginErr = false;
         res.render('signup', { SignMSR: req.session.signupErr, passNotmatch: req.session.signupPassErr });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -385,7 +382,8 @@ exports.eachProductv = async (req, res) => {
         var EachproductDeatil = await product.findOne({ "_id": uid });
         res.render('eachProductV', { EachproductDeatil: EachproductDeatil });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -395,7 +393,8 @@ exports.userlogout = async (req, res) => {
             res.redirect('/login');
         })
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -407,7 +406,8 @@ exports.updateUseradd = async (req, res) => {
         var addsList = UserAddss.address.find(data => data._id.toString() === updateId);
         res.render('updateAdduser', { addlist: addsList });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 

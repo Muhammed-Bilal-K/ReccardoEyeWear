@@ -21,7 +21,7 @@
         <!-- MAIN -->
         <main>
 
-            <div>
+            <!-- <div>
 
                 <input type="text" name="name" placeholder="Search Here" id="name-search" style="width: 30%;
             padding: .6em 1em;
@@ -31,7 +31,7 @@
             font-size: 1em;
             border-radius: 10px;">
                 <i class="fa fa-search"></i>
-            </div>
+            </div> -->
 
             <div class="table-data">
                 <div class="order">
@@ -79,10 +79,10 @@
 
                                     <% if (allUser[i].is_blocked === 1) { %>
                                         <td><a href="/admin/unblock/?email=<%= allUser[i].email %>"><button type="button" style="width: 100px;"
-                                                    class="btn btn-danger">Unblock</button></a></td>
+                                                    class="btn">Unblock</button></a></td>
                                     <% } else {%> 
                                         <td><a href="/admin/block/?email=<%= allUser[i].email %>"><button type="button" style="width: 100px;"
-                                                    class="btn btn-success">Block</button></a></td>
+                                                    class="btn">Block</button></a></td>
                                     <% } %>
 
 

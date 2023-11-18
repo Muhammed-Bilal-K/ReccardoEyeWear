@@ -72,11 +72,16 @@ exports.adminpage = async (req, res) => {
 }
 
 exports.Listallproducts = async (req, res) => {
-    await product.find({ unlist: false }).then((result) => {
-        category.find({}).then((data) => {
-            res.render('admin/adminProductsList', { Allproduct: result, categoryList: data });
+    try {
+        await product.find({ unlist: false }).then((result) => {
+            category.find({}).then((data) => {
+                res.render('admin/adminProductsList', { Allproduct: result, categoryList: data });
+            })
         })
-    })
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
 }
 
 exports.loginpage = async (req, res) => {
@@ -153,7 +158,8 @@ exports.unblockUser = async (req, res) => {
             res.redirect('/admin/users');
         })
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -164,7 +170,8 @@ exports.blockUser = async (req, res) => {
             res.redirect('/admin/users');
         })
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -173,14 +180,6 @@ exports.userDetailsE = async (req, res) => {
     try {
         let uid = req.params.id;
         let userSpec = await user.findOne({ "_id": uid });
-        console.log(userSpec);
-        // if (userSpec.is_blocked === 0) {
-        //     var access = 'unblock';
-        // } else {
-        //     var access = 'block';
-        // }
-        console.log(userSpec);
-        // res.render('adminuserDetail', { userSpec: userSpec, access: access });
         res.render('admin/adminUserView',{userSpec: userSpec});
     } catch (error) {
         const statusCode = error.status || 500;
@@ -206,7 +205,6 @@ exports.orderList = async (req, res) => {
         let cartExist = userOrders.filter((data) => {
             return data.orders.length != 0;
         })
-        console.log(cartExist);
         res.render('admin/adminOrdersList', { FULLDATA: cartExist });
     } catch (error) {
         const statusCode = error.status || 500;
@@ -216,9 +214,15 @@ exports.orderList = async (req, res) => {
 
 
 exports.orderView = async (req, res) => {
-    let id = req.query.id;
-    let userOrders = await user.findOne({ "_id": id }).populate('orders.products.product_id');
-    res.render('admin/adminEachOrdderView', { FULLDATA: userOrders.orders, Userid: id });
+
+    try {
+        let id = req.query.id;
+        let userOrders = await user.findOne({ "_id": id }).populate('orders.products.product_id');
+        res.render('admin/adminEachOrdderView', { FULLDATA: userOrders.orders, Userid: id });
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
 }
 
 exports.orderStatus = async (req, res) => {
@@ -276,13 +280,7 @@ exports.logoutpage = async (req, res) => {
 
 
 
-
-
-
-
-
-
-///////////////////////////////////////////////////////////////////////
+////////////////////////////  POST  ///////////////////////////////////////////
 
 exports.createAdminlogin = async (req, res) => {
     try {

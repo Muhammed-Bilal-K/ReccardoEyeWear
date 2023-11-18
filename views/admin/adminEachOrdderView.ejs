@@ -129,7 +129,10 @@
                                                         <% } else { %>
                                                             Delivered
                                                         <% } %>
-                                                    </p>
+                                                </p>
+                                                <% if (product_data.returned === true) { %>
+                                                    <p>Product Returned</p>
+                                                <% } %>
                                             </div>
                                         </div>
                                         <hr>

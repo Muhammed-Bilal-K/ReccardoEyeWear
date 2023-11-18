@@ -4,19 +4,29 @@ let path = require('path');
 let sharp = require('sharp');
 
 function generateRandomName() {
-    const letters = 'abcdefgh';
-    let randomName = '';
-    for (let i = 0; i < 6; i++) {
-        const randomIndex = Math.floor(Math.random() * letters.length);
-        randomName += letters.charAt(randomIndex);
+    try {
+        const letters = 'abcdefgh';
+        let randomName = '';
+        for (let i = 0; i < 6; i++) {
+            const randomIndex = Math.floor(Math.random() * letters.length);
+            randomName += letters.charAt(randomIndex);
+        }
+        return randomName;
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
-    return randomName;
 }
 
 exports.unlistedProduct = async (req, res) => {
-    await product.find({ unlist: true }).then((respo) => {
-        res.render('admin/adminUnlistProduct', { Allproduct: respo });
-    })
+    try {
+        await product.find({ unlist: true }).then((respo) => {
+            res.render('admin/adminUnlistProduct', { Allproduct: respo });
+        })
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
 }
 
 exports.addaProducts = async (req, res) => {
@@ -33,7 +43,7 @@ exports.addaProducts = async (req, res) => {
                 let newImageName = randomName;
                 let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
                 let croppedImages = require('path').resolve('./') + '/public/uploaded/croppedImage' + newImageName;
-                sharp(file.data).resize(300,300).toFile(croppedImages);
+                sharp(file.data).resize(450,450).toFile(croppedImages);
                 file.mv(uploadPath, (err) => {
                     if (err) {
                         return res.status(500).json({ message: 'Error uploading files.' });
@@ -55,7 +65,6 @@ exports.addaProducts = async (req, res) => {
             });
             img.push(newImageName);
         }
-
         const productDetail = new product({
             name: req.body.pname,
             qnumber: parseInt(req.body.pquantity),
@@ -65,9 +74,10 @@ exports.addaProducts = async (req, res) => {
             image: img,
         });
         await productDetail.save();
-        res.redirect('/admin');
+        res.redirect('/admin/products');
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -81,7 +91,6 @@ exports.updateNewSpecific = async (req, res) => {
             const ImageUpload = req.files.image;
             let img = [];
             if (Array.isArray(ImageUpload)) {
-                // If multiple images are uploaded, append them to the existing images
                 ImageUpload.forEach(file => {
                     const randomName = generateRandomName();
                     const newImageName = randomName;
@@ -94,7 +103,6 @@ exports.updateNewSpecific = async (req, res) => {
                     img.push(newImageName);
                 });
             } else {
-                // If only one image is uploaded, keep the existing images and add the new one
                 const randomName = generateRandomName();
                 const newImageName = randomName;
                 const uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
@@ -134,7 +142,8 @@ exports.updateNewSpecific = async (req, res) => {
         }
         res.redirect('/admin');
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -149,7 +158,7 @@ exports.deleteProductImg = async (req, res) => {
         }
     } catch (error) {
         console.log('Error in deletePart:', error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).send(error.message);
     }
 };
 
@@ -161,7 +170,8 @@ exports.unlistProduct = async (req, res) => {
             res.redirect('/admin/unlistedProduct');
         })
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -172,7 +182,8 @@ exports.listProduct = async (req, res) => {
             res.redirect('/admin/products');
         });
     } catch (error) {
-        console.log(error);
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 

@@ -77,8 +77,7 @@
 									<div>
 										<h4><img style="width: 65px; height: 65px; margin-left: 12px;
 											border: 1px solid #80c7af;
-											border-radius: 16px"
-												src="/uploaded/<%= sdata.product_id.image[0] %>" alt="" srcset=""></h4>
+											border-radius: 16px" src="/uploaded/<%= sdata.product_id.image[0] %>" alt="" srcset=""></h4>
 									</div>
 								</div>
 								<div class="col">
@@ -92,6 +91,14 @@
 									<label for="" style="font-weight: 800;">Product Price</label>
 									<div>
 										<h4>$<%= sdata.price %>
+										</h4>
+									</div>
+								</div>
+								<div class="col">
+									<label for="" style="font-weight: 800;">Payment Type</label>
+									<div>
+										<h4>
+											<%= data.paymentmethod %>
 										</h4>
 									</div>
 								</div>

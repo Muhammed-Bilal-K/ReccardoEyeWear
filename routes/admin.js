@@ -41,7 +41,7 @@ router.get('/block', adminMiddleware.loggedIn , adminController.blockUser);
 router.get('/user/delete/:id', adminMiddleware.loggedIn , adminController.userCompDelet);
 
 /* POST user's loginppage listing. */
-router.get('/orders' , adminController.orderList);
+router.get('/orders' , adminMiddleware.loggedIn , adminController.orderList);
 
 router.get('/view/order', adminMiddleware.loggedIn , adminController.orderView);
 

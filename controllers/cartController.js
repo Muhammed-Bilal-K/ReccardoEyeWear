@@ -438,7 +438,6 @@ exports.listOrder = async (req, res) => {
     try {
         var ID = req.session.userData;
         var addsData = await user.findOne({ "_id": ID }).populate("orders.products.product_id");
-        console.log(addsData);
         res.render('userordersList', { Alldata: addsData.orders });
     } catch (error) {
         const statusCode = error.status || 500;
@@ -453,6 +452,25 @@ exports.viewEach = async (req, res) => {
         var addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
         var shopItem = addsData.orders.find(item => item._id == ID);
         res.render('DVProduct', { Fulldata: shopItem });
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
+
+exports.returnProducts = async (req,res) => {
+    console.log(req.query);
+    let UID = req.session.userData;
+    console.log(UID);
+    try {
+        let userData = await user.findOne({"_id":UID}).populate('orders.products.product_id');
+        let result = userData.orders.find((data) => data._id == req.query.Ordid);
+        let statusData = result.products.find((datas) => datas._id == req.query.proid);
+        if (!statusData.returned) {
+            statusData.returned = true;
+        }
+        await userData.save();
+        res.redirect(`/settings/orders/view/${req.query.Ordid}`);
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);

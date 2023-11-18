@@ -70,6 +70,17 @@
 									<p style="display: inline;" >X $<%= items.product_id.price %></p>
                                     <p>Total : $<%= items.price %></p>
                                     <p>Status : <%= items.status %></p>
+									<% if (items.status == 'pending') { %>
+											
+									<% } else { %>
+										<% if (!items.returned) { %>
+											<p><a href="/order/return?Ordid=<%= Fulldata._id %>&proid=<%= items._id %>" class="card-link">Return</a></p>
+										<% } else { %>
+											<p>Returned</p>
+										<% } %>
+									<% } %>
+
+									<p>3 Days Delivery Time</p>
                                     <hr>
                                 <% }) %>
                             </div>
@@ -86,12 +97,12 @@
 							<h4 style="font-weight: 800;">Bill Details</h4>
                             <h5>Total : $<%= Fulldata.totalamount %></h5>
                             <h5>Payment :<%= Fulldata.paymentmethod %></h5>
+							<h5 style="display: inline;">Shipping Charge</h5><p style="display: inline;">: Free Shipping</p>
                             <hr>
                         </div>
                         <div class="col-md-4">
                             <!-- <p><a href="/settings/useradd/update/" class="card-link"></a></p> -->
 							<p><a href="/order/delete/<%= Fulldata._id %>>" class="card-link">Cancel</a></p>
-							<p><a href="/order/delete/<%= Fulldata._id %>>" class="card-link">Return</a></p>
                         </div>
                     </div>
 				</div>
