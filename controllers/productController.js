@@ -1,4 +1,5 @@
 let product = require('../models/productdb');
+let coupen = require('../models/coupondb');
 let fs = require('fs').promises;
 let path = require('path');
 let sharp = require('sharp');
@@ -81,6 +82,26 @@ exports.addaProducts = async (req, res) => {
     }
 }
 
+exports.addcoupens = async (req,res) => {
+    try {
+        console.log(req.body);
+        const coupenDetail = new coupen({
+            couponname : req.body.couponName,
+            couponcode :  req.body.couponCode,
+            discountamount : req.body.discount,
+            mincartamount : req.body.ordersAbove,
+            maxUseCount : req.body.maxUseCount,
+            expired : req.body.expiryDate, 
+        });
+        await coupenDetail.save();
+        if (coupenDetail) {
+            res.redirect('/admin/coupens');
+        }
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
 
 
 exports.updateNewSpecific = async (req, res) => {

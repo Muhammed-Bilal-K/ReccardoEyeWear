@@ -1,6 +1,9 @@
 let user = require('../models/usersdb');
 let product = require('../models/productdb');
+let coupensdb = require('../models/coupondb');
 const Razorpay = require('razorpay');
+var disamount = null;
+var coupenidPass ;
 var instance = new Razorpay({
     key_id: 'rzp_test_w6dIwCMt6fH2NS',
     key_secret: 'enJXg6YSPYMvparSvXKmiWUG',
@@ -58,6 +61,8 @@ exports.addTocarts = async (req, res) => {
 
 exports.processDelivery = async (req, res) => {
     try {
+
+        console.log(req.body);
         let userID = req.session.userData;
         let productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
         let orderadd = productData.address;
@@ -71,7 +76,7 @@ exports.processDelivery = async (req, res) => {
                 city: addres.city,
                 state: addres.state,
                 zipcode: addres.zipcode,
-                phone:addres.phone
+                phone: addres.phone
             }
         }
         let productsArray = productData.cart;
@@ -85,7 +90,7 @@ exports.processDelivery = async (req, res) => {
         }));
 
         if (req.body.paymentmethod != 'COD') {
-            
+
             const amountInPaise = Math.round(req.body.totalamount * 100);
             const razorpayOrder = await instance.orders.create({
                 amount: amountInPaise,
@@ -98,32 +103,44 @@ exports.processDelivery = async (req, res) => {
                 product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then(() => {
                 })
             })
+            // var tottalamount = parseInt(req.body.totalamount)-parseInt(disamount);
+            if (disamount === null) {
+                disamount = req.body.totalamount;
+            }
             let order = {
                 products,
-                totalamount: req.body.totalamount,
+                totalamount: disamount,
                 paymentmethod: req.body.paymentmethod,
                 address,
             }
+            disamount = null;
             await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+            if (req.body.coupenid) {
+                await coupensdb.updateOne({"_id":req.body.coupenid},{$addToSet:{usedusers:userID}});
+            }
             productData.cart = [];
             await productData.save();
-
             res.json({ status: true, razorpay_order_id: razorpayOrder.id });
-
-        }else{
-
+        } else {
             productsArray.map(data => {
                 product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then((respo) => {
-                    console.log(respo);
                 })
             })
+            if (disamount === null) {
+                disamount = req.body.totalamount;
+            }
+            console.log(disamount);
             let order = {
                 products,
-                totalamount: req.body.totalamount,
+                totalamount: disamount,
                 paymentmethod: req.body.paymentmethod,
                 address,
             }
+            disamount = null;
             await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+            if (req.body.coupenid) {
+                await coupensdb.updateOne({"_id":req.body.coupenid},{$addToSet:{usedusers:userID}});
+            }
             productData.cart = [];
             await productData.save();
             res.json({ codSuccuss: true })
@@ -318,8 +335,8 @@ exports.processDelivery = async (req, res) => {
 ////////////////////////////////////////GET////////////////////////////////////////////
 
 
-exports.deliveredOnline = async (req,res) =>{
-    console.log(req.body,'hi');
+exports.deliveredOnline = async (req, res) => {
+    console.log(req.body, 'hi');
 }
 
 
@@ -386,6 +403,7 @@ exports.changeQUA = async (req, res, next) => {
 exports.orderProceed = async (req, res) => {
     try {
         var userId = req.session.userData;
+        // var userId = '6558654ab003b89039f6b568';
         var sumP = 0;
         var count = 0;
         var emailData = await user.findOne({ "_id": userId }, { "email": 1 });
@@ -458,12 +476,10 @@ exports.viewEach = async (req, res) => {
     }
 }
 
-exports.returnProducts = async (req,res) => {
-    console.log(req.query);
+exports.returnProducts = async (req, res) => {
     let UID = req.session.userData;
-    console.log(UID);
     try {
-        let userData = await user.findOne({"_id":UID}).populate('orders.products.product_id');
+        let userData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
         let result = userData.orders.find((data) => data._id == req.query.Ordid);
         let statusData = result.products.find((datas) => datas._id == req.query.proid);
         if (!statusData.returned) {
@@ -471,6 +487,56 @@ exports.returnProducts = async (req,res) => {
         }
         await userData.save();
         res.redirect(`/settings/orders/view/${req.query.Ordid}`);
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
+
+exports.coupenApply = async (req, res) => {
+    let coupenDetail = req.body.coupencode;
+    let amount = req.body.datas;
+    console.log(req.body);
+    let UID = req.session.userData;
+    console.log(UID);
+    try {
+        let allcuopenData = await coupensdb.findOne({ couponcode: coupenDetail, expired: { $gte: new Date() } });
+        console.log(allcuopenData);
+        if (!allcuopenData) {
+            // return res.status(400).send('Invalid coupon code or expired.');
+            console.log('invalid');
+        }
+
+        let coupenUpdate = await coupensdb.findOne({ "_id": allcuopenData._id, usedusers: { $eq: UID } });
+        console.log(coupenUpdate);
+        if (coupenUpdate) {
+            res.json({data:false});
+        } else {
+            disamount = parseInt(amount) - allcuopenData.discountamount;
+            console.log(disamount);
+            coupenidPass = allcuopenData._id;
+            res.json({data:true, amountData:disamount, coupenDis : allcuopenData.discountamount , coupenid : allcuopenData._id});
+        }
+        // if(coupenUpdate === null){
+        //     disamount = parseInt(amount) - allcuopenData.discountamount;
+        //     console.log(disamount);
+        //     coupenidPass = allcuopenData._id;
+        //     res.json({data:true, amountData:disamount, coupenDis : allcuopenData.discountamount , coupenid : allcuopenData._id});
+        // }else{
+        //     res.json({data:false});
+        // }
+        // let coupenUpdate = await coupensdb.updateOne({ "_id": allcuopenData._id, usedusers: { $ne: UID } },
+        // { $addToSet: { usedusers: UID } });
+        // if (coupenUpdate.modifiedCount == 0) {
+        //     console.log('already');
+        // } allcuopenData.discountamount
+        
+        // disamount = parseInt(amount) - 32;
+        // console.log(disamount);
+
+        // // let datasss = await user.updateOne({"_id":UID},{$set:"cart."});
+        // res.json({data:true, amountData:disamount, coupenDis : allcuopenData.discountamount})
+        
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);

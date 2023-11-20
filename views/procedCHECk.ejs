@@ -93,7 +93,7 @@
                         <!--Grid column-->
                         <div class="col-md-8 mb-4">
                             <!--Card-->
-                            <div class="card p-4" style="margin-right: 100px; box-shadow: 6px 17px 26px #cdc4c4;">
+                            <div class="card p-4" style="margin-right: 100px; box-shadow: 6px 4px 21px #cdc4c4">
                                 <!-- first data -->
                                 <h5>CUSTOMER INFORMATION</h5>
                                 <label>Email Address</label>
@@ -198,11 +198,11 @@
                                 <hr class="mb-4" />
 
                                 <input type="text" hidden name="totalamount" value="<%= sumP %>">
-
+                                <input type="text" hidden name="coupenid" id="coupenid">
                                 <!-- <button class="btn btn-primary" type="button">Continue to checkout</button> -->
                                 <button type="submit" class="button alt" name="totalamount" id="placeholder"
                                     value="<%= sumP %>">Place
-                                    Order $<%= sumP %>.00</button>
+                                    Order $<span id="placeholderValue"><%= sumP %></span>.00</button>
                             </div>
                             <!--/.Card-->
                         </div>
@@ -236,17 +236,15 @@
                                 <span class="text-muted">$<%= ProcsData[i].totalPrice %></span>
                             </li>
                             <% } %>
-                                <!-- <li class="list-group-item d-flex justify-content-between bg-light">
+                                <li class="list-group-item d-flex justify-content-between bg-light">
                                 <div class="text-success">
                                     <h6 class="my-0">Promo code</h6>
                                 </div>
-                                <span class="text-success">-$5</span>
-                            </li> -->
+                                <span class="text-success" id="discountamountMinus">-$5</span>
+                            </li>
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>Total (USD)</span>
-                                    <strong>$<%= sumP %></strong>
-                                    <!-- <input type="text" class="form-control" disabled placeholder="Username" aria-label="Username"
-                                    aria-describedby="basic-addon1" value='"/> -->
+                                    <strong id="totalcoupenamount">$<%= sumP %></strong>
                                 </li>
                     </ul>
                     <!-- Cart -->
@@ -254,10 +252,10 @@
                     <!-- Promo code -->
                     <form class="card p-2">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Promo code" aria-label="Promo code"
+                            <input type="text" class="form-control" placeholder="Promo code" id="coupenname" style="text-transform: uppercase;" aria-label="Promo code"
                                 aria-describedby="button-addon2" />
-                            <button class="btn btn-primary" type="button" id="button-addon2"
-                                data-mdb-ripple-color="dark">
+                            <button class="btn btn-primary" type="button" id="button-addon2" 
+                                data-mdb-ripple-color="dark" onclick="coupenApply()">
                                 redeem
                             </button>
                         </div>
@@ -325,10 +323,40 @@
                         payment,
                         order
                     },
-                    method:'post'
+                    method:'post',
                 })
             }
 
+        </script>
+        <script>
+            function coupenApply() {
+                let coupencode = document.getElementById('coupenname').value;
+                let totalamount = document.getElementById('totalcoupenamount').innerHTML;
+                var data = totalamount.split('$')
+                var datas = (data[1]);
+                $.ajax({
+                    url : '/coupenCheck',
+                    data:{
+                        coupencode,
+                        datas,
+                    },
+                    method : 'post',
+                    success:(response)=>{
+                        if (response.data) {
+                            console.log(response.amountData);
+                            console.log(response.coupenDis);
+                            console.log(response.coupenid);
+                            document.getElementById('totalcoupenamount').innerText = '$'+response.amountData;
+                            document.getElementById('discountamountMinus').innerText = '-$'+response.coupenDis;
+                            document.getElementById('placeholderValue').innerText = response.amountData;
+                            document.getElementById('coupenid').value = response.coupenid;
+                            
+                        }else{
+                            alert('the coupen used');
+                        }
+                    }
+                })
+            }
         </script>
 </body>
 

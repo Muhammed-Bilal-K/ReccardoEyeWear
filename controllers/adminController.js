@@ -1,6 +1,7 @@
 let user = require('../models/usersdb');
 let product = require('../models/productdb');
 let category = require('../models/categorydb');
+let coupen = require('../models/coupondb');
 let path = require('path');
 let fs = require('fs');
 
@@ -242,6 +243,20 @@ exports.orderStatus = async (req, res) => {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
     }
+}
+
+exports.coupenManagement = async (req,res) => {
+    try {
+        var coupenData = await coupen.find({});
+        console.log(coupenData);
+        res.render('admin/adminCoupens',{coupenDetails:coupenData});
+    } catch (error) {
+        
+    }
+}
+
+exports.addcoupens = async(req,res) => {
+    res.render('admin/couponsManage');
 }
 
 exports.deleteImg = async (req, res) => {

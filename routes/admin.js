@@ -47,6 +47,10 @@ router.get('/view/order', adminMiddleware.loggedIn , adminController.orderView);
 
 router.get('/order/Status', adminMiddleware.loggedIn , adminController.orderStatus);
 
+router.get('/coupens', adminMiddleware.loggedIn , adminController.coupenManagement);
+
+router.get('/addCoupons', adminMiddleware.loggedIn , adminController.addcoupens);
+
 router.get('/logout', adminController.logoutpage)
 
 ///////////////////////////////////////////////////////////////////
@@ -56,6 +60,8 @@ router.post('/admin/login', adminMiddleware.notlogged , adminController.createAd
 
 /* POST user's loginppage listing. */
 router.post('/admin/addProducts', adminMiddleware.loggedIn, productController.addaProducts);
+
+router.post('/admin/addCoupen' , adminMiddleware.loggedIn , productController.addcoupens);
 
 /* POST user's loginppage listing. */
 router.post('/Productupdate/:id', adminMiddleware.loggedIn, productController.updateNewSpecific);

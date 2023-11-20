@@ -61,7 +61,7 @@
 				<div id="ast-desktop-header" data-toggle-type="dropdown">
 					<div class="ast-main-header-wrap main-header-bar-wrap ">
 						<div class="ast-primary-header-bar ast-primary-header main-header-bar site-header-focus-item"
-							data-section="section-primary-header-builder" style="box-shadow: 20px 1px 38px;">
+							data-section="section-primary-header-builder" style="box-shadow: 0px 2px 13px">
 							<div class="site-primary-header-wrap ast-builder-grid-row-container site-header-focus-item ast-container"
 								data-section="section-primary-header-builder">
 								<div
@@ -123,7 +123,7 @@
 						<main id="main" class="site-main">
 							<div class="ast-woocommerce-container">
 								<header class="woocommerce-products-header">
-									<h1 class="woocommerce-products-header__title page-title" style="font-size: 5rem;">
+									<h1 class="woocommerce-products-header__title page-title" style="font-size: 5rem; margin-bottom: 60px;">
 										<%= categoryList.name %>
 									</h1>
 
@@ -162,22 +162,56 @@
 															</div>
 														</div>
 													</div>
+													<div class="dropdown">
+														<p class="dropbtn" style="background: antiquewhite;
+														border-radius: 15px; margin-left: 2rem;
+														box-shadow: 3px 4px 8px #3c4542;">Category Filter</p>
+														<div class="dropdown-content">
+															<div class="filter-container" style="margin-left: 15px;">
+																	<label>
+																		<input type="radio" name="price" value="all">
+																		All
+																	</label>
+																	<label>
+																		<input type="radio" name="price" value="0-300">
+																		$0 - $300
+																	</label>
+																	<label>
+																		<input type="radio" name="price" value="300-500">
+																		$300 - $500
+																	</label>
+																	<label>
+																		<input type="radio" name="price" value="500-750">
+																		$500 - $750
+																	</label>
+																	<label>
+																		<input type="radio" name="price"
+																			value="750-1000">
+																		$750 - $1000
+																	</label>
+															</div>
+														</div>
+													</div>
 													<input type="search" class="form-control rounded" name="search"
 														placeholder="Search" aria-label="Search"
 														aria-describedby="search-addon" style="margin-bottom: 2rem;
-													margin-left: 49rem;
-													margin-right: 2px;
-													outline: none;
-													height: 3rem;" />
-													<button type="submit" style="height: 3rem; background: white;
-												color: black;" class="btn btn-outline-primary">search</button>
+														margin-left: 39rem;
+														margin-right: 2px;
+														outline: #707070;
+														height: 3rem;
+														border: 1px solid burlywood;" />
+													<button type="submit" style="height: 3rem;
+													background: white;
+													color: black;
+													margin-left: -5px;
+													border: 1px solid burlywood;" class="btn btn-outline-primary">search</button>
 												</div>
 											</form>
 										</div>
 									</div>
 								</header>
 								<div class="woocommerce-notices-wrapper"></div>
-								<ul class="products columns-3">
+								<ul class="products columns-4">
 									<% for( let i=0; i < productDeatil.length; i++ ) { %>
 										<li style="box-shadow: 7px 24px 32px #a09a94; border-radius: 25px;"
 											class="ast-grid-common-col ast-full-width ast-article-post astra-woo-hover-swap desktop-align-left tablet-align-left mobile-align-left ast-product-gallery-layout-vertical-slider ast-product-tabs-layout-accordion ast-qv-on-image product type-product post-149 status-publish first instock product_cat-women has-post-thumbnail sale shipping-taxable purchasable product-type-simple">
@@ -189,7 +223,8 @@
 														class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
 														alt="" decoding="async" loading="lazy"></a>
 											</div>
-											<div class="astra-shop-summary-wrap">
+											<div class="astra-shop-summary-wrap" style="background-color: #e7e7e7;
+											border-radius: 0 0 23px 23px;">
 												<a href="#" class="ast-loop-product__link">
 													<h2 class="woocommerce-loop-product__title">
 														<%= productDeatil[i].name %>

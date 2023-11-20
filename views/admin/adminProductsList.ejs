@@ -87,9 +87,16 @@
         <div class="todo">
                 <div class="head">
                     <h3>Category List</h3>
-                    <a href="/admin/addCategory"><i class='bx'>Add Category</i></a>
-                    <i class='bx bx-filter' ></i>
+                    <a style="background: black;
+                    color: white;
+                    padding: 0.5rem 1.5rem;
+                    border-radius: 2rem;" href="/admin/addCategory"><i class='bx'>Add Category</i></a>
                     
+                    <a style="background: black;
+                    color: white;
+                    padding: 0.5rem 1.5rem;
+                    border-radius: 2rem;" href="/admin/addCategory"><i class='bx'>Unlist Category</i></a>
+                    <i class='bx bx-filter' ></i>
                 </div>
                 <ul class="todo-list">
                     <% categoryList.forEach(category => { %>

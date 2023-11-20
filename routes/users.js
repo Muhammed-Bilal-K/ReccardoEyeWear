@@ -32,7 +32,7 @@ router.get('/product-category/women/view/:id', userMiddleware.loggedIn , userCon
 router.get('/cart', userMiddleware.loggedIn , cartController.cart);
 
 /* GET user' homepage listing. */
-router.get('/cart/procesCheck', userMiddleware.loggedIn , cartController.orderProceed);
+router.get('/cart/procesCheck',  cartController.orderProceed);
 
 /* GET user' homepage listing. */
 router.get('/settings', userMiddleware.loggedIn , cartController.userAdd);
@@ -97,5 +97,7 @@ router.post('/getAdd', cartController.processDelivery);
 router.post('/verify-payment', cartController.deliveredOnline);
 
 router.get('/order/return', cartController.returnProducts);
+
+router.post('/coupenCheck', cartController.coupenApply);
 
 module.exports = router;
