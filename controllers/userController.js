@@ -102,8 +102,8 @@ exports.forgetPassword = async (req, res) => {
 exports.homepage = async (req, res) => {
     try {
         await category.find({}).then((categoryData) => {
-            console.log(categoryData);
             res.render('home', { logCheck: req.session.userData, categoryList: categoryData });
+            // res.render('otp',{error:null});
         })
     } catch (error) {
         console.log('homepage');
@@ -578,6 +578,28 @@ exports.newAddress = async (req, res) => {
     }
 }
 
+exports.addAfavorite = async (req,res) => {
+    try {
+        let userId = req.session.userData;
+        let proid = req.params.id;
+        let UserAddss = await user.findOne({ "_id": userId });
+        let isProduct = UserAddss.wishlist.find(item => item.prod_id.toString() == proid);
+        console.log(isProduct);
+        if (!isProduct) {
+            await user.updateOne({"_id":userId},{$push:{
+                wishlist:{
+                    prod_id:req.params.id,
+                }
+            }})
+            res.redirect('/cart');
+        }else{
+            console.log('hi');
+        }
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
 
 exports.updateAdds = async (req, res) => {
     try {
@@ -633,6 +655,17 @@ exports.deleteCartItem = async (req, res) => {
             await user.findByIdAndUpdate({ "_id": UID }, { $pull: { cart: { "_id": CartId } } }, { new: true })
         }
         res.redirect('/cart');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
+
+exports.wallet = async(req,res) => {
+    try {
+        let UID = req.session.userData;
+        let UserAddss = await user.findOne({ "_id": UID });
+        res.render('user/userWallet',{walletData:UserAddss.wallet});
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);

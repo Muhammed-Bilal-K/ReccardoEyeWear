@@ -1,0 +1,135 @@
+<%- include('../partials/__userAddConfig__') %>
+
+
+    <section id="sidebar">
+        <a href="/" class="brand">
+            <i class='bx bx-home'></i>
+            <span class="text">HOME</span>
+        </a>
+        <ul class="side-menu top">
+            <li>
+                <a href="/settings">
+                    <i class='bx bxs-user'></i>
+                    <span class="text">Account Details</span>
+                </a>
+            </li>
+            <li>
+                <a href="/settings/addrs">
+                    <i class='bx bx-home'></i>
+                    <span class="text">Address</span>
+                </a>
+            </li>
+            <li>
+                <a href="/settings/orders">
+                    <i class='bx bxs-shopping-bags'></i>
+                    <span class="text">My Orders</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="/settings/wallet">
+                    <i class='bx bxs-wallet'></i>
+                    <span class="text">Wallet</span>
+                </a>
+            </li>
+            <!-- <li>
+            <a href="#">
+                <i class='bx bxs-message-dots'></i>
+                <span class="text">Message</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class='bx bxs-group'></i>
+                <span class="text">Team</span>
+            </a>
+        </li> -->
+        </ul>
+        <!-- <ul class="side-menu"> -->
+        <!-- <li>
+            <a href="#">
+                <i class='bx bxs-cog' ></i>
+                <span class="text">Settings</span>
+            </a>
+        </li> -->
+        <!-- <li>
+            <a href="#" class="logout">
+                <i class='bx bxs-log-out-circle'></i>
+                <span class="text">Logout</span>
+            </a>
+        </li> -->
+        <!-- </ul> -->
+    </section>
+
+    <!-- CONTENT -->
+    <section id="content">
+        <main class="">
+            <div class="container">
+                <!-- Heading -->
+                <h2 class="text-center">Wallet</h2>
+
+                <!--Grid row-->
+                <div class="row">
+                    <!--Grid column-->
+                    <div class="col-md-10" style="box-shadow: 2px 2px 11px;
+                    border-radius: 18px;
+                    border: 0px solid #efe2fc;
+                    width: 100%;
+                    margin-top: 2rem;">
+                        <!--Card-->
+                        <div class="card p-4">
+                            <!-- first data -->
+                            <div class="input-group mb-4" style="flex-direction: column;
+                            background: antiquewhite;
+                            padding: 1rem 2.5rem;
+                            border-radius: 2rem;">
+                                <h4>Balance amount</h4>
+                                <h1>$<span><%= walletData.balance %></span></h1>
+                            </div>
+                            <div class="input-group mb-4">
+                                <h5 style="margin-left: 2rem;">ALL Transaction Details</h5>
+                            </div>
+                            <div style="width: 100%;">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th style="background: #a29da7;
+                                            color: white;
+                                            font-weight: 700;" scope="col">orderId</th>
+                                            <th style="background: #a29da7;
+                                            color: white;
+                                            font-weight: 700;"scope="col">Amount</th>
+                                            <th style="background: #a29da7;
+                                            color: white;
+                                            font-weight: 700;" scope="col">Date</th>
+                                            <th style="background: #a29da7;
+                                            color: white;
+                                            font-weight: 700;" scope="col">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% walletData.transactions.forEach(TransDetail => { %>
+                                            <tr>
+                                                <th scope="row"><%= TransDetail.orderId %></th>
+                                                <td><%= TransDetail.amount %></td>
+                                                <td><%= TransDetail.orderStatus %></td>
+                                                <td><%= TransDetail.date %></td>
+                                            </tr>
+                                        <% }) %>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--Grid column-->
+                        </div>
+                    </div>
+                </div>
+                <!--Grid column-->
+            </div>
+            <!--Grid row-->
+            </div>
+        </main>
+    </section>
+    <!-- CONTENT -->
+
+
+    <%- include('../partials/__useraddFoo__') %>

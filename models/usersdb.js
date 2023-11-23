@@ -25,6 +25,38 @@ const USERSSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
+    wishlist: [
+        {
+            prod_id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'ProductDetail',
+            },
+        },
+    ],
+    wallet: {
+        balance: {
+            type: Number,
+            default: 0
+        },
+        transactions: [
+            {
+                orderId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "EachUser",
+                },
+                amount: {
+                    type: Number,
+                    require: true,
+                },
+                orderStatus: {
+                    type: String,
+                },
+                date: {
+                    type: Date,
+                }
+            }
+        ]
+    },
     cart: [{
         product_id: { type: mongoose.Schema.Types.ObjectId, ref: 'ProductDetail' },
         qty: {
@@ -49,43 +81,44 @@ const USERSSchema = new mongoose.Schema({
             city: String,
             state: String,
             zipcode: Number,
-            phone:Number,
+            phone: Number,
         }]
     },
-    orders:[{
-        products:[{
+    orders: [{
+        products: [{
             product_id: { type: mongoose.Schema.Types.ObjectId, ref: 'ProductDetail' },
-            qty:{
-                type:Number,
+            qty: {
+                type: Number,
             },
-            price:{
-                type:Number,
+            price: {
+                type: Number,
             },
-            status:{
-                type:String,
-                default:"pending"
+            status: {
+                type: String,
+                default: "pending"
             },
-            returned:{
-                type:Boolean,
-                default:false
+            returned: {
+                type: Boolean,
+                default: false
             },
         }],
-        totalamount:{
-            type:Number,
+        totalamount: {
+            type: Number,
         },
-        paymentmethod:{
-            type:String
+        paymentmethod: {
+            type: String
         },
-        address:{
+        address: {
             name: String,
             email: String,
             country: String,
             address: String,
             city: String,
-            state:String,
+            state: String,
             zipcode: Number,
-            phone:Number,
+            phone: Number,
         },
+        coupen_Id: { type: mongoose.Schema.Types.ObjectId, ref: 'coupon', default: null },
     }]
 });
 

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .invoice-container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #3498db;
+            /* Header background color */
+            color: #fff;
+            /* Header text color */
+            padding: 10px;
+        }
+
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .invoice-details div {
+            flex: 1;
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .invoice-table th,
+        .invoice-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .total {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .footer {
+            background-color: #2c3e50;
+            /* Footer background color */
+            color: #fff;
+            /* Footer text color */
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 78%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-container">
+        <div class="header">
+            <h1>Invoice</h1>
+        </div>
+
+        <div class="invoice-details">
+            <div>
+                <strong>Invoice Number:</strong> INV-001<br>
+                <strong>Date:</strong> November 23, 2023
+            </div>
+
+            <div>
+                <strong>Billed To:</strong><br>
+                <%= AllOrder.address.name %><br>
+                    <%= AllOrder.address.address %><br>
+                        <%= AllOrder.address.city %>, <%= AllOrder.address.state %>, <%= AllOrder.address.zipcode %> -
+                                    <%= AllOrder.address.country %>
+            </div>
+        </div>
+
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% AllOrder.products.forEach(EachPro=> { %>
+                    <tr>
+                        <td>
+                            <%= EachPro.product_id.name %>
+                        </td>
+                        <td>
+                            <%= EachPro.qty %>
+                        </td>
+                        <td>
+                            <%= EachPro.product_id.price %>.00
+                        </td>
+                        <td>
+                            <%= EachPro.price %>.00
+                        </td>
+                    </tr>
+
+                    <% }) %>
+
+            </tbody>
+        </table>
+
+        <div class="total">
+            <strong>Total:</strong>
+            <%= AllOrder.totalamount %>.00
+        </div>
+        <a href="/downloadPdf/<%= AllOrder._id %>">Download</a>
+        <div class="footer">
+            Thank you for your Order!
+        </div>
+    </div>
+</body>
+
+</html>

@@ -18,15 +18,16 @@
                 <%= error %>
             </p>
             <% } %>
-                <form action="/passOtpverify" method="post" style="background-color: #e2c399;">
-                    <h5 style="font-size: 1rem;">Email Verification</h5>
+                <form action="/passOtpverify" method="post" style="background-color: #e2d8cc; margin-top: 90px;">
+                    <h3 style="font-size: 20px;
+                    font-weight: 600"">Email Verification</h3>
                     <div style="text-align: center;">
                         <label for="otp">OTP</label>
-                        <input type="number" name="otp" id="Password" required>
+                        <input type="number" style="border-radius: 24px;" name="otp" id="Password" required>
                     </div>
-                    <div><input type="submit" value="Verify"></div>
+                    <div><input type="submit" value="Verify" style="border-radius: 25px;"></div>
                 </form>
-                <form action="/resendOtp" method="post">
+                <form action="/resendOtp" method="post" style="background-color: #e2d8cc; margin-top: -13px;">
                     <div style="text-align: center;font-size: medium;color: black;font-weight: 700;" id="otp-timer">
                     </div>
                     <div><input id="resend"

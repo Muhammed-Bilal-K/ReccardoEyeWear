@@ -24,13 +24,13 @@
 					<span class="text">My Orders</span>
 				</a>
 			</li>
+			<li>
+				<a href="/settings/wallet">
+					<i class='bx bxs-message-dots'></i>
+					<span class="text">Wallet</span>
+				</a>
+			</li>
 			<!-- <li>
-			<a href="#">
-				<i class='bx bxs-message-dots'></i>
-				<span class="text">Message</span>
-			</a>
-		</li>
-		<li>
 			<a href="#">
 				<i class='bx bxs-group'></i>
 				<span class="text">Team</span>
@@ -61,10 +61,20 @@
 			border-radius: 15px;
 			box-shadow: 6px 3px 21px #909090;">
 				<div class="card-body">
-					<h5 class="card-title"><%= addList[i].name %></h5>
-					<h6 class="card-subtitle mb-2 text-muted"><%= addList[i].email %></h6>
-					<h6 class="card-subtitle mb-2 text-muted"><%= addList[i].select %></h6>
-					<p class="card-text"> <%= addList[i].address %> , <%= addList[i].city %> , <%= addList[i].state %> , <%= addList[i].zipcode %> <%= addList[i].phone %></p>
+					<h5 class="card-title">
+						<%= addList[i].name %>
+					</h5>
+					<h6 class="card-subtitle mb-2 text-muted">
+						<%= addList[i].email %>
+					</h6>
+					<h6 class="card-subtitle mb-2 text-muted">
+						<%= addList[i].select %>
+					</h6>
+					<p class="card-text">
+						<%= addList[i].address %> , <%= addList[i].city %> , <%= addList[i].state %> , <%=
+										addList[i].zipcode %>
+										<%= addList[i].phone %>
+					</p>
 					<!-- idid -->
 					<a href="/settings/useradd/update/<%= addList[i]._id %>" class="card-link">Edit</a>
 					<a href="/settings/useradd/delete/<%= addList[i]._id %>" class="card-link">Delete</a>

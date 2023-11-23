@@ -129,7 +129,7 @@
                                                 <button type="button" id="minus_qty" class="minus"
                                                     style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
     
-                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','-1','<%= x.totalPrice %>','productPrice','sub-total','sum')">-</button>
+                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','-1','<%= x.totalPrice %>','productPrice','sub-total','sum','<%= x._id %>')">-</button>
                                                     
                                                 <input type="number" class="" name="quantity" style="border: 1px solid rgb(245, 230, 230);
                                                     height: 1rem;
@@ -139,7 +139,7 @@
                                                 <label class="screen-reader-text" for="plus_qty"> Plus Quantity</label>
                                                 <button type="button" href="" id="plus_qty" class="plus"
                                                     style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
-                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','+1','<%= x.totalPrice %>','productPrice','sub-total','sum')">+</button>
+                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','+1','<%= x.totalPrice %>','productPrice','sub-total','sum','<%= x._id %>')">+</button>
 
 
                                             </td>
@@ -220,7 +220,7 @@
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
         <script>
-            function changeQuantity(proid, userID, count, totalP, pPrice, allP, sum) {
+            function changeQuantity(proid, userID, count, totalP, pPrice, allP, sum , cart) {
                 var quantity = parseInt(document.getElementById(proid).value);
                 var tP = parseInt(document.getElementById(totalP).innerText);
                 var pp = parseInt(document.getElementById(pPrice).innerText);
@@ -233,6 +233,7 @@
                         user: userID,
                         count: count,
                         quantity: quantity,
+                        cartid: cart,
                     },
                     method: 'post',
                     success: (response) => {
@@ -251,8 +252,10 @@
                             document.getElementById(totalP).innerHTML = Psum;
                             document.getElementById(allP).innerHTML = ALLp;
                             document.getElementById(sum).innerHTML = summm;
+                        }else if(response.RemovePcart){
+                            window.location.href = response.redirectToCart; 
                         }else{
-                            alert("Out of Stock or You reach maximum");
+                            alert("You reach maximum");
                         }
                     }
                 })
