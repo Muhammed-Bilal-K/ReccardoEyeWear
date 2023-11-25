@@ -352,6 +352,8 @@
                             document.getElementById('placeholderValue').innerText = response.amountData;
                             document.getElementById('coupenid').value = response.coupenid;
                             
+                        }else if(response.dataInvalid) {
+                            alert('Invalid coupon code or expired');
                         }else{
                             alert('the coupen used');
                         }

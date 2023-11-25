@@ -443,7 +443,9 @@ exports.orderProceed = async (req, res) => {
         var count = 0;
         var emailData = await user.findOne({ "_id": userId }, { "email": 1 });
         var allDeta = await user.findOne({ "_id": userId }).populate('cart.product_id');
-        var f = allDeta.cart;
+        if (allDeta.cart != null) {
+            var f = allDeta.cart;
+        }
         for (var x of f) {
             sumP = sumP + x.totalPrice;
             count++;
@@ -510,6 +512,18 @@ exports.viewEach = async (req, res) => {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
     }
+}
+
+exports.DeleteOrder = async(req,res) => {
+    let Ordd = req.query.Ordid;
+    let Prodd = req.query.proId;
+    let UID = req.session.userData;
+
+    await user.updateOne(
+        { _id: UID, 'orders._id': Ordd },
+        { $pull: { 'orders.$.products': { _id: Prodd } } }
+    );
+    res.redirect('/settings/orders');
 }
 
 exports.returnProducts = async (req, res) => {
@@ -620,7 +634,7 @@ exports.coupenApply = async (req, res) => {
         console.log(allcuopenData);
         if (!allcuopenData) {
             // return res.status(400).send('Invalid coupon code or expired.');
-            res.json({ data: false });
+            res.json({ dataInvalid: false });
         }
 
         let coupenUpdate = await coupensdb.findOne({ "_id": allcuopenData._id, usedusers: { $eq: UID } });

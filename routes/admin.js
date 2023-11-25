@@ -51,6 +51,10 @@ router.get('/coupens', adminMiddleware.loggedIn , adminController.coupenManageme
 
 router.get('/addCoupons', adminMiddleware.loggedIn , adminController.addcoupens);
 
+router.get('/editCoupon' , adminController.editCoupen);
+
+router.get('/deleteCoupon' , adminController.deleteCoupen);
+
 router.get('/logout', adminController.logoutpage)
 
 ///////////////////////////////////////////////////////////////////
@@ -63,14 +67,14 @@ router.post('/admin/addProducts', adminMiddleware.loggedIn, productController.ad
 
 router.post('/admin/addCoupen' , adminMiddleware.loggedIn , productController.addcoupens);
 
+router.post('/admin/editCoupen' , adminMiddleware.loggedIn , productController.editCoupen);
+
 /* POST user's loginppage listing. */
 router.post('/Productupdate/:id', adminMiddleware.loggedIn, productController.updateNewSpecific);
-
 
 router.get('/unlist',  adminMiddleware.loggedIn, productController.unlistProduct);
 
 router.get('/list',  adminMiddleware.loggedIn, productController.listProduct)
-
 
 /* POST user's loginppage listing. */
 router.post('/updateUser/:id', adminMiddleware.loggedIn, adminController.userUpdateDetail);

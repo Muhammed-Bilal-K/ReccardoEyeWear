@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+	/* Style The Dropdown Button */
+	.dropbtn {
+		color: rgb(0, 0, 0);
+		padding: 16px;
+		font-size: 12px;
+		border: none;
+		cursor: pointer;
+	}
+
+	/* The container <div> - needed to position the dropdown content */
+	.dropdown {
+		position: relative;
+		display: inline-block;
+	}
+
+	/* Dropdown Content (Hidden by Default) */
+	.dropdown-content {
+		display: none;
+		position: absolute;
+		background-color: #f9f9f9;
+		min-width: 160px;
+		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+		z-index: 1;
+	}
+
+	/* Links inside the dropdown */
+	.dropdown-content a {
+		color: black;
+		padding: 12px 16px;
+		text-decoration: none;
+		display: block;
+	}
+
+	/* Change color of dropdown links on hover */
+	.dropdown-content a:hover {
+		background-color: #f1f1f1
+	}
+
+	/* Show the dropdown menu on hover */
+	.dropdown:hover .dropdown-content {
+		display: block;
+	}
+
+	/* Change the background color of the dropdown button when the dropdown content is shown */
+</style>
+<%- include('partials/__homeheader__') %>
+
+	<body
+		class="archive tax-product_cat term-women term-35 wp-custom-logo theme-astra woocommerce woocommerce-page woocommerce-js ast-desktop ast-plain-container ast-no-sidebar astra-4.3.1 columns-3 tablet-columns-3 mobile-columns-2 ast-woo-shop-archive ast-inherit-site-logo-transparent ast-hfb-header ast-full-width-primary-header ast-default-shop-page-modern-style ast-woocommerce-shop-page-modern-style ast-woocommerce-pagination-type-infinite elementor-default elementor-kit-4 astra-addon-4.1.5">
+
+		<div class="hfeed site" id="page">
+			<header
+				class="site-header header-main-layout-1 ast-primary-menu-enabled ast-logo-title-inline ast-hide-custom-menu-mobile ast-builder-menu-toggle-icon ast-mobile-header-inline"
+				id="masthead" itemscope="itemscope" itemid="#masthead">
+				<div id="ast-desktop-header" data-toggle-type="dropdown">
+					<div class="ast-main-header-wrap main-header-bar-wrap ">
+						<div class="ast-primary-header-bar ast-primary-header main-header-bar site-header-focus-item"
+							data-section="section-primary-header-builder" style="box-shadow: 0px 2px 13px">
+							<div class="site-primary-header-wrap ast-builder-grid-row-container site-header-focus-item ast-container"
+								data-section="section-primary-header-builder">
+								<div
+									class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-grid-center-col-layout">
+									<div
+										class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+										<div class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+											data-section="section-hb-menu-1">
+											<div class="ast-main-header-bar-alignment">
+												<div class="main-header-bar-navigation">
+													<nav class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+														id="primary-site-navigation-desktop"
+														aria-label="Site Navigation" itemscope="itemscope">
+														<div class="main-navigation ast-inline-flex">
+															<ul id="ast-hf-menu-1"
+																class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex  submenu-with-border ast-menu-hover-style-underline  stack-on-mobile">
+																<li id="menu-item-81"
+																	class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-81">
+																	<a href="/" class="menu-link">Home</a>
+																</li>
+															</ul>
+														</div>
+													</nav>
+												</div>
+											</div>
+										</div>
+										<div
+											class="site-header-primary-section-left-center site-header-section ast-flex ast-grid-left-center-section">
+										</div>
+									</div>
+									<div
+										class="site-header-primary-section-center site-header-section ast-flex ast-grid-section-center">
+										<div class="ast-builder-layout-element ast-flex site-header-focus-item"
+											data-section="title_tagline">
+											<div class="site-branding ast-site-identity" itemscope="itemscope">
+												<span class="site-logo-img"><a href="/" class="custom-logo-link"
+														rel="home"><img width="134" height="56"
+															src="/images/logo-header-regular copy.png"
+															class="custom-logo" alt="Eyewear Store"></a><span>
+											</div>
+										</div>
+									</div>
+									<div
+										class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+										<div
+											class="site-header-primary-section-right-center site-header-section ast-flex ast-grid-right-center-section">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</header>
+			<div id="content" class="site-content">
+				<div class="ast-container">
+					<div id="primary" class="content-area primary">
+						<main id="main" class="site-main">
+
+                            <% if (productDeatil.length == 0) { %>
+                                <div style="text-align: center;">
+                                    <h3>There is no Product In this Category</h3>
+                                </div>
+                            <% } else { %>
+                                
+                                <div class="ast-woocommerce-container">
+                                    <header class="woocommerce-products-header">
+                                        <h1 class="woocommerce-products-header__title page-title" style="font-size: 5rem; margin-bottom: 60px;">
+                                            <%= categoryList %>
+                                        </h1>
+    
+                                        <div>
+    
+                                            <div>
+                                                <form>
+                                                    <div class="input-group">
+                                                        <div class="dropdown">
+                                                            <p class="dropbtn" style="background: white;
+                                                            padding: 1rem 2rem;
+                                                            font-weight: 800;
+                                                            font-size: 12px;
+                                                            border-radius: 11px;
+                                                            box-shadow: 1px 1px 3px #3c4542;">sort by value... v</p>
+                                                            <div class="dropdown-content">
+                                                                <div class="filter-container" style="margin-left: 15px;">
+                                                                        <label>
+                                                                            <input type="radio" name="price" value="all">
+                                                                            All
+                                                                        </label>
+                                                                        <br>
+                                                                        <label>
+                                                                            <input type="radio" name="price" value="0-300">
+                                                                            $0 - $300
+                                                                        </label>
+                                                                        <label>
+                                                                            <input type="radio" name="price" value="300-500">
+                                                                            $300 - $500
+                                                                        </label>
+                                                                        <label>
+                                                                            <input type="radio" name="price" value="500-750">
+                                                                            $500 - $750
+                                                                        </label>
+                                                                        <label>
+                                                                            <input type="radio" name="price"
+                                                                                value="750-1000">
+                                                                            $750 - $1000
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- <div class="dropdown">
+                                                                <p class="dropbtn" style="background: antiquewhite;
+                                                            border-radius: 15px; margin-left: 2rem;
+                                                            box-shadow: 3px 4px 8px #3c4542;">Category Filter</p>
+                                                            <div class="dropdown-content">
+                                                                
+                                                                    <label>
+                                                                        <input type="radio" name="category"
+                                                                            value="">
+                                                                            
+                                                                    </label>
+                                                                
+                                                                
+                                                            </div>
+                                                        </div> -->
+                                                        <input type="text" hidden name="category" value="<%= categoryList %>">
+                                                        <input type="search" class="form-control rounded" name="search"
+                                                            placeholder="Search" aria-label="Search"
+                                                            aria-describedby="search-addon" style="margin-bottom: 2rem;
+                                                            margin-left: 39rem;
+                                                            margin-right: 2px;
+                                                            outline: #707070;
+                                                            height: 3rem;
+                                                            border: 1px solid burlywood;" />
+                                                        <button type="submit" style="height: 3rem;
+                                                        background: white;
+                                                        color: black;
+                                                        margin-left: -5px;
+                                                        border: 1px solid burlywood;" class="btn btn-outline-primary">search</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </header>
+                                    <div class="woocommerce-notices-wrapper"></div>
+                                    <ul class="products columns-3">
+    
+                                        <% for( let i=0; i < productDeatil.length; i++ ) { %>
+                                            <li style="box-shadow: 0px 3px 4px #a09a94; border-radius: 12px;"
+                                                class="ast-grid-common-col ast-full-width ast-article-post astra-woo-hover-swap desktop-align-left tablet-align-left mobile-align-left ast-product-gallery-layout-vertical-slider ast-product-tabs-layout-accordion ast-qv-on-image product type-product post-149 status-publish first instock product_cat-women has-post-thumbnail sale shipping-taxable purchasable product-type-simple">
+                                                <div class="astra-shop-thumbnail-wrap">
+                                                    <a style="position: absolute;cursor: pointer;
+                                                    z-index: 1;
+                                                    top: 2rem;
+                                                    right: 2rem;" href="/product/favorite/<%=  productDeatil[i]._id %>" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                                      </svg></a>
+                                                    <a href="/product-category/women/view/<%=  productDeatil[i]._id %>"
+                                                        class="woocommerce-LoopProduct-link woocommerce-loop-product__link"><img
+                                                            style="border-radius: 12px 12px 0px 0px;;" width="600"
+                                                            height="600" src="/uploaded/<%=  productDeatil[i].image[0] %>"
+                                                            class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
+                                                            alt="" decoding="async" loading="lazy"></a>
+                                                </div>
+                                                <div class="astra-shop-summary-wrap" style="background-color: #e7e7e7;
+                                                border-radius: 0px 0px 12px 12px;">
+                                                    <a href="#" class="ast-loop-product__link">
+                                                        <h2 class="woocommerce-loop-product__title">
+                                                            <%= productDeatil[i].name %>
+                                                        </h2>
+                                                    </a>
+
+                                                    <br>
+
+                                                    <% for( let i = 0; i < 4; i++ ) { %>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                            <path style="color: #e4db7a;" d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                          </svg>
+                                                    <% } %>
+
+                                                    <span class="price"><del aria-hidden="true"><span
+                                                                class="woocommerce-Price-amount amount"><bdi><span
+                                                                        class="woocommerce-Price-currencySymbol">$</span>175.00</bdi></span></del>
+                                                        <ins><span class="woocommerce-Price-amount amount"><bdi><span
+                                                                        class="woocommerce-Price-currencySymbol">$</span>
+                                                                    <%= productDeatil[i].price %>.00
+                                                                </bdi></span></ins></span>
+                                                </div>
+                                            </li>
+                                            <% } %>
+                                    </ul>
+                                </div>
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination">
+                                        <!-- <li class="page-item"><a class="page-link" href="#">Previous</a></li> -->
+    
+                                        <% for( let i=1; i <=totalPages; i++ ) { %>
+                                            <li class="page-item"><a class="page-link"
+                                                    href="/product-category?category=<%= categoryList %>&search=<%= search %>&page=<%= i %>&price=<%= price %>">
+                                                    <%= i %>
+                                                </a></li>
+                                            <% } %>
+    
+                                                <!-- <li class="page-item"><a class="page-link" href="#">Next</a></li> -->
+                                    </ul>
+                                </nav>
+                            <% } %>
+
+						</main>
+					</div>
+				</div>
+			</div>
+			<footer class="site-footer" id="colophon" itemscope="itemscope" itemid="#colophon">
+				<div class="site-below-footer-wrap ast-builder-grid-row-container site-footer-focus-item ast-builder-grid-row-2-equal ast-builder-grid-row-tablet-2-equal ast-builder-grid-row-mobile-full ast-footer-row-stack ast-footer-row-tablet-stack ast-footer-row-mobile-stack"
+					data-section="section-below-footer-builder">
+					<div class="ast-builder-grid-row-container-inner">
+						<div class="ast-builder-footer-grid-columns site-below-footer-inner-wrap ast-builder-grid-row">
+							<div class="site-footer-below-section-1 site-footer-section site-footer-section-1">
+								<div class="ast-builder-layout-element ast-flex site-footer-focus-item ast-footer-copyright"
+									data-section="section-footer-builder">
+									<div class="ast-footer-copyright">
+										<p>Copyright © 2023 Eyewear Store | Powered by Eyewear Store</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+		<div id="showcase-cta-entry-root" class="st-customizer-cta"></div>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+			crossorigin="anonymous"></script>
+	</body>
+
+</html>

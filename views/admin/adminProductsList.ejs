@@ -32,7 +32,12 @@
             </div>
         </div>
 
-
+        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." style="outline: none;
+        border-radius: 16px;
+        border: 1px #9d9d9d solid;
+        margin-top: 30px;
+        padding: 12px;
+        padding-right: 66px;">
         <div class="table-data">
             <div class="order">
                 <div class="head">
@@ -40,7 +45,7 @@
                     <i class='bx bx-search'></i>
                     <i class='bx bx-filter'></i>
                 </div>
-                <table>
+                <table id="myTable">
                     <thead>
                         <tr>
                             <th>Product</th>
@@ -68,11 +73,11 @@
                                 </td>
                                 <td><span>
                                         <%= proData.price %>
-                                </span></td>
+                                    </span></td>
                                 <td><a href="/admin/updateProduct/<%= proData._id %>"><span
                                             class="status completed">Update</span></a>
-                                            
-                                            <a href="/admin/unlist?id=<%= proData._id %>"><span
+
+                                    <a href="/admin/unlist?id=<%= proData._id %>"><span
                                             class="status pending">Unlist</span></a>
                                 </td>
                             </tr>
@@ -83,29 +88,96 @@
         </div>
         <div class="table-data">
 
-        
-        <div class="todo">
+
+            <div class="todo">
+                <div class="head">
+                    <h3>Category List</h3>
+                    <input type="text" id="searchInput" placeholder="Search category..." style="border-radius: 25px;
+                    border: 1px #9d9d9d solid;
+                    padding: 12px;">
+                    <a style="background: black; color: white; padding: 0.5rem 1.5rem; border-radius: 2rem;" href="/admin/addCategory"><i class='bx'>Add Category</i></a>
+                    <a style="background: black; color: white; padding: 0.5rem 1.5rem; border-radius: 2rem;" href="/admin/addCategory"><i class='bx'>Unlist Category</i></a>
+                    <i class='bx bx-filter'></i>
+                </div>
+                <ul class="todo-list">
+                    <% categoryList.forEach(category => { %>
+                        <li class="completed" data-category="<%= category.name %>" style="text-align: center;">
+                            <p style="display: inline">
+                                <%= category.name %>
+                            </p>
+                            <a style="margin-left: 57rem;" href="/admin/category/delete?name=<%= category.name %>"><i class='bx'>Delete</i></a>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+            <!-- <div class="todo">
                 <div class="head">
                     <h3>Category List</h3>
                     <a style="background: black;
                     color: white;
                     padding: 0.5rem 1.5rem;
                     border-radius: 2rem;" href="/admin/addCategory"><i class='bx'>Add Category</i></a>
-                    
+
                     <a style="background: black;
                     color: white;
                     padding: 0.5rem 1.5rem;
                     border-radius: 2rem;" href="/admin/addCategory"><i class='bx'>Unlist Category</i></a>
-                    <i class='bx bx-filter' ></i>
+                    <i class='bx bx-filter'></i>
                 </div>
                 <ul class="todo-list">
-                    <% categoryList.forEach(category => { %>
+                    
                         <li class="completed">
-                            <p><%= category.name %></p>
-                            <a href="/admin/category/delete?name=<%= category.name %>"><i class='bx' >Delete</i></a>
+                            <p>
+                               
+                            </p>
+                            <a href="/admin/category/delete?name="><i class='bx'>Delete</i></a>
                         </li>
-                    <% }) %>
+                        
                 </ul>
             </div>
-        </div>
+        </div> -->
+
+        <script>
+            function myFunction() {
+                // Declare variables
+                var input, filter, table, tr, td, i, txtValue;
+                input = document.getElementById("myInput");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("myTable");
+                tr = table.getElementsByTagName("tr");
+
+                // Loop through all table rows, and hide those who don't match the search query
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[0];
+                    if (td) {
+                        txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const searchInput = document.getElementById('searchInput');
+                const todoList = document.querySelectorAll('.todo-list li');
+        
+                searchInput.addEventListener('input', function () {
+                    const searchValue = searchInput.value.toLowerCase();
+        
+                    todoList.forEach(item => {
+                        const category = item.dataset.category.toLowerCase();
+                        if (category.includes(searchValue)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        </script>
+
         <%- include('../partials/adminPartials/__adminFooter__') %>

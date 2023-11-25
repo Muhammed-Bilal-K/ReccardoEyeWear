@@ -21,7 +21,7 @@ router.get('/product-category/women', userController.womencate);
 router.get('/product-category/men', userController.mencate);
 
 /* GET user' homepage listing. */
-// router.get('/product-category', userController.mencate);
+router.get('/product-category', userController.allCategory);
 
 router.get('/forgetpassword', userController.forgetPassword);
 
@@ -54,10 +54,12 @@ router.get('/settings/orders', userMiddleware.loggedIn , cartController.listOrde
 /* GET user' homepage listing. */
 router.get('/settings/orders/view/:id', userMiddleware.loggedIn , cartController.viewEach);
 
+router.get('/order/delete', userMiddleware.loggedIn , cartController.DeleteOrder);
+
 /* GET user' homepage listing. */
 router.get('/order/:id', userMiddleware.loggedIn , cartController.downloadPdf);
 
-router.get('/downloadPdf/:id', cartController.downloadData)
+router.get('/downloadPdf/:id', cartController.downloadData);
 
 /* GET user' homepage listing. */
 router.get('/settings/useradd/update/:id', userMiddleware.loggedIn , userController.updateUseradd);

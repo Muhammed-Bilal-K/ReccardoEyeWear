@@ -7861,7 +7861,7 @@
                               <li class="dropbtn">Explore</li>
                               <div class="dropdown-content">
                                 <% categoryList.forEach(element=> { %>
-                                  <a href="#">
+                                  <a href="/product-category?category=<%= element.name %>">
                                     <%= element.name %>
                                   </a>
                                   <% }) %>

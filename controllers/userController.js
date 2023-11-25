@@ -112,67 +112,6 @@ exports.homepage = async (req, res) => {
     }
 }
 
-// exports.womencate = async (req, res) => {
-//     try {
-//         var search = '';
-//         var limit = 4;
-//         var page = 1;
-//         if (req.query.search) {
-//             search = req.query.search;
-//         }
-
-//         if (req.query.page) {
-//             page = req.query.page;
-//         }
-
-//         let categoryData = await category.findOne({ name: 'woman' });
-//         var AllProduct = await product.find({
-//             category: "woman",
-//             $or: [
-//                 {
-//                     name: {
-//                         $regex: '.*' + search + '.*',
-//                         $options: 'i'
-//                     }
-//                 },
-//                 {
-//                     price: {
-//                         $regex: '.*' + search + '.*',
-//                         $options: 'i'
-//                     }
-//                 }
-//             ]
-//         }).limit(limit * 1).skip((page - 1) * limit).exec();
-
-//         var count = await product.find({
-//             category: "woman",
-//             $or: [
-//                 {
-//                     name: {
-//                         $regex: '.*' + search + '.*',
-//                         $options: 'i'
-//                     }
-//                 },
-//                 {
-//                     price: {
-//                         $regex: '.*' + search + '.*',
-//                         $options: 'i'
-//                     }
-//                 }
-//             ]
-//         }).countDocuments();
-
-//         res.render('men', {
-//             productDeatil: AllProduct, categoryList: categoryData, totalPages: Math.ceil(count / limit),
-//             currentPage: page,
-//             search,
-//         });
-//     } catch (error) {
-//         const statusCode = error.status || 500;
-//         res.status(statusCode).send(error.message);
-//     }
-// }
-
 exports.womencate = async (req, res) => {
     try {
         var limit = 4;
@@ -235,7 +174,7 @@ exports.womencate = async (req, res) => {
             }
         } else {
             limit = 4;
-            page = 1 ;
+            page = 1;
             if (req.query.page) {
                 page = req.query.page;
             }
@@ -265,7 +204,7 @@ exports.mencate = async (req, res) => {
         var page = 1;
         let categoryData = await category.findOne({ name: 'men' });
 
-        if (req.query.search || req.query.price ) {
+        if (req.query.search || req.query.price) {
             var search = req.query.search;
             page = req.query.page;
             if (req.query.price) {
@@ -322,7 +261,7 @@ exports.mencate = async (req, res) => {
             }
         } else {
             limit = 4;
-            page = 1 ;
+            page = 1;
             if (req.query.page) {
                 page = req.query.page;
             }
@@ -345,6 +284,97 @@ exports.mencate = async (req, res) => {
     }
 }
 
+
+exports.allCategory = async (req, res) => {
+    try {
+        var limit = 4;
+        var page = 1;
+        var categoryd = req.query.category;
+        let categoryListed = await category.find({});
+        console.log(categoryListed);
+        console.log(req.query);
+
+        if (req.query.search || req.query.price) {
+            var search = req.query.search;
+            page = req.query.page;
+            if (req.query.price) {
+                var price = req.query.price;
+                if (price != 'all') {
+                    var [minPrice, maxPrice] = price.split('-').map(Number);
+                } else {
+                    var minPrice = 0;   
+                    var maxPrice = 1000;
+                }
+            }
+            if (search) {
+                var AllProduct = await product.find({
+                    category: categoryd,
+                    $or: [
+                        {
+                            name: {
+                                $regex: '.*' + search + '.*',
+                                $options: 'i'
+                            }
+                        },
+                    ]
+                }).limit(limit * 1).skip((page - 1) * limit);
+
+                var count = await product.find({
+                    category: categoryd,
+                    $or: [
+                        { name: { $regex: '.*' + search + '.*', $options: 'i' } },
+                    ]
+                }).countDocuments();
+
+            } else {
+                var AllProduct = await product.find({
+                    category: categoryd,
+                    $or: [
+                        {
+                            price: {
+                                $gte: minPrice, $lte: maxPrice
+                            }
+                        },
+                    ]
+                }).limit(limit * 1).skip((page - 1) * limit);
+
+                var count = await product.find({
+                    category: categoryd,
+                    $or: [
+                        {
+                            price: {
+                                $gte: minPrice, $lte: maxPrice
+                            }
+                        },
+                    ]
+                }).countDocuments();
+            }
+        } else {
+            limit = 4;
+            page = 1;
+            if (req.query.page) {
+                page = req.query.page;
+            }
+
+            var AllProduct = await product.find({ category: categoryd }).limit(limit * 1).skip((page - 1) * limit).exec();
+            var count = await product.find({ category: categoryd }).countDocuments();
+        }
+
+        res.render('menDuplicate', {
+            productDeatil: AllProduct,
+            categoryList: categoryd,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            search,
+            price,
+            categoryListed,
+        });
+
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
 
 exports.loginpage = async (req, res) => {
     try {
@@ -551,7 +581,6 @@ exports.setPassword = async (req, res) => {
 }
 
 exports.newAddress = async (req, res) => {
-    console.log(req.body);
     var userId = req.session.userData;
     var UserAddss = await user.findOne({ "_id": userId });
     try {
@@ -578,7 +607,7 @@ exports.newAddress = async (req, res) => {
     }
 }
 
-exports.addAfavorite = async (req,res) => {
+exports.addAfavorite = async (req, res) => {
     try {
         let userId = req.session.userData;
         let proid = req.params.id;
@@ -586,13 +615,15 @@ exports.addAfavorite = async (req,res) => {
         let isProduct = UserAddss.wishlist.find(item => item.prod_id.toString() == proid);
         console.log(isProduct);
         if (!isProduct) {
-            await user.updateOne({"_id":userId},{$push:{
-                wishlist:{
-                    prod_id:req.params.id,
+            await user.updateOne({ "_id": userId }, {
+                $push: {
+                    wishlist: {
+                        prod_id: req.params.id,
+                    }
                 }
-            }})
+            })
             res.redirect('/cart');
-        }else{
+        } else {
             console.log('hi');
         }
     } catch (error) {
@@ -661,11 +692,11 @@ exports.deleteCartItem = async (req, res) => {
     }
 }
 
-exports.wallet = async(req,res) => {
+exports.wallet = async (req, res) => {
     try {
         let UID = req.session.userData;
         let UserAddss = await user.findOne({ "_id": UID });
-        res.render('user/userWallet',{walletData:UserAddss.wallet});
+        res.render('user/userWallet', { walletData: UserAddss.wallet });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);

@@ -13,7 +13,11 @@
 <body>
   <div style="text-align: center;">
     <div style="margin-top: 2rem;">
-      <a href="/">Home</a>
+      <a style="text-decoration: none;
+      font-size: 18px;
+      font-weight: 600;
+      color: black;
+      text-transform: uppercase;" href="/">Home</a>
     </div>
     <div style="margin-top: 3rem;">
       <h4><i style="font-size: 100px;" class="bi bi-heart"></i></h4>
@@ -40,9 +44,7 @@
               <%= wdata.prod_id.name %>
             </th>
             <th><img style="width: 80px;
-                          margin-left: 2rem;" src="/uploaded/<%= wdata.prod_id.image[0] %>" alt="" srcset=""></th>
-
-
+              margin-left: 2rem;" src="/uploaded/<%= wdata.prod_id.image[0] %>" alt="" srcset=""></th>
             <td style="text-align: center;
             vertical-align: middle;">
               <%= wdata.prod_id.price %>
@@ -56,7 +58,12 @@
             <form action="/addToCart/<%= wdata.prod_id._id %>" method="post">
               <input type="text" hidden name="quantity" value="1">
               <input type="text" hidden name="equantity" value="<%= wdata.prod_id.qnumber %>">
-              <button>addToCart</button>
+              <button style="background-color: #3865ff;
+              color: white;
+              border-radius: 23px;
+              padding: 6px 20px;
+              outline: none;
+              border: black;">addToCart</button>
             </form>
           </td>
           </tr>

@@ -44,7 +44,7 @@ exports.addaProducts = async (req, res) => {
                 let newImageName = randomName;
                 let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
                 let croppedImages = require('path').resolve('./') + '/public/uploaded/croppedImage' + newImageName;
-                sharp(file.data).resize(450,450).toFile(croppedImages);
+                sharp(file.data).resize(450, 450).toFile(croppedImages);
                 file.mv(uploadPath, (err) => {
                     if (err) {
                         return res.status(500).json({ message: 'Error uploading files.' });
@@ -58,7 +58,7 @@ exports.addaProducts = async (req, res) => {
             let newImageName = randomName;
             let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
             let croppedImages = require('path').resolve('./') + '/public/uploaded/croppedImage' + newImageName;
-            await sharp(ImageUpload).resize(300,300).toFile(croppedImages);
+            await sharp(ImageUpload).resize(300, 300).toFile(croppedImages);
             ImageUpload.mv(uploadPath, err => {
                 if (err) {
                     return res.status(500).json({ message: 'Error uploading file.' });
@@ -82,21 +82,50 @@ exports.addaProducts = async (req, res) => {
     }
 }
 
-exports.addcoupens = async (req,res) => {
+exports.addcoupens = async (req, res) => {
     try {
-        console.log(req.body);
         const coupenDetail = new coupen({
-            couponname : req.body.couponName,
-            couponcode :  req.body.couponCode,
-            discountamount : req.body.discount,
-            mincartamount : req.body.ordersAbove,
-            maxUseCount : req.body.maxUseCount,
-            expired : req.body.expiryDate, 
+            couponname: req.body.couponName,
+            couponcode: req.body.couponCode,
+            discountamount: req.body.discount,
+            mincartamount: req.body.ordersAbove,
+            maxUseCount: req.body.maxUseCount,
+            expired: req.body.expiryDate,
         });
         await coupenDetail.save();
         if (coupenDetail) {
             res.redirect('/admin/coupens');
         }
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
+
+exports.editCoupen = async (req, res) => {
+    try {
+        if (req.body.expiryDate == '') {
+            
+            await coupen.updateOne({ "_id": req.body.id }, {
+                $set: {
+                    couponname: req.body.couponName,
+                    couponcode: req.body.couponCode,
+                    discountamount: req.body.discount,
+                    mincartamount: req.body.ordersAbove,
+                }
+            });
+        } else {
+            await coupen.updateOne({ "_id": req.body.id }, {
+                $set: {
+                    couponname: req.body.couponName,
+                    couponcode: req.body.couponCode,
+                    discountamount: req.body.discount,
+                    mincartamount: req.body.ordersAbove,
+                    expired: req.body.expiryDate,
+                }
+            });
+        }
+        res.redirect('/admin/coupens');
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -143,12 +172,12 @@ exports.updateNewSpecific = async (req, res) => {
                         price: parseInt(req.body.pprice),
                         category: req.body.pcategory,
                         description: req.body.pdescription,
-                        
-                    },$push:{
-                        image: { $each: img } 
+
+                    }, $push: {
+                        image: { $each: img }
                     }
                 },
-    
+
             );
         } else {
             await product.updateOne({ "_id": formattedId }, {

@@ -256,7 +256,33 @@ exports.coupenManagement = async (req,res) => {
 }
 
 exports.addcoupens = async(req,res) => {
-    res.render('admin/couponsManage');
+    try {
+        res.render('admin/couponsManage');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
+
+exports.editCoupen = async (req,res) => {
+    try {
+        let coupenData = await coupen.findOne({_id:req.query.id});
+        res.render('admin/editCoupen',{coupenData:coupenData , CoupenExist : req.session.existingCoupon});
+        req.session.existingCoupon = false;
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
+
+exports.deleteCoupen = async (req,res) => {
+    try {
+        await coupen.deleteOne({_id:req.query.id});
+        res.redirect('/admin/coupens');
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
 }
 
 exports.deleteImg = async (req, res) => {
