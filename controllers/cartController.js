@@ -529,7 +529,7 @@ exports.DeleteOrder = async(req,res) => {
 exports.returnProducts = async (req, res) => {
     let UID = req.session.userData;
     try {
-        console.log(req.query);
+        console.log(req.query , 'uddd');
         let userData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
         let result = userData.orders.find((data) => data._id == req.query.Ordid);
 
@@ -547,8 +547,10 @@ exports.returnProducts = async (req, res) => {
         let statusData = result.products.find((datas) => datas._id == req.query.proid);
         if (!statusData.returned) {
             statusData.returned = true;
+            console.log(statusData.price);
             var returnAmount = statusData.price - remainData;
             var balanace = userData.wallet.balance + returnAmount;
+            console.log(returnAmount);
             userData.wallet.balance = balanace;
             userData.wallet.transactions.push({
                 orderId: req.query.Ordid,
@@ -567,10 +569,10 @@ exports.returnProducts = async (req, res) => {
 
 
 exports.downloadPdf = async (req, res) => {
-    var ID = req.params.id;
-    UID = req.session.userData;
-    var addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
-    var shopItem = addsData.orders.find(item => item._id == ID);
+    let ID = req.params.id;
+    let UID = req.session.userData;
+    let addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
+    let shopItem = addsData.orders.find(item => item._id == ID);
     console.log(shopItem);
     res.render('user/DownloadInvoice', { AllOrder: shopItem });
 }
@@ -634,7 +636,7 @@ exports.coupenApply = async (req, res) => {
         console.log(allcuopenData);
         if (!allcuopenData) {
             // return res.status(400).send('Invalid coupon code or expired.');
-            res.json({ dataInvalid: false });
+            res.json({ dataInvalid: true });
         }
 
         let coupenUpdate = await coupensdb.findOne({ "_id": allcuopenData._id, usedusers: { $eq: UID } });
@@ -667,6 +669,17 @@ exports.coupenApply = async (req, res) => {
         // // let datasss = await user.updateOne({"_id":UID},{$set:"cart."});
         // res.json({data:true, amountData:disamount, coupenDis : allcuopenData.discountamount})
 
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
+}
+
+exports.removeItemWhishlist = async (req,res) => {
+    try {
+        let UID = req.session.userData;
+        await user.updateOne({_id:UID,"wishlist._id":req.query.wishid},{$pull:{wishlist:{_id:req.query.wishid}}});
+        res.redirect('/favorite');
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);

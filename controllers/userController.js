@@ -378,12 +378,13 @@ exports.allCategory = async (req, res) => {
 
 exports.loginpage = async (req, res) => {
     try {
-        res.render('login', { errMSG: req.session.loginErr, is_veri: req.session.is_verified, is_block: req.session.is_blocked }, (err, html) => {
+        res.render('login', { errMSG: req.session.loginErr, is_veri: req.session.is_verified, is_block: req.session.is_blocked , is_fail:req.session.is_Failed}, (err, html) => {
             if (err) {
                 console.log(err);
                 res.send('internal error');
             } else {
                 delete req.session.loginErr;
+                delete req.session.is_Failed;
                 res.send(html);
             }
         });
@@ -507,6 +508,7 @@ exports.createloginpage = async (req, res) => {
             req.session.userData = loginVerify._id;
             res.redirect('/');
         } else {
+            req.session.is_Failed = true;
             res.redirect('/login');
         }
     } catch (error) {
@@ -622,9 +624,9 @@ exports.addAfavorite = async (req, res) => {
                     }
                 }
             })
-            res.redirect('/cart');
+            res.redirect('/favorite');
         } else {
-            console.log('hi');
+            res.redirect('/favorite');
         }
     } catch (error) {
         const statusCode = error.status || 500;

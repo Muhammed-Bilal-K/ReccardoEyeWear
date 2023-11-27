@@ -31,6 +31,11 @@
             <h3 class="alert alert-info" role="alert" style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">your account is suspended</h3>
         </div>
     <% } %>
+    <% if (is_fail) { %>
+        <div style="text-align: center; margin: 0px 36rem;">
+            <h3 class="alert alert-info" role="alert" style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">wrong password</h3>
+        </div>
+    <% } %>
     
         <form action="/login" method="post" style="box-shadow: 12px 23px 45px #939393; border-radius: 25px; background-color: #e2c399;">
             <h1 style="font-size: 3rem;">Login</h1>

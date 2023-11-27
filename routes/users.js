@@ -57,7 +57,7 @@ router.get('/settings/orders/view/:id', userMiddleware.loggedIn , cartController
 router.get('/order/delete', userMiddleware.loggedIn , cartController.DeleteOrder);
 
 /* GET user' homepage listing. */
-router.get('/order/:id', userMiddleware.loggedIn , cartController.downloadPdf);
+router.get('/OrderInvoice/v1/:id', userMiddleware.loggedIn , cartController.downloadPdf);
 
 router.get('/downloadPdf/:id', cartController.downloadData);
 
@@ -106,12 +106,14 @@ router.post('/user/addNew/:id', userMiddleware.loggedIn, userController.updateAd
 
 router.post('/cart/delete/:id', userMiddleware.loggedIn, userController.deleteCartItem);
 
-router.post('/getAdd', cartController.processDelivery);
+router.post('/getAdd', userMiddleware.loggedIn, cartController.processDelivery);
 
-router.post('/verify-payment', cartController.deliveredOnline);
+router.post('/verify-payment', userMiddleware.loggedIn, cartController.deliveredOnline);
 
-router.get('/order/return', cartController.returnProducts);
+router.get('/order/return', userMiddleware.loggedIn, cartController.returnProducts);
 
-router.post('/coupenCheck', cartController.coupenApply);
+router.post('/coupenCheck', userMiddleware.loggedIn, cartController.coupenApply);
+
+router.get('/removeitem', userMiddleware.loggedIn, cartController.removeItemWhishlist);
 
 module.exports = router;

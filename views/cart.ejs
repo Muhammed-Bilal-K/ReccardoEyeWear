@@ -120,7 +120,7 @@
                                                 width: 50px;
                                                 border-radius: 16px;" src="/uploaded/<%= x.product_id.image[0] %>" alt="" srcset="">
                                             </th>
-                                            <td id="productPrice">
+                                            <td id="<%= x.product_id.price %>">
                                                 <%= x.product_id.price %>
                                             </td>
                                             <td>
@@ -129,7 +129,7 @@
                                                 <button type="button" id="minus_qty" class="minus"
                                                     style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
     
-                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','-1','<%= x.totalPrice %>','productPrice','sub-total','sum','<%= x._id %>')">-</button>
+                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','-1','tottalData + <%= x.product_id._id %>','<%= x.product_id.price %>','sub-total','sum','<%= x._id %>')">-</button>
                                                     
                                                 <input type="number" class="" name="quantity" style="border: 1px solid rgb(245, 230, 230);
                                                     height: 1rem;
@@ -139,11 +139,11 @@
                                                 <label class="screen-reader-text" for="plus_qty"> Plus Quantity</label>
                                                 <button type="button" href="" id="plus_qty" class="plus"
                                                     style="padding: 4px 10px; border: 1px solid rgb(245, 230, 230);"
-                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','+1','<%= x.totalPrice %>','productPrice','sub-total','sum','<%= x._id %>')">+</button>
+                                                    onclick="changeQuantity('<%= x.product_id._id %>','<%= userID %>','+1','tottalData + <%= x.product_id._id %>','<%= x.product_id.price %>','sub-total','sum','<%= x._id %>')">+</button>
 
 
                                             </td>
-                                            <td id="<%= x.totalPrice %>">
+                                            <td id="tottalData + <%= x.product_id._id %>">
                                                 <%= x.totalPrice %>
                                             </td>
                                             <td>
