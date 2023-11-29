@@ -132,6 +132,18 @@
                                                 </p>
                                                 <% if (product_data.returned === true) { %>
                                                     <p>Product Returned</p>
+                                                    <div style="padding: 2px;
+                                                    border-radius: 26px;
+                                                    padding-top: 12px;
+                                                    font-weight: 700;
+                                                    font-size: 13px;
+                                                    line-height: 13px;
+                                                    background: #e1ff00;
+                                                    text-align: center;
+                                                ">
+                                                        <p>Return Reason: <%= product_data.returnReason %></p>
+                                                        <p>Return Method: <%= product_data.returnMethod %></p>
+                                                    </div>
                                                 <% } %>
                                             </div>
                                         </div>

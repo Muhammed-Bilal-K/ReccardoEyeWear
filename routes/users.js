@@ -31,6 +31,8 @@ router.get('/product-category/women/view/:id', userMiddleware.loggedIn , userCon
 /* GET user' homepage listing. */
 router.get('/cart', userMiddleware.loggedIn , cartController.cart);
 
+router.get('/removeitem', userMiddleware.loggedIn, cartController.removeItemWhishlist);
+
 /* GET user' homepage listing. */
 router.get('/favorite', userMiddleware.loggedIn , cartController.favorite);
 
@@ -58,6 +60,10 @@ router.get('/order/delete', userMiddleware.loggedIn , cartController.DeleteOrder
 
 /* GET user' homepage listing. */
 router.get('/OrderInvoice/v1/:id', userMiddleware.loggedIn , cartController.downloadPdf);
+
+router.get('/order/return', userMiddleware.loggedIn, cartController.returnProducts);
+
+router.post("/retunringProduct", userMiddleware.loggedIn, cartController.productReturnWithQ)
 
 router.get('/downloadPdf/:id', cartController.downloadData);
 
@@ -110,10 +116,6 @@ router.post('/getAdd', userMiddleware.loggedIn, cartController.processDelivery);
 
 router.post('/verify-payment', userMiddleware.loggedIn, cartController.deliveredOnline);
 
-router.get('/order/return', userMiddleware.loggedIn, cartController.returnProducts);
-
 router.post('/coupenCheck', userMiddleware.loggedIn, cartController.coupenApply);
-
-router.get('/removeitem', userMiddleware.loggedIn, cartController.removeItemWhishlist);
 
 module.exports = router;

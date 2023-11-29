@@ -71,10 +71,10 @@
                                     <p>Total : $<%= items.price %></p>
                                     <p>Status : <%= items.status %></p>
 									<% if (items.status == 'pending') { %>
-										<p><a href="/order/delete?proId=<%= items._id %>&Ordid=<%= Fulldata._id %>" class="card-link">Cancel</a></p>
+										<p><a href="/order/delete?proId=<%= items._id %>&Ordid=<%= Fulldata._id %>&proQuantity=<%= items.qty %>&sepId=<%= items.product_id._id %>" class="card-link">Cancel</a></p>
 									<% } else { %>
 										<% if (!items.returned) { %>
-											<p><a href="/order/return?Ordid=<%= Fulldata._id %>&proid=<%= items._id %>&coupid=<%= Fulldata.coupen_Id %>" class="card-link">Return</a></p>
+											<p><a href="/order/return?Ordid=<%= Fulldata._id %>&proid=<%= items._id %>&coupid=<%= Fulldata.coupen_Id %>&sepId=<%= items.product_id._id %>" class="card-link">Return</a></p>
 										<% } else { %>
 											<p>Returned</p>
 										<% } %>

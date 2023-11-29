@@ -101,6 +101,15 @@ const USERSSchema = new mongoose.Schema({
                 type: Boolean,
                 default: false
             },
+            returnReason: {
+                type: String, 
+                default:null
+            },
+            returnMethod: {
+                type: String, 
+                default:null,
+            },
+            expiresAt: Date,
         }],
         totalamount: {
             type: Number,
