@@ -70,122 +70,158 @@ exports.processDelivery = async (req, res) => {
         let userID = req.session.userData;
         let productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
         let orderadd = productData.address;
-        // const addres = orderadd.find(add => add._id.equals(req.body.address));
-        // if (addres) {
-        //     var address = {
-        //         name: addres.name,
-        //         email: addres.email,
-        //         country: addres.select,
-        //         address: addres.address,
-        //         city: addres.city,
-        //         state: addres.state,
-        //         zipcode: addres.zipcode,
-        //         phone: addres.phone
-        //     }
-        // }
-        // let productsArray = productData.cart;
-        // let products = productsArray.map(data => ({
-        //     product_id: data.product_id._id,
-        //     qty: data.qty,
-        //     price: data.totalPrice,
-        //     status: 'pending',
-        //     returned: false,
-        // }));
+        const addres = orderadd.find(add => add._id.equals(req.body.address));
+        if (addres) {
+            var address = {
+                name: addres.name,
+                email: addres.email,
+                country: addres.select,
+                address: addres.address,
+                city: addres.city,
+                state: addres.state,
+                zipcode: addres.zipcode,
+                phone: addres.phone
+            }
+        }
+        let productsArray = productData.cart;
+        let products = productsArray.map(data => ({
+            product_id: data.product_id._id,
+            qty: data.qty,
+            price: data.totalPrice,
+            status: 'pending',
+            returned: false,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        }));
 
         if (req.body.paymentmethod == 'Card') {
 
-            // const amountInPaise = Math.round(req.body.totalamount * 100);
-            // const razorpayOrder = await instance.orders.create({
-            //     amount: amountInPaise,
-            //     currency: 'INR', // Update with your currency
-            //     receipt: '' + new Date().getTime(),
-            //     payment_capture: 1, // Auto capture payment
-            // });
+            const amountInPaise = Math.round(req.body.totalamount * 100);
+            const razorpayOrder = await instance.orders.create({
+                amount: amountInPaise,
+                currency: 'INR', // Update with your currency
+                receipt: '' + new Date().getTime(),
+                payment_capture: 1, // Auto capture payment
+            });
 
-            // productsArray.map(data => {
-            //     product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then(() => {
-            //     })
-            // })
-            // // var tottalamount = parseInt(req.body.totalamount)-parseInt(disamount);
-            // if (disamount === null) {
-            //     disamount = req.body.totalamount;
-            // }
-            // console.log(typeof req.body.coupenid);
-            // console.log(req.body.coupenid);
-            // if (req.body.coupenid === '') {
-            //     var cid = null;
-            // } else {
-            //     var cid = req.body.coupenid;
-            // }
-            // console.log(cid);
-            // let order = {
-            //     products,
-            //     totalamount: disamount,
-            //     paymentmethod: req.body.paymentmethod,
-            //     address,
-            //     coupen_Id: cid,
-            // }
-            // disamount = null;
-            // await user.updateOne({ "_id": userID }, { $push: { orders: order } });
-            // if (req.body.coupenid) {
-            //     await coupensdb.updateOne({ "_id": req.body.coupenid }, { $addToSet: { usedusers: userID } });
-            // }
-            // productData.cart = [];
-            // await productData.save();
-            // res.json({ status: true, razorpay_order_id: razorpayOrder.id });
-        } else if(req.body.paymentmethod == 'COD'){
-            // productsArray.map(data => {
-            //     product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then((respo) => {
-            //     })
-            // })
-            // if (disamount === null) {
-            //     disamount = req.body.totalamount;
-            // }
-            // console.log(typeof req.body.coupenid);
-            // console.log(req.body.coupenid);
-            // if (req.body.coupenid === '') {
-            //     var cid = null;
-            // } else {
-            //     var cid = req.body.coupenid;
-            // }
-            // console.log(cid);
-            // console.log(disamount);
-            // let order = {
-            //     products,
-            //     totalamount: disamount,
-            //     paymentmethod: req.body.paymentmethod,
-            //     address,
-            //     coupen_Id: cid,
-            // }
-            // disamount = null;
-            // await user.updateOne({ "_id": userID }, { $push: { orders: order } });
-            // if (req.body.coupenid) {
-            //     await coupensdb.updateOne({ "_id": req.body.coupenid }, { $addToSet: { usedusers: userID } });
-            // }
-            // productData.cart = [];
-            // await productData.save();
-            // res.json({ codSuccuss: true })
-        }else{
-            console.log('hi');
-
-            if (productData.wallet.balance > ) {
-                
+            productsArray.map(data => {
+                product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then(() => {
+                })
+            })
+            // var tottalamount = parseInt(req.body.totalamount)-parseInt(disamount);
+            if (disamount === null) {
+                disamount = req.body.totalamount;
             }
+            console.log(typeof req.body.coupenid);
+            console.log(req.body.coupenid);
+            if (req.body.coupenid === '') {
+                var cid = null;
+            } else {
+                var cid = req.body.coupenid;
+            }
+            console.log(cid);
+            let order = {
+                products,
+                totalamount: disamount,
+                paymentmethod: req.body.paymentmethod,
+                address,
+                coupen_Id: cid,
+                created_at: Date.now(),
+            }
+            disamount = null;
+            await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+            if (req.body.coupenid) {
+                await coupensdb.updateOne({ "_id": req.body.coupenid }, { $addToSet: { usedusers: userID } });
+            }
+            productData.cart = [];
+            await productData.save();
+            res.json({ status: true, razorpay_order_id: razorpayOrder.id });
+        } else if (req.body.paymentmethod == 'COD') {
+            productsArray.map(data => {
+                product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then((respo) => {
+                })
+            })
+            if (disamount === null) {
+                disamount = req.body.totalamount;
+            }
+            console.log(typeof req.body.coupenid);
+            console.log(req.body.coupenid);
+            if (req.body.coupenid === '') {
+                var cid = null;
+            } else {
+                var cid = req.body.coupenid;
+            }
+            console.log(cid);
+            console.log(disamount);
+            let order = {
+                products,
+                totalamount: disamount,
+                paymentmethod: req.body.paymentmethod,
+                address,
+                coupen_Id: cid,
+                created_at: Date.now(),
+            }
+            disamount = null;
+            await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+            if (req.body.coupenid) {
+                await coupensdb.updateOne({ "_id": req.body.coupenid }, { $addToSet: { usedusers: userID } });
+            }
+            productData.cart = [];
+            await productData.save();
+            res.json({ codSuccuss: true })
 
-            // productsArray.map(data => {
-            //     product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then((respo) => {
-            //     })
-            // })
-            // if (disamount === null) {
-            //     disamount = req.body.totalamount;
-            // }
-            // console.log(typeof req.body.coupenid);
-            // console.log(req.body.coupenid);
-            // if (req.body.coupenid === '') {
-            //     var cid = null;
-            // } else {
-            //     var cid = req.body.coupenid;
-            // }
+        } else if (req.body.paymentmethod == 'Wallet') {
+
+            productsArray.map(data => {
+                product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then((respo) => {
+                })
+            })
+            if (disamount === null) {
+                disamount = req.body.totalamount;
+            }
+            console.log(typeof req.body.coupenid);
+            console.log(req.body.coupenid);
+            if (req.body.coupenid === '') {
+                var cid = null;
+            } else {
+                var cid = req.body.coupenid;
+            }
+            console.log(cid);
+            console.log(disamount);
+            let order = {
+                products,
+                totalamount: disamount,
+                paymentmethod: req.body.paymentmethod,
+                address,
+                coupen_Id: cid,
+                created_at: Date.now(),
+            }
+            if (productData.wallet.balance > parseInt(req.body.totalamount)) {
+                function generateRandom12DigitNumber() {
+                    const min = 100000000000;
+                    const max = 999999999999;
+                    return Math.floor(Math.random() * (max - min + 1)) + min;
+                }
+                const random12DigitNumber = generateRandom12DigitNumber();
+                var remainAmount = productData.wallet.balance - parseInt(disamount);
+                productData.wallet.balance = remainAmount;
+                productData.wallet.transactions.push({
+                    orderId: random12DigitNumber,
+                    amount: parseInt(disamount),
+                    orderStatus: 'debited',
+                    date: Date.now(),
+                })
+                console.log('hi');
+            }
+            disamount = null;
+            await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+            if (req.body.coupenid) {
+                await coupensdb.updateOne({ "_id": req.body.coupenid }, { $addToSet: { usedusers: userID } });
+            }
+            productData.cart = [];
+            await productData.save();
+            res.json({ walletSuccuss: true })
+        } else {
+            console.log('nothing');
         }
     } catch (error) {
         const statusCode = error.status || 500;
@@ -193,188 +229,6 @@ exports.processDelivery = async (req, res) => {
     }
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-
-// exports.processDelivery = async (req, res) => {
-//     try {
-//         let userID = req.session.userData;
-//         let productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
-//         let orderadd = productData.address;
-//         const addres = orderadd.find(add => add._id.equals(req.body.address));
-//         if (addres) {
-//             var address = {
-//                 name: addres.name,
-//                 email: addres.email,
-//                 country: addres.select,
-//                 address: addres.address,
-//                 city: addres.city,
-//                 state: addres.state,
-//                 zipcode: addres.zipcode
-//             }
-//         }
-//         let productsArray = productData.cart;
-//         console.log(productsArray);
-//         let products = productsArray.map(data => ({
-//             product_id: data.product_id._id,
-//             qty: data.qty,
-//             price: data.totalPrice,
-//             status: 'pending',
-//             returned: false,
-//         }));
-//         productsArray.map(data => {
-//             product.updateOne({"_id":data.product_id._id},{$inc:{qnumber:-data.qty}}).then((respo)=>{
-//                 console.log(respo);
-//             })
-//         })
-//         let order = {
-//             products,
-//             totalamount: req.body.totalamount,
-//             paymentmethod: req.body.paymentmethod,
-//             address,
-//         }
-//         await user.updateOne({ "_id": userID }, { $push: { orders: order } });
-//         productData.cart = [];
-//         await productData.save();
-//         res.json({ status: true })
-//     } catch (error) {
-//         const statusCode = error.status || 500;
-//         res.status(statusCode).send(error.message);
-//     }
-// }
-
-
-
-/////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-// exports.processDelivery = async (req, res) => {
-//     try {
-//         let userID = req.session.userData;
-//         console.log(req.body);
-//         console.log('hi');
-//         let productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
-//         let orderadd = productData.address;
-//         const addres = orderadd.find(add => add._id.equals(req.body.address));
-//         if (addres) {
-//             var address = {
-//                 name: addres.name,
-//                 email: addres.email,
-//                 country: addres.select,
-//                 address: addres.address,
-//                 city: addres.city,
-//                 state: addres.state,
-//                 zipcode: addres.zipcode
-//             }
-//         }
-//         let productsArray = productData.cart;
-//         console.log(productsArray);
-//         let products = productsArray.map(data => ({
-//             product_id: data.product_id._id,
-//             qty: data.qty,
-//             price: data.totalPrice,
-//             status: 'pending',
-//             returned: false,
-//         }));
-//         productsArray.map(data => {
-//             product.updateOne({"_id":data.product_id._id},{$inc:{qnumber:-data.qty}}).then((respo)=>{
-//                 console.log(respo);
-//             })
-//         })
-//         let order = {
-//             products,
-//             totalamount: req.body.totalamount,
-//             paymentmethod: req.body.paymentmethod,
-//             address,
-//         }
-//         await user.updateOne({ "_id": userID }, { $push: { orders: order } });
-//         productData.cart = [];
-//         await productData.save();
-//         res.render('OrderComplete');
-
-//     } catch (error) {
-//         const statusCode = error.status || 500;
-//         res.status(statusCode).send(error.message);
-//     }
-// }
-
-
-
-
-
-
-
-
-
-
-// exports.processDelivery = async (req, res) => {
-//     try {
-//         let userID = req.session.userData;
-//         if (req.body.paymentmethod == 'COD') {
-
-//         } else {
-//             let productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
-//             let orderadd = productData.address;
-//             const addres = orderadd.find(add => add._id.equals(req.body.address));
-//             if (addres) {
-//                 var address = {
-//                     name: addres.name,
-//                     email: addres.email,
-//                     country: addres.select,
-//                     address: addres.address,
-//                     city: addres.city,
-//                     state: addres.state,
-//                     zipcode: addres.zipcode
-//                 }
-//             }
-//             let productsArray = productData.cart;
-//             let products = productsArray.map(data => ({
-//                 product_id: data.product_id._id,
-//                 qty: data.qty,
-//                 price: data.totalPrice,
-//                 status: 'pending',
-//                 returned: false,
-//             }));
-//             productsArray.map(data => {
-//                 product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then(() => {
-//                 })
-//             })
-
-//             let order = {
-//                 products,
-//                 totalamount: req.body.totalamount,
-//                 paymentmethod: req.body.paymentmethod,
-//                 address,
-//             };
-
-//             const amountInPaise = Math.round(req.body.totalamount * 100);
-//             const razorpayOrder = await instance.orders.create({
-//                 amount: amountInPaise,
-//                 currency: 'INR', // Update with your currency
-//                 receipt: '' + new Date().getTime(),
-//                 payment_capture: 1, // Auto capture payment
-//             });
-
-
-//             order.razorpay_order_id = razorpayOrder.id;
-//             order.razorpay_payment_id = null;
-//             order.razorpay_signature = null;
-
-//                 await user.updateOne({ "_id": userID }, { $push: { orders: order } });
-//                 productData.cart = [];
-//                 await productData.save();
-//             res.render('procedCHECk',{order});
-//         }
-//     } catch (error) {
-//         const statusCode = error.status || 500;
-//         res.status(statusCode).send(error.message);
-//     }
-// }
-
-////////////////////////////////////////GET////////////////////////////////////////////
 
 
 exports.deliveredOnline = async (req, res) => {
@@ -466,6 +320,8 @@ exports.orderProceed = async (req, res) => {
         var sumP = 0;
         var count = 0;
         var emailData = await user.findOne({ "_id": userId }, { "email": 1 });
+        var walletData = await user.findOne({ "_id": userId }, { wallet: 1 });
+        console.log(walletData);
         var allDeta = await user.findOne({ "_id": userId }).populate('cart.product_id');
         if (allDeta.cart != null) {
             var f = allDeta.cart;
@@ -474,7 +330,7 @@ exports.orderProceed = async (req, res) => {
             sumP = sumP + x.totalPrice;
             count++;
         }
-        res.render('procedCHECk', { sumP: sumP, ProcsData: allDeta.cart, count: count, address: allDeta.address, emailData });
+        res.render('procedCHECk', { sumP: sumP, ProcsData: allDeta.cart, count: count, address: allDeta.address, emailData, walletData });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -529,8 +385,8 @@ exports.viewEach = async (req, res) => {
     try {
         var ID = req.params.id;
         UID = req.session.userData;
-        var addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
-        var shopItem = addsData.orders.find(item => item._id == ID);
+        let addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
+        let shopItem = addsData.orders.find(item => item._id == ID);
         res.render('DVProduct', { Fulldata: shopItem });
     } catch (error) {
         const statusCode = error.status || 500;
@@ -647,16 +503,21 @@ exports.productReturnWithQ = async (req, res) => {
             statusData.returned = true;
             statusData.returnReason = req.body.returnReason;
             statusData.returnMethod = req.body.returnMethod;
-            statusData.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
             console.log(statusData.price);
             var returnAmount = statusData.price - remainData;
             var balanace = Userdata.wallet.balance + returnAmount;
+            function generateRandom12DigitNumber() {
+                const min = 100000000000;
+                const max = 999999999999;
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+            const random12DigitNumber = generateRandom12DigitNumber();
             console.log(returnAmount);
             Userdata.wallet.balance = balanace;
             Userdata.wallet.transactions.push({
-                orderId: req.body.ordderID,
+                orderId: random12DigitNumber,
                 amount: returnAmount,
-                orderStatus: 'return',
+                orderStatus: 'Credited',
                 date: Date.now(),
             })
         }
@@ -690,31 +551,45 @@ exports.downloadData = async (req, res) => {
     }
 
     const doc = new pdfkit();
-    const fileName = `invoice_${orderData._id}.pdf`;
+    // Set font
+    doc.font('Helvetica');
 
-    doc.pipe(fs.createWriteStream(fileName));
+    // Add color to the title
+    doc.fontSize(16).fillColor('#333').text('Invoice', { align: 'center' }).moveDown(0.5);
 
-    doc.fontSize(16).text('Invoice', { align: 'center' }).moveDown(0.5);
-    doc.fontSize(12).text(`Invoice Number: INV-${orderData._id}`);
+    // Add color to the invoice number
+    doc.fontSize(12).fillColor('#333').text(`Invoice Number: INV-${orderData._id}`);
+
+    // Add color to the date
     doc.text(`Date: ${new Date().toLocaleDateString()}`).moveDown(1);
 
-    doc.text('Billed To:').moveDown(0.5);
+    // Add color to the "Billed To" section
+    doc.fillColor('#333').text('Billed To:').moveDown(0.5);
     doc.text(`${orderData.address.name}`);
     doc.text(`${orderData.address.address}`);
     doc.text(`${orderData.address.city}, ${orderData.address.state}, ${orderData.address.zipcode}`).moveDown(1);
 
-    doc.fontSize(12).text('Description', { continued: true }).text('Quantity', { continued: true }).text('Price', { continued: true }).text('Total');
+    // Style the table headers
+    doc.fontSize(12).fillColor('#333').text('Description', { continued: true }).text('Quantity', { continued: true }).text('Price', { continued: true }).text('Total');
+
+    // Add color and border lines to the table
     orderData.products.forEach((item) => {
-        doc.text(item.product_id.name, { continued: true }).text(item.qty.toString(), { continued: true }).text(`$${item.price.toFixed(2)}`, { continued: true }).text(`$${(item.qty * item.price).toFixed(2)}`);
+        doc.fillColor('#333').text(item.product_id.name, { continued: true }).text(item.qty.toString(), { continued: true }).text(`$${item.price.toFixed(2)}`, { continued: true }).text(`$${(item.qty * item.price).toFixed(2)}`);
+        doc.moveDown(0.5);
+        doc.rect(10, doc.y - 10, 500, 20).stroke(); // Add a border line
     });
-    doc.moveDown(1);
+    // Add color to the total amount
+    doc.moveDown(1).fillColor('#333').text(`Total: $${orderData.totalamount.toFixed(2)}`).moveDown(1);
 
-    doc.text(`Total: $${orderData.totalamount.toFixed(2)}`).moveDown(1);
-
+    // Add color to the payment method
     doc.text(`Payment Method: ${orderData.paymentmethod}`).moveDown(1);
 
+    // Style the thank you message
     doc.fontSize(10).fillColor('#ffffff').text('Thank you for your business!', { align: 'center' });
 
+    // Save and send the PDF
+    const fileName = `invoice_${orderData._id}.pdf`;
+    doc.pipe(fs.createWriteStream(fileName));
     doc.end();
 
     res.setHeader('Content-disposition', `attachment; filename=${fileName}`);
@@ -723,6 +598,53 @@ exports.downloadData = async (req, res) => {
     const fileStream = fs.createReadStream(fileName);
     fileStream.pipe(res);
 }
+
+
+// exports.downloadData = async (req, res) => {
+//     let orderId = req.params.id;
+//     let UID = req.session.userData;
+//     var addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
+//     var orderData = addsData.orders.find(item => item._id == orderId);
+//     // Replace this with logic to fetch order data based on orderId
+
+//     if (!orderData) {
+//         return res.status(404).send('Order not found');
+//     }
+
+//     const doc = new pdfkit();
+//     const fileName = `invoice_${orderData._id}.pdf`;
+
+//     doc.pipe(fs.createWriteStream(fileName));
+
+//     doc.fontSize(16).text('Invoice', { align: 'center' }).moveDown(0.5);
+//     doc.fontSize(12).text(`Invoice Number: INV-${orderData._id}`);
+//     doc.text(`Date: ${new Date().toLocaleDateString()}`).moveDown(1);
+
+//     doc.text('Billed To:').moveDown(0.5);
+//     doc.text(`${orderData.address.name}`);
+//     doc.text(`${orderData.address.address}`);
+//     doc.text(`${orderData.address.city}, ${orderData.address.state}, ${orderData.address.zipcode}`).moveDown(1);
+
+//     doc.fontSize(12).text('Description', { continued: true }).text('Quantity', { continued: true }).text('Price', { continued: true }).text('Total');
+//     orderData.products.forEach((item) => {
+//         doc.text(item.product_id.name, { continued: true }).text(item.qty.toString(), { continued: true }).text(`$${item.price.toFixed(2)}`, { continued: true }).text(`$${(item.qty * item.price).toFixed(2)}`);
+//     });
+//     doc.moveDown(1);
+
+//     doc.text(`Total: $${orderData.totalamount.toFixed(2)}`).moveDown(1);
+
+//     doc.text(`Payment Method: ${orderData.paymentmethod}`).moveDown(1);
+
+//     doc.fontSize(10).fillColor('#ffffff').text('Thank you for your business!', { align: 'center' });
+
+//     doc.end();
+
+//     res.setHeader('Content-disposition', `attachment; filename=${fileName}`);
+//     res.setHeader('Content-type', 'application/pdf');
+
+//     const fileStream = fs.createReadStream(fileName);
+//     fileStream.pipe(res);
+// }
 
 
 exports.coupenApply = async (req, res) => {
@@ -739,6 +661,13 @@ exports.coupenApply = async (req, res) => {
             res.json({ dataInvalid: true });
         }
 
+        if (allcuopenData.mincartamount > parseInt(amount)) {
+            return res.json({ minAmount: true })
+        }
+        if (allcuopenData.maxcartamount < parseInt(amount)) {
+            return res.json({ maxAmount: true })
+        }
+
         let coupenUpdate = await coupensdb.findOne({ "_id": allcuopenData._id, usedusers: { $eq: UID } });
         console.log(coupenUpdate);
         if (coupenUpdate) {
@@ -749,26 +678,6 @@ exports.coupenApply = async (req, res) => {
             coupenidPass = allcuopenData._id;
             res.json({ data: true, amountData: disamount, coupenDis: allcuopenData.discountamount, coupenid: allcuopenData._id });
         }
-        // if(coupenUpdate === null){
-        //     disamount = parseInt(amount) - allcuopenData.discountamount;
-        //     console.log(disamount);
-        //     coupenidPass = allcuopenData._id;
-        //     res.json({data:true, amountData:disamount, coupenDis : allcuopenData.discountamount , coupenid : allcuopenData._id});
-        // }else{
-        //     res.json({data:false});
-        // }
-        // let coupenUpdate = await coupensdb.updateOne({ "_id": allcuopenData._id, usedusers: { $ne: UID } },
-        // { $addToSet: { usedusers: UID } });
-        // if (coupenUpdate.modifiedCount == 0) {
-        //     console.log('already');
-        // } allcuopenData.discountamount
-
-        // disamount = parseInt(amount) - 32;
-        // console.log(disamount);
-
-        // // let datasss = await user.updateOne({"_id":UID},{$set:"cart."});
-        // res.json({data:true, amountData:disamount, coupenDis : allcuopenData.discountamount})
-
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);

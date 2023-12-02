@@ -41,8 +41,7 @@ const USERSSchema = new mongoose.Schema({
         transactions: [
             {
                 orderId: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "EachUser",
+                    type: String
                 },
                 amount: {
                     type: Number,
@@ -128,7 +127,13 @@ const USERSSchema = new mongoose.Schema({
             phone: Number,
         },
         coupen_Id: { type: mongoose.Schema.Types.ObjectId, ref: 'coupon', default: null },
-    }]
+        created_at: {
+            type: Date,
+        },
+    }],
+    created_at: {
+        type: Date,
+    },
 });
 
 module.exports = mongoose.model('EachUser', USERSSchema);

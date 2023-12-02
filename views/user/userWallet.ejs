@@ -112,7 +112,7 @@
                                                 <th scope="row"><%= TransDetail.orderId %></th>
                                                 <td><%= TransDetail.amount %></td>
                                                 <td><%= TransDetail.orderStatus %></td>
-                                                <td><%= TransDetail.date %></td>
+                                                <td><%= TransDetail.date.toLocaleDateString('en-US',{ timeZone: 'Asia/Kolkata' }) %></td>
                                             </tr>
                                         <% }) %>
 

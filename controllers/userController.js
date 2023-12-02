@@ -468,6 +468,7 @@ exports.createsignuppage = async (req, res) => {
             email: req.body.email,
             p_number: req.body.p_number,
             password: req.body.password,
+            created_at: Date.now(),
         });
         await userDetail.save();
 

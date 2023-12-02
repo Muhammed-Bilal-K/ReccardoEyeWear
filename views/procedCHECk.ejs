@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.rtl.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo-header-regular.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -110,8 +111,9 @@
                                 margin-left: 36rem;">add new address</a>
                                 <div class="row mb-3">
                                     <!--Grid column-->
-                                    <h6>Select the Address</h4> 
-                                        <select class="browser-default custom-select mb-3" style="-webkit-appearance: none;" name="address">
+                                    <h6>Select the Address</h4>
+                                        <select class="browser-default custom-select mb-3"
+                                            style="-webkit-appearance: none;" name="address">
                                             <option>select address</option>
                                             <% for( let i=0; i < address.length; i++ ) { %>
                                                 <option value="<%= address[i]._id %>">
@@ -138,16 +140,18 @@
                                             id="flexRadioDefault1" checked value="Card" />
                                         <label class="form-check-label" for="flexRadioDefault1"> Net Banking </label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="paymentmethod"
-                                            id="flexRadioDefault3" value="Wallet"/>
-                                        <label class="form-check-label" for="flexRadioDefault3"> Wallet</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="paymentmethod"
-                                            id="flexRadioDefault3" value="COD" />
-                                        <label class="form-check-label" for="flexRadioDefault3"> COD </label>
-                                    </div>
+                                    <% if (walletData.wallet.balance> sumP) { %>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="paymentmethod"
+                                                id="flexRadioDefault3" value="Wallet" />
+                                            <label class="form-check-label" for="flexRadioDefault3"> Wallet</label>
+                                        </div>
+                                        <% } %>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="paymentmethod"
+                                                    id="flexRadioDefault3" value="COD" />
+                                                <label class="form-check-label" for="flexRadioDefault3"> COD </label>
+                                            </div>
                                 </div>
                                 <!-- <div class="row mb-3">
                                 <div class="col-md-6 mb-3">
@@ -197,7 +201,9 @@
                                 <!-- <button class="btn btn-primary" type="button">Continue to checkout</button> -->
                                 <button type="submit" class="button alt" name="totalamount" id="placeholder"
                                     value="<%= sumP %>">Place
-                                    Order $<span id="placeholderValue"><%= sumP %></span>.00</button>
+                                    Order $<span id="placeholderValue">
+                                        <%= sumP %>
+                                    </span>.00</button>
                             </div>
                             <!--/.Card-->
                         </div>
@@ -232,11 +238,11 @@
                             </li>
                             <% } %>
                                 <li class="list-group-item d-flex justify-content-between bg-light">
-                                <div class="text-success">
-                                    <h6 class="my-0">Promo code</h6>
-                                </div>
-                                <span class="text-success" id="discountamountMinus">$0</span>
-                            </li>
+                                    <div class="text-success">
+                                        <h6 class="my-0">Promo code</h6>
+                                    </div>
+                                    <span class="text-success" id="discountamountMinus">$0</span>
+                                </li>
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>Total (USD)</span>
                                     <strong id="totalcoupenamount">$<%= sumP %></strong>
@@ -247,9 +253,10 @@
                     <!-- Promo code -->
                     <form class="card p-2">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Promo code" id="coupenname" style="text-transform: uppercase;" aria-label="Promo code"
+                            <input type="text" class="form-control" placeholder="Promo code" id="coupenname"
+                                style="text-transform: uppercase;" aria-label="Promo code"
                                 aria-describedby="button-addon2" />
-                            <button class="btn btn-primary" type="button" id="button-addon2" 
+                            <button class="btn btn-primary" type="button" id="button-addon2"
                                 data-mdb-ripple-color="dark" onclick="coupenApply()">
                                 redeem
                             </button>
@@ -265,6 +272,7 @@
         <!--Main layout-->
 
         <!-- footer -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
         <script>
@@ -276,6 +284,8 @@
                     data: $('#checkout-form').serialize(),
                     success: (response) => {
                         if (response.codSuccuss) {
+                            location.href = '/ordersuccess'
+                        } else if (response.walletSuccuss) {
                             location.href = '/ordersuccess'
                         } else {
                             razorpayPayment(response)
@@ -292,10 +302,10 @@
                     "name": "ReccardoEyeWear", //your business name
                     "description": "Test Transaction",
                     "image": "",
-                    "order_id": order.razorpay_order_id , //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "order_id": order.razorpay_order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                     "handler": function (response) {
                         window.location = '/ordersuccess'
-                        verifyPayment(response,order)
+                        verifyPayment(response, order)
                     },
                     "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
                         "name": "", //your customer's name
@@ -313,14 +323,14 @@
                 rzp.open();
             }
 
-            function verifyPayment(payment,order){
+            function verifyPayment(payment, order) {
                 $.ajax({
-                    url:'/verify-payment',
-                    data:{
+                    url: '/verify-payment',
+                    data: {
                         payment,
                         order
                     },
-                    method:'post',
+                    method: 'post',
                 })
             }
 
@@ -332,26 +342,43 @@
                 var data = totalamount.split('$')
                 var datas = (data[1]);
                 $.ajax({
-                    url : '/coupenCheck',
-                    data:{
+                    url: '/coupenCheck',
+                    data: {
                         coupencode,
                         datas,
                     },
-                    method : 'post',
-                    success:(response)=>{
+                    method: 'post',
+                    success: (response) => {
                         if (response.data) {
-                            console.log(response.amountData);
-                            console.log(response.coupenDis);
-                            console.log(response.coupenid);
-                            document.getElementById('totalcoupenamount').innerText = '$'+response.amountData;
-                            document.getElementById('discountamountMinus').innerText = '-$'+response.coupenDis;
+                            document.getElementById('totalcoupenamount').innerText = '$' + response.amountData;
+                            document.getElementById('discountamountMinus').innerText = '-$' + response.coupenDis;
                             document.getElementById('placeholderValue').innerText = response.amountData;
                             document.getElementById('coupenid').value = response.coupenid;
-                            
-                        }else if(response.dataInvalid) {
-                            alert('Invalid coupon code or expired');
-                        }else{
-                            alert('the coupen used');
+                            document.getElementById('button-addon2').style.display = 'none';
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top-end",
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                }
+                            });
+                            Toast.fire({
+                                icon: "success",
+                                title: "Coupen applied Successfully"
+                            });
+
+                        } else if (response.dataInvalid) {
+                            Swal.fire("Invalid coupon code or expired!");
+                        } else if (response.minAmount) {
+                            Swal.fire("Minimum Cart Amount Needed!");
+                        } else if (response.maxAmount) 
+                            {Swal.fire("Maximum Cart Amount Needed!");
+                        } else {
+                            Swal.fire("the coupen used!");
                         }
                     }
                 })

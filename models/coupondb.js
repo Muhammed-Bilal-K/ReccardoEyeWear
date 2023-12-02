@@ -16,10 +16,10 @@ const couponSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    // maxUseCount: {
-    //     type: Number,
-    //     default: 2
-    // },
+    maxcartamount: {
+        type: Number,
+        default: true,
+    },
     usedusers: [
         {
             type: mongoose.Schema.Types.ObjectId,

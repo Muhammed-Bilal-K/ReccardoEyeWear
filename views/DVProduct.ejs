@@ -73,10 +73,12 @@
 									<% if (items.status == 'pending') { %>
 										<p><a href="/order/delete?proId=<%= items._id %>&Ordid=<%= Fulldata._id %>&proQuantity=<%= items.qty %>&sepId=<%= items.product_id._id %>" class="card-link">Cancel</a></p>
 									<% } else { %>
-										<% if (!items.returned) { %>
-											<p><a href="/order/return?Ordid=<%= Fulldata._id %>&proid=<%= items._id %>&coupid=<%= Fulldata.coupen_Id %>&sepId=<%= items.product_id._id %>" class="card-link">Return</a></p>
-										<% } else { %>
-											<p>Returned</p>
+										<% if (new Date(items.expiresAt) > new Date()) { %>
+											<% if (!items.returned) { %>
+												<p><a href="/order/return?Ordid=<%= Fulldata._id %>&proid=<%= items._id %>&coupid=<%= Fulldata.coupen_Id %>&sepId=<%= items.product_id._id %>" class="card-link">Return</a></p>
+											<% } else { %>
+												<p>Returned</p>
+											<% } %>
 										<% } %>
 									<% } %>
 
@@ -109,6 +111,8 @@
 				</div>
 			</div>
 	</section>
+
+	
 	<!-- CONTENT -->
 
 

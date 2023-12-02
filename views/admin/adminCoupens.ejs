@@ -19,10 +19,10 @@
                         <tr>
                             <th>Coupon Name</th>
                             <th>Coupon Code</th>
-                            <th>Discount (%)</th>
+                            <th>Discount</th>
                             <!-- <th>Use count</th> -->
-                            <th>Orders above</th>
-                            <!-- <th>Maximum Discount</th> -->
+                            <th>Minimum Amount</th>
+                            <th>Maximum Amount</th>
                             <th>Expiry Date</th>
                             <th>Action</th>
                         </tr>
@@ -43,15 +43,15 @@
                                 <td>
                                     <p><%= Coupon.mincartamount %></p>
                                 </td>
-                                <!-- <td>
-                                    <p>dsdsd</p>
-                                </td> -->
+                                <td>
+                                    <p><%= Coupon.maxcartamount %></p>
+                                </td>
                                 <td width="20%">
-                                    <p><%= Coupon.expired %></p>
+                                    <p><%= Coupon.expired.toLocaleDateString() %></p>
                                 </td>
                                 <td width="15%">
-                                    <a href="/admin/editCoupon?id=<%= Coupon._id %>">Edit</a>
-                                    <a href="/admin/deleteCoupon?id=<%= Coupon._id %>" class="pl-2">Delete</a>
+                                    <a style="text-decoration: none;" href="/admin/editCoupon?id=<%= Coupon._id %>">Edit</a>
+                                    <a style="text-decoration: none;" href="/admin/deleteCoupon?id=<%= Coupon._id %>" class="pl-2">Delete</a>
                                 </td>
                             </tr>
                             <% }) %>

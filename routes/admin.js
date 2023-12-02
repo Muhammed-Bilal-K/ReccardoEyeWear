@@ -5,12 +5,13 @@ let productController = require('../controllers/productController');
 let adminMiddleware = require('../middleware/adminMiddleware');
 
 /* GET user' homepage listing. */
-router.get('/', adminMiddleware.loggedIn , adminController.adminpage);
-/* GET user' homepage listing. */
-router.get('/products', adminMiddleware.loggedIn , adminController.Listallproducts);
-
+router.get('/' ,  adminMiddleware.loggedIn , adminController.adminpage);
 /* GET user's loginpage listing. */
 router.get('/login', adminMiddleware.notlogged , adminController.loginpage);
+
+router.get('/salesReport', adminMiddleware.loggedIn , adminController.salesReport);
+
+router.get('/products', adminMiddleware.loggedIn , adminController.Listallproducts);
 
 router.get('/addPorducts' , adminMiddleware.loggedIn , adminController.addingProducts);
 
@@ -61,6 +62,8 @@ router.get('/logout', adminController.logoutpage)
 
 /* POST user's loginppage listing. */
 router.post('/admin/login', adminMiddleware.notlogged , adminController.createAdminlogin);
+
+router.post('/admin/sales-report/download-report', adminController.salesReportDownload)
 
 /* POST user's loginppage listing. */
 router.post('/admin/addProducts', adminMiddleware.loggedIn, productController.addaProducts);

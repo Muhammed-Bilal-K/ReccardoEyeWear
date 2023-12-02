@@ -1,140 +1,251 @@
-
 <%- include('../partials/adminPartials/__adminHeader__') %>
-
-        <!-- MAIN -->
-        <main>
-            <div class="head-title">
-                <div class="left">
-                    <h1>Dashboard</h1>
-                    <ul class="breadcrumb">
-                        <li>
-                            <a href="#">Dashboard</a>
-                        </li>
-                        <li><i class='bx bx-chevron-right'></i></li>
-                        <li>
-                            <a class="active" href="/admin">Home</a>
-                        </li>
-                    </ul>
-                </div>
-                <a href="#" class="btn-download">
-                    <i class='bx bxs-cloud-download'></i>
-                    <span class="text">Download PDF</span>
-                </a>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+    <!-- MAIN -->
+    <main>
+        <div class="head-title">
+            <div class="left">
+                <h1>Dashboard</h1>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="#">Dashboard</a>
+                    </li>
+                    <li><i class='bx bx-chevron-right'></i></li>
+                    <li>
+                        <a class="active" href="/admin">Home</a>
+                    </li>
+                </ul>
             </div>
+            <a href="#" class="btn-download">
+                <i class='bx bxs-cloud-download'></i>
+                <span class="text">Download PDF</span>
+            </a>
+        </div>
 
-            <ul class="box-info">
-                <li>
-                    <i class='bx bxs-calendar-check'></i>
-                    <span class="text">
-                        <h3>1020</h3>
-                        <p>New Order</p>
-                    </span>
-                </li>
-                <li>
-                    <i class='bx bxs-group'></i>
-                    <span class="text">
-                        <h3>2834</h3>
-                        <p>Visitors</p>
-                    </span>
-                </li>
-                <li>
-                    <i class='bx bxs-dollar-circle'></i>
-                    <span class="text">
-                        <h3>$2543</h3>
-                        <p>Total Sales</p>
-                    </span>
-                </li>
-            </ul>
+        <ul class="box-info">
+            <li>
+                <i class='bx bxs-calendar-check'></i>
+                <span class="text">
+                    <h3>1020</h3>
+                    <p>New Order</p>
+                </span>
+            </li>
+            <li>
+                <i class='bx bxs-group'></i>
+                <span class="text">
+                    <h3><%= amountOfUsers %></h3>
+                    <p>Users</p>
+                </span>
+            </li>
+            <li>
+                <i class='bx bxs-dollar-circle'></i>
+                <span class="text">
+                    <h3>$2543</h3>
+                    <p>Total Sales</p>
+                </span>
+            </li>
+        </ul>
+
+        <label for="dateType">Filter:</label>
+        <select id="dateType" onchange="changeDateType()" style="padding: 12px 15px;
+        outline: none;
+        border: 1px sienna;
+        border-radius: 26px;
+        background-color: #eeeeee;">
+            <option value="day">Day</option>
+            <option value="month">Month</option>
+            <option value="year">Year</option>
+        </select>
 
 
-            <!-- <div class="table-data">
-                <div class="order">
-                    <div class="head">
-                        <h3>Recent Orders</h3>
-                        <i class='bx bx-search'></i>
-                        <i class='bx bx-filter'></i>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Date Order</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <img src="img/people.png">
-                                    <p>John Doe</p>
-                                </td>
-                                <td>01-10-2021</td>
-                                <td><span class="status completed">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="img/people.png">
-                                    <p>John Doe</p>
-                                </td>
-                                <td>01-10-2021</td>
-                                <td><span class="status pending">Pending</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="img/people.png">
-                                    <p>John Doe</p>
-                                </td>
-                                <td>01-10-2021</td>
-                                <td><span class="status process">Process</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="img/people.png">
-                                    <p>John Doe</p>
-                                </td>
-                                <td>01-10-2021</td>
-                                <td><span class="status pending">Pending</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="img/people.png">
-                                    <p>John Doe</p>
-                                </td>
-                                <td>01-10-2021</td>
-                                <td><span class="status completed">Completed</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+
+        <div class="row" style="justify-content: space-around;display: flex;">
+            <div class="col-md-6">
+                <div style="width: 40rem;" id="daySection">
+                    <canvas id="userChart"></canvas>
                 </div>
-                <!-- <div class="todo">
-					<div class="head">
-						<h3>Todos</h3>
-						<i class='bx bx-plus' ></i>
-						<i class='bx bx-filter' ></i>
-					</div>
-					<ul class="todo-list">
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-					</ul>
-				</div> -->
-            <!-- </div>  -->
+
+                <div style="width: 40rem;" id="monthSection" class="hidden">
+                    <canvas id="userMonth"></canvas>
+                </div>
+
+                <div style="width: 40rem;" id="yearSection" class="hidden">
+                    <canvas id="userYear"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div style="width: 20rem;">
+                    <canvas id="doughnutChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+        <div>
+            <!-- <canvas id="myChart"></canvas> -->
+            <canvas id="lineChart" width="800" height="400"></canvas>
+        </div>
+
         
-            <%- include('../partials/adminPartials/__adminFooter__') %>            
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+        <script>
+            // Assuming formattedMonthlySales is an array of arrays
+            const formattedMonthlySalesArray = JSON.parse('<%- JSON.stringify(formattedMonthlySales)%>');
+
+            // Extract the first array for the line chart
+            const formattedMonthlySales = formattedMonthlySalesArray.length > 0
+                ? formattedMonthlySalesArray[0]
+                : [];
+
+            const monthNames = [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            ];
+
+            function fillMissingMonths(data) {
+                const allMonthsData = Array.from({ length: 12 }, (_, i) => ({
+                    month: i + 1,
+                    totalSales: 0
+                }));
+
+                for (const entry of data) {
+                    allMonthsData[entry.month - 1] = entry;
+                }
+
+                return allMonthsData;
+            }
+
+            const filledMonthlySales = fillMissingMonths(formattedMonthlySales);
+
+            const labels = filledMonthlySales.map(entry => monthNames[entry.month - 1]);
+            const data = filledMonthlySales.map(entry => entry.totalSales);
+
+            const ctxSales = document.getElementById('lineChart').getContext('2d');
+            const lineChart = new Chart(ctxSales, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `Total Sales ${formattedMonthlySales[0].year}`,
+                        borderColor: 'rgb(75, 192, 192)',
+                        data: data,
+                        pointStyle: 'circle',
+                        pointRadius: 10,
+                        pointHoverRadius: 15
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: (ctxSales) => 'Point Style: ' + ctxSales.chart.data.datasets[0].pointStyle,
+                        }
+                    }
+                }
+            });
+        </script>
+
+        <script>
+            // Assuming paymentMethodsCount is an array of objects with _id and count properties
+            const paymentMethodsCount = JSON.parse('<%- JSON.stringify(paymentMethodsCount) %>');
+
+            const labelsofD = paymentMethodsCount.map(method => method._id);
+            const dataofD = paymentMethodsCount.map(method => method.count);
+
+            console.log(labelsofD);
+            console.log(dataofD);
+
+            const ctxD = document.getElementById('doughnutChart').getContext('2d');
+            const doughnutChart = new Chart(ctxD, {
+                type: 'doughnut',
+                data: {
+                    labels: labelsofD,
+                    datasets: [{
+                        data: dataofD,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                        ],
+                    }],
+                },
+            });
+        </script>
+
+        <script>
+            const ctx = document.getElementById('userChart').getContext('2d');
+            const chartData = {
+                labels: JSON.parse('<%- JSON.stringify(chartData.labels) %>'),
+                datasets: [{
+                    label: 'User Registrations',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    data: JSON.parse('<%- JSON.stringify(chartData.data) %>'),
+                }],
+            };
+
+            const userChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+            });
+        </script>
+
+        <script>
+            const ctxM = document.getElementById('userMonth').getContext('2d');
+            const chartDataM = {
+                labels: JSON.parse('<%- JSON.stringify(chartDataM.labels) %>'),
+                datasets: [{
+                    label: 'User Registrations',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    data: JSON.parse('<%- JSON.stringify(chartDataM.data) %>'),
+                }],
+            };
+
+            const userMonth = new Chart(ctxM, {
+                type: 'bar',
+                data: chartDataM,
+            });
+        </script>
+
+        <script>
+            const ctxY = document.getElementById('userYear').getContext('2d');
+            const chartDataY = {
+                labels: JSON.parse('<%- JSON.stringify(chartDataY.labels) %>'),
+                datasets: [{
+                    label: 'User Registrations',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    data: JSON.parse('<%- JSON.stringify(chartDataY.data) %>'),
+                }],
+            };
+
+            const userYear = new Chart(ctxY, {
+                type: 'bar',
+                data: chartDataY,
+            });
+        </script>
+
+        <script>
+            function changeDateType() {
+                const dateType = document.getElementById("dateType").value;
+
+                // Show/hide sections based on the selected date type
+                document.getElementById("daySection").style.display = dateType === "day" ? "block" : "none";
+                document.getElementById("monthSection").style.display = dateType === "month" ? "block" : "none";
+                document.getElementById("yearSection").style.display = dateType === "year" ? "block" : "none";
+            }
+        </script>
+
+        <%- include('../partials/adminPartials/__adminFooter__') %>

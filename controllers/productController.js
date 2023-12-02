@@ -84,12 +84,13 @@ exports.addaProducts = async (req, res) => {
 
 exports.addcoupens = async (req, res) => {
     try {
+        console.log(req.body);
         const coupenDetail = new coupen({
             couponname: req.body.couponName,
             couponcode: req.body.couponCode,
             discountamount: req.body.discount,
-            mincartamount: req.body.ordersAbove,
-            maxUseCount: req.body.maxUseCount,
+            mincartamount: req.body.minPrice,
+            maxcartamount: req.body.maxPrice,
             expired: req.body.expiryDate,
         });
         await coupenDetail.save();
@@ -112,6 +113,7 @@ exports.editCoupen = async (req, res) => {
                     couponcode: req.body.couponCode,
                     discountamount: req.body.discount,
                     mincartamount: req.body.ordersAbove,
+                    maxcartamount: req.body.maxPrice,
                 }
             });
         } else {
@@ -121,6 +123,7 @@ exports.editCoupen = async (req, res) => {
                     couponcode: req.body.couponCode,
                     discountamount: req.body.discount,
                     mincartamount: req.body.ordersAbove,
+                    maxcartamount: req.body.maxPrice,
                     expired: req.body.expiryDate,
                 }
             });
