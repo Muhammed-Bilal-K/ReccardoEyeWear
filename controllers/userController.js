@@ -448,6 +448,7 @@ exports.updateUseradd = async (req, res) => {
 
 exports.createsignuppage = async (req, res) => {
     try {
+        console.log(req.body)
         let { email } = req.body;
         let ExistEmail = await user.findOne({ email: email });
         if (ExistEmail) {

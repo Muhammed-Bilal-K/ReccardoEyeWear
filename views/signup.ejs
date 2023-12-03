@@ -9,50 +9,151 @@
     <link rel="stylesheet" href="stylesheets/frontend.css">
     <link rel="stylesheet" href="stylesheets/main.min.css">
     <link rel="stylesheet" href="stylesheets/post-14.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 </head>
 
 <body>
 
     <%- include('partials/__signup__') %>
-    <% if (SignMSR) { %>
-        <div style="text-align: center; margin: 0px 36rem;">
-            <h3 class="alert alert-info" role="alert" style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">user already</h3>
-        </div>
-    <% } %>
-    <% if (passNotmatch) { %>
-        <div style="text-align: center; margin: 0px 36rem;">
-            <h3 class="alert alert-info" role="alert" style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">Password Not Match</h3>
-        </div>
-    <% } %>
-        <form action="/signup/verification" method="post" style="box-shadow: 7px 8px 27px #cbc0b2;margin-top: -30px; background-color: #e2c399;">
-            <h1 style="font-size: 3rem;">Sign Up</h1>
-            <div>
-                <label for="name">Name:</label>
-                <input type="text" name="name" id="name" required style="height: 35px;border-radius: 16px;">
+        <% if (SignMSR) { %>
+            <div style="text-align: center; margin: 0px 36rem;">
+                <h3 class="alert alert-info" role="alert"
+                    style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">user already</h3>
             </div>
-            <div><label for="email">Email:</label>
-                <input type="email" name="email" id="email" required style="height: 35px;border-radius: 16px;">
-                <!-- pattern="[A-Za-z0-9]*[@](gmail)*[\.](com)$" -->
-            </div>
-            <div><label for="phone_number">Phone Number: </label><input type="tel" name="p_number" id="phone_number"
-                pattern="[0-9]{10}" required title="Please enter a 10-digit phone number" style="height: 35px; border-radius: 16px;"></div>
-            <div>
-                <label for="password">Password:</label> <input type="password" name="password" id="Password" required style="border-radius: 16px;">
-            </div>
-            <div><label for="confirm_password">Confirm Password:</label> <input type="password" name="c_password"
-                    id="confirm_password" required style="height: 40px;border-radius: 16px;"></label></div>
-            <div><input type="submit" value="Verify Now" style="border-radius: 30px;margin-top: 15px;"></div>
-            <p style="color: #bf360c;">already have an account ? <a class="loginPagesSty" href="/login">login</a></p>
-        </form>
+            <% } %>
+                <% if (passNotmatch) { %>
+                    <div style="text-align: center; margin: 0px 36rem;">
+                        <h3 class="alert alert-info" role="alert"
+                            style="font-size: 15px;font-family: 'Montserrat';border-radius: 15px;">Password Not Match
+                        </h3>
+                    </div>
+                    <% } %>
+                        <form id="signupForm" action="/signup/verification" method="post"
+                            onsubmit="return validRegister()"
+                            style="box-shadow: 7px 8px 27px #cbc0b2;margin-top: -30px; background-color: #e2c399;">
+                            <h1 style="font-size: 3rem;">Sign Up</h1>
+                            <div>
+                                <label for="name">Name:</label>
+                                <input type="text" name="name" id="name" required placeholder="Enter Name"
+                                    style="height: 35px;border-radius: 16px;">
+                            </div>
+                            <div>
+                                <label for="email">Email:</label>
+                                <input type="email" name="email" id="email" required
+                                    style="height: 35px;border-radius: 16px;" placeholder="Enter Email">
+                            </div>
+                            <div>
+                                <label for="phone_number">Phone Number:</label>
+                                <input type="tel" name="p_number" id="phone_number" pattern="[0-9]{10}" required
+                                    placeholder="Enter Number" title="Please enter a 10-digit phone number"
+                                    style="height: 35px; border-radius: 16px;">
+                            </div>
+                            <div>
+                                <label for="password">Password:</label>
+                                <input type="password" name="password" id="Password" required
+                                    style="border-radius: 16px;" placeholder="Enter Password">
 
-        <!-- <%- include('partials/__signupfooter__') %> -->
-            <script id="astra-theme-js-js-extra">
-                var astra = { "break_point": "921", "isRtl": "", "is_scroll_to_id": "", "is_scroll_to_top": "", "is_header_footer_builder_active": "1", "edit_post_url": "https:\/\/websitedemos.net\/eyewear-store-04\/wp-admin\/post.php?post={{id}}&action=edit", "ajax_url": "https:\/\/websitedemos.net\/eyewear-store-04\/wp-admin\/admin-ajax.php", "shop_infinite_count": "2", "shop_infinite_total": "0", "shop_pagination": "infinite", "shop_infinite_scroll_event": "scroll", "shop_no_more_post_message": "No more products to show.", "checkout_prev_text": "Back to my details", "checkout_next_text": "Proceed to payment", "show_comments": "Show Comments", "shop_quick_view_enable": "on-image", "shop_quick_view_stick_cart": "1", "shop_quick_view_auto_height": "1", "woo_cart_empty_featured_product": "", "single_product_qty_ajax_nonce": "c48c5b3727", "single_product_ajax_add_to_cart": "1", "is_cart": "", "is_single_product": "", "view_cart": "View cart", "cart_url": "https:\/\/websitedemos.net\/eyewear-store-04\/cart\/", "checkout_url": "https:\/\/websitedemos.net\/eyewear-store-04\/checkout\/", "add_to_cart_options_single": "rt_add_to_cart", "is_astra_pro": "1" };
-            </script>
-            <script src="javascripts/frontend.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+                            </div>
+                            <div>
+                                <label for="confirm_password">Confirm Password:</label>
+                                <input type="password" name="c_password" id="confirm_password" required
+                                    placeholder="Confirm Password" style="height: 40px;border-radius: 16px;">
+
+                            </div>
+                            <div>
+                                <input type="submit" value="Verify Now" style="border-radius: 30px;margin-top: 15px;">
+                            </div>
+                            <p style="color: #bf360c;">already have an account ? <a class="loginPagesSty"
+                                    href="/login">login</a></p>
+                        </form>
+
+                        <script>
+                            $(document).ready(function () {
+
+                                $.validator.addMethod("noSpace", function (value, element) {
+                                    // Check if the value contains spaces
+                                    return value.indexOf(" ") < 0;
+                                }, "Spaces are not allowed in the password.");
+
+                                // Add custom validation methods if needed
+                                $.validator.addMethod("customEmail", function (value, element) {
+                                    // Add your custom email validation logic here
+                                    return /^[A-Za-z0-9]*[@](gmail)*[\.](com)$/.test(value);
+                                }, "Invalid email format");
+
+                                $.validator.addMethod("noSequenceDigits", function (value, element) {
+                                    // Check if the value contains a sequence of three or more digits
+                                    return !/(0{3,}|1{3,}|2{3,}|3{3,}|4{3,}|5{3,}|6{3,}|7{3,}|8{3,}|9{3,})/.test(value);
+                                }, "Phone number should not contain a sequence of three or more digits.");
+
+                                // Set up the form validation
+                                $("#signupForm").validate({
+                                    errorElement: 'span',
+                                    errorClass: 'error-message',
+                                    rules: {
+                                        name: "required",
+                                        // email: {
+                                        //     required: true,
+                                        //     email: true,
+                                        //     customEmail: true // Use the custom email validation
+                                        // },
+                                        p_number: {
+                                            required: true,
+                                            minlength: 10,
+                                            maxlength: 10,
+                                            digits: true,
+                                            noSequenceDigits: true,
+                                        },
+                                        password: {
+                                            required: true,
+                                            noSpace: true // Custom rule for no spaces
+                                        },
+                                        c_password: {
+                                            required: true,
+                                            equalTo: "#Password" // Ensure c_password matches the password
+                                        }
+                                    },
+                                    messages: {
+                                        name: "Please enter your name",
+                                        email: {
+                                            required: "Please enter your email",
+                                            email: "Please enter a valid email address"
+                                        },
+                                        p_number: {
+                                            required: "Please enter your phone number",
+                                            minlength: "Please enter a 10-digit phone number",
+                                            maxlength: "Please enter a 10-digit phone number",
+                                            digits: "Please enter only digits",
+                                            noSequenceDigits: "Phone number should not contain a sequence of three or more digits.",
+                                        },
+                                        password: {
+                                            required: "Please enter your password",
+                                            noSpace: "Spaces are not allowed in the password."
+                                        },
+                                        c_password: {
+                                            required: "Please confirm your password",
+                                            equalTo: "Passwords do not match"
+                                        }
+                                    },
+                                    submitHandler: function (form) {
+                                        form.submit();
+                                        return false;
+                                    }
+                                });
+                            });
+                        </script>
+
+                        <!-- <%- include('partials/__signupfooter__') %> -->
+                        <script id="astra-theme-js-js-extra">
+                            var astra = { "break_point": "921", "isRtl": "", "is_scroll_to_id": "", "is_scroll_to_top": "", "is_header_footer_builder_active": "1", "edit_post_url": "https:\/\/websitedemos.net\/eyewear-store-04\/wp-admin\/post.php?post={{id}}&action=edit", "ajax_url": "https:\/\/websitedemos.net\/eyewear-store-04\/wp-admin\/admin-ajax.php", "shop_infinite_count": "2", "shop_infinite_total": "0", "shop_pagination": "infinite", "shop_infinite_scroll_event": "scroll", "shop_no_more_post_message": "No more products to show.", "checkout_prev_text": "Back to my details", "checkout_next_text": "Proceed to payment", "show_comments": "Show Comments", "shop_quick_view_enable": "on-image", "shop_quick_view_stick_cart": "1", "shop_quick_view_auto_height": "1", "woo_cart_empty_featured_product": "", "single_product_qty_ajax_nonce": "c48c5b3727", "single_product_ajax_add_to_cart": "1", "is_cart": "", "is_single_product": "", "view_cart": "View cart", "cart_url": "https:\/\/websitedemos.net\/eyewear-store-04\/cart\/", "checkout_url": "https:\/\/websitedemos.net\/eyewear-store-04\/checkout\/", "add_to_cart_options_single": "rt_add_to_cart", "is_astra_pro": "1" };
+                        </script>
+                        <script src="javascripts/frontend.js"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+                            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+                            crossorigin="anonymous"></script>
 </body>
 
 </html>

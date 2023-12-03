@@ -5,6 +5,7 @@ let coupen = require('../models/coupondb');
 let createCsvWriter = require('csv-writer').createObjectCsvWriter;
 let path = require('path');
 let fs = require('fs');
+let pdfkit = require('pdfkit');
 
 const admin = {
     email: 'a@m',
@@ -141,9 +142,26 @@ exports.adminpage = async (req, res) => {
 
         formattedMonthlySales = formattedMonthlySales.slice(0, 12);
 
-        const amountOfUsers = await user.find({}).count()
+        const amountOfUsers = await user.find({}).count();
 
-        res.render('admin/adminPanel', { chartData, chartDataM, chartDataY, formattedMonthlySales, paymentMethodsCount, amountOfUsers });
+        const totalordersCount = await user.aggregate([
+            {
+            $unwind:"$orders",
+            },
+            {
+                $unwind:"$orders.products"
+            },
+            {
+                $group:{
+                    "_id":null,
+                    count:{$sum : 1}
+                }
+            }
+        ])
+
+        let totalorders = totalordersCount[0].count;
+
+        res.render('admin/adminPanel', { chartData, chartDataM, chartDataY, formattedMonthlySales, paymentMethodsCount, amountOfUsers , totalorders});
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -452,7 +470,6 @@ exports.createAdminlogin = async (req, res) => {
 
 exports.salesReportDownload = async (req, res) => {
     try {
-        // Aggregate data from MongoDB
         const salesData = await user.aggregate([
             {
                 $unwind: '$orders',
@@ -481,30 +498,64 @@ exports.salesReportDownload = async (req, res) => {
                 },
             },
         ]);
+        if (req.body.method == 'csv') {
+            // Aggregate data from MongoDB
 
-        const csvWriter = createCsvWriter({
-            path: 'sales_report.csv',
-            header: [
-                { id: 'date', title: 'Date' },
-                { id: 'orderId', title: 'Order ID' },
-                { id: 'name', title: 'Name' },
-                { id: 'productName', title: 'Product Name' },
-                { id: 'quantity', title: 'Quantity' },
-                { id: 'paymentMethod', title: 'Payment Method' },
-                { id: 'amount', title: 'Amount' },
-            ],
-        });
-        csvWriter.writeRecords([{}]).then(() => {
-            csvWriter.writeRecords(salesData).then(() => {
-                console.log('CSV file written successfully');
-                res.download('sales_report.csv', 'sales_report.csv', (err) => {
+            const csvWriter = createCsvWriter({
+                path: 'sales_report.csv',
+                header: [
+                    { id: 'date', title: 'Date' },
+                    { id: 'orderId', title: 'Order ID' },
+                    { id: 'name', title: 'Name' },
+                    { id: 'productName', title: 'Product Name' },
+                    { id: 'quantity', title: 'Quantity' },
+                    { id: 'paymentMethod', title: 'Payment Method' },
+                    { id: 'amount', title: 'Amount' },
+                ],
+            });
+            csvWriter.writeRecords([{}]).then(() => {
+                csvWriter.writeRecords(salesData).then(() => {
+                    console.log('CSV file written successfully');
+                    res.download('sales_report.csv', 'sales_report.csv', (err) => {
+                        if (err) {
+                            console.error('Error downloading CSV file:', err);
+                            res.status(500).send('Internal Server Error');
+                        }
+                    });
+                });
+            });
+        } else {
+            const pdfDoc = new pdfkit();
+            const pdfStream = fs.createWriteStream('sales_report.pdf');
+
+            pdfDoc.pipe(pdfStream);
+
+            pdfDoc.fontSize(12).text('Sales Report', { align: 'center' }).moveDown();
+
+            salesData.forEach((sale) => {
+                pdfDoc.fontSize(10).text(`Date: ${sale.date}`, { continued: true });
+                pdfDoc.text(`Order ID: ${sale.orderId}`).moveDown();
+                pdfDoc.text(`Name: ${sale.name}`).moveDown();
+                pdfDoc.text(`Product Name: ${sale.productName}`).moveDown();
+                pdfDoc.text(`Quantity: ${sale.quantity}`).moveDown();
+                pdfDoc.text(`Payment Method: ${sale.paymentMethod}`).moveDown();
+                pdfDoc.text(`Amount: ${sale.amount}`).moveDown();
+                pdfDoc.moveDown();
+            });
+
+            pdfDoc.end();
+
+            pdfStream.on('finish', () => {
+                console.log('PDF file written successfully');
+                res.download('sales_report.pdf', 'sales_report.pdf', (err) => {
                     if (err) {
-                        console.error('Error downloading CSV file:', err);
+                        console.error('Error downloading PDF file:', err);
                         res.status(500).send('Internal Server Error');
                     }
                 });
             });
-        });
+        }
+
     } catch (error) {
         console.error('Error fetching sales data:', error);
         res.status(500).send('Internal Server Error');
@@ -562,7 +613,7 @@ exports.addCategory = async (req, res) => {
                 res.redirect('/admin/addCategory');
             }
         } else {
-            res.render('admin/adminAddCategory',{messsage:'The category Already Existing'});
+            res.render('admin/adminAddCategory', { messsage: 'The category Already Existing' });
         }
     } catch (error) {
         const statusCode = error.status || 500;

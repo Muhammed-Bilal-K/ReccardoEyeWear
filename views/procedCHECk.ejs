@@ -202,8 +202,7 @@
                                 <button type="submit" class="button alt" name="totalamount" id="placeholder"
                                     value="<%= sumP %>">Place
                                     Order $<span id="placeholderValue">
-                                        <%= sumP %>
-                                    </span>.00</button>
+                                        <%= sumP %></span>.00</button>
                             </div>
                             <!--/.Card-->
                         </div>
@@ -354,7 +353,7 @@
                             document.getElementById('discountamountMinus').innerText = '-$' + response.coupenDis;
                             document.getElementById('placeholderValue').innerText = response.amountData;
                             document.getElementById('coupenid').value = response.coupenid;
-                            document.getElementById('button-addon2').style.display = 'none';
+                            document.getElementById('button-addon2').setAttribute('disabled','');
                             const Toast = Swal.mixin({
                                 toast: true,
                                 position: "top-end",

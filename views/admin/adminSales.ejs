@@ -1,4 +1,52 @@
 <%- include('../partials/adminPartials/__adminHeader__') %>
+
+
+    <style>
+        /* Style The Dropdown Button */
+        .dropbtn {
+            background-color: #ffffff;
+            color: rgb(0, 0, 0);
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* The container <div> - needed to position the dropdown content */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Dropdown Content (Hidden by Default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        /* Links inside the dropdown */
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Change color of dropdown links on hover */
+        .dropdown-content a:hover {
+            background-color: #f1f1f1
+        }
+
+        /* Show the dropdown menu on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+    </style>
     <!-- MAIN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -72,20 +120,44 @@
                         <h3 class="text-secondary" style="font-weight: 600;
                         font-size: 15px;">All Sales Report</h3>
                     </div>
-                    <form action="admin/sales-report/download-report" method="post">
-
-
-                        <div class="text-center my-2 px-4">
-                            <button type="submit" class="btn btn-dark px-3 form-control" id="sales-report-submit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-cloud-download" viewBox="0 0 16 16">
-                                    <path
-                                        d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z" />
-                                    <path
-                                        d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
-                                </svg> Download
-                            </button>
+                    
+                    <div class="dropdown">
+                        <button class="dropbtn">Download</button>
+                        <div class="dropdown-content">
+                                <form action="admin/sales-report/download-report" method="post">
+                                <div class="text-center my-2 px-4">
+                                    <input type="text" hidden name="method" value="csv">
+                                    <button type="submit" style="padding: 7px 4px;
+                                    background: #c8ffec;" class="btn" id="sales-report-submit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                            class="bi bi-cloud-download" viewBox="0 0 16 16">
+                                            <path
+                                                d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z" />
+                                            <path
+                                                d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
+                                        </svg> Download CSV
+                                    </button>
+                                </div>
+                                </form>
+                                <form action="admin/sales-report/download-report" method="post">
+                                <div class="text-center my-2 px-4">
+                                    <input type="text" hidden name="method" value="pdf">
+                                    <button type="submit" class="btn" style="padding: 7px 4px;
+                                    background: #c8ffec;" id="sales-report-submit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                            class="bi bi-cloud-download" viewBox="0 0 16 16">
+                                            <path
+                                                d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z" />
+                                            <path
+                                                d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z" />
+                                        </svg> Download PDF
+                                    </button>
+                                </div>
+                            </form>
+                            </div>
                         </div>
+
+                        
 
 
                 </div>
@@ -115,7 +187,8 @@
                                     <td>
                                         <%= order.date.toLocaleDateString() %>
                                     </td>
-                                    <input type="text" hidden name="date" value="<%= order.date.toLocaleDateString() %>">
+                                    <input type="text" hidden name="date"
+                                        value="<%= order.date.toLocaleDateString() %>">
                                     <td>
                                         <%= order.orderId %>
                                     </td>
@@ -177,7 +250,7 @@
                     </table>
 
                 </div>
-                </form>
+                <!-- </form> -->
             </div>
 
         </div>

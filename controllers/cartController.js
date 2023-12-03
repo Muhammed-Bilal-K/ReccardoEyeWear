@@ -419,50 +419,6 @@ exports.DeleteOrder = async (req, res) => {
     }
 }
 
-///////////////////////////////GOOD/////////////////////////////////////////////
-
-// exports.returnProducts = async (req, res) => {
-//     let UID = req.session.userData;
-//     try {
-//         console.log(req.query , 'uddd');
-//         let userData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
-//         let result = userData.orders.find((data) => data._id == req.query.Ordid);
-
-//         if (req.query.coupid === '') {
-//             var remainData = 0;
-//         } else {
-//             let productLength = result.products.length;
-//             console.log(productLength);
-//             let coDisamt = await coupensdb.findOne({ "_id": req.query.coupid }, { discountamount: 1, _id: 0 });
-//             console.log(coDisamt);
-//             var remainData = coDisamt.discountamount / productLength;
-//             console.log(remainData);
-//         }
-
-//         let statusData = result.products.find((datas) => datas._id == req.query.proid);
-//         if (!statusData.returned) {
-//             statusData.returned = true;
-//             console.log(statusData.price);
-//             var returnAmount = statusData.price - remainData;
-//             var balanace = userData.wallet.balance + returnAmount;
-//             console.log(returnAmount);
-//             userData.wallet.balance = balanace;
-//             userData.wallet.transactions.push({
-//                 orderId: req.query.Ordid,
-//                 amount: returnAmount,
-//                 orderStatus: 'return',
-//                 date: Date.now(),
-//             })
-//         }
-//         await userData.save();
-//         res.redirect(`/settings/orders/view/${req.query.Ordid}`);
-//     } catch (error) {
-//         const statusCode = error.status || 500;
-//         res.status(statusCode).send(error.message);
-//     }
-// }
-
-//////////////////////////////////////////////////////////////////////
 exports.returnProducts = async (req, res) => {
     let UID = req.session.userData;
     try {
@@ -538,58 +494,41 @@ exports.downloadPdf = async (req, res) => {
     res.render('user/DownloadInvoice', { AllOrder: shopItem });
 }
 
-
 exports.downloadData = async (req, res) => {
     let orderId = req.params.id;
     let UID = req.session.userData;
     var addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
     var orderData = addsData.orders.find(item => item._id == orderId);
-    // Replace this with logic to fetch order data based on orderId
-
     if (!orderData) {
         return res.status(404).send('Order not found');
     }
 
     const doc = new pdfkit();
-    // Set font
-    doc.font('Helvetica');
+    const fileName = `invoice_${orderData._id}.pdf`;
 
-    // Add color to the title
-    doc.fontSize(16).fillColor('#333').text('Invoice', { align: 'center' }).moveDown(0.5);
+    doc.pipe(fs.createWriteStream(fileName));
 
-    // Add color to the invoice number
-    doc.fontSize(12).fillColor('#333').text(`Invoice Number: INV-${orderData._id}`);
-
-    // Add color to the date
+    doc.fontSize(16).text('Invoice', { align: 'center' }).moveDown(0.5);
+    doc.fontSize(12).text(`Invoice Number: INV-${orderData._id}`);
     doc.text(`Date: ${new Date().toLocaleDateString()}`).moveDown(1);
 
-    // Add color to the "Billed To" section
-    doc.fillColor('#333').text('Billed To:').moveDown(0.5);
+    doc.text('Billed To:').moveDown(0.5);
     doc.text(`${orderData.address.name}`);
     doc.text(`${orderData.address.address}`);
     doc.text(`${orderData.address.city}, ${orderData.address.state}, ${orderData.address.zipcode}`).moveDown(1);
 
-    // Style the table headers
-    doc.fontSize(12).fillColor('#333').text('Description', { continued: true }).text('Quantity', { continued: true }).text('Price', { continued: true }).text('Total');
-
-    // Add color and border lines to the table
+    doc.fontSize(12).text('Description', { continued: true }).text('Quantity', { continued: true }).text('Price', { continued: true }).text('Total');
     orderData.products.forEach((item) => {
-        doc.fillColor('#333').text(item.product_id.name, { continued: true }).text(item.qty.toString(), { continued: true }).text(`$${item.price.toFixed(2)}`, { continued: true }).text(`$${(item.qty * item.price).toFixed(2)}`);
-        doc.moveDown(0.5);
-        doc.rect(10, doc.y - 10, 500, 20).stroke(); // Add a border line
+        doc.text(item.product_id.name, { continued: true }).text(item.qty.toString(), { continued: true }).text(`$${item.price.toFixed(2)}`, { continued: true }).text(`$${(item.qty * item.price).toFixed(2)}`);
     });
-    // Add color to the total amount
-    doc.moveDown(1).fillColor('#333').text(`Total: $${orderData.totalamount.toFixed(2)}`).moveDown(1);
+    doc.moveDown(1);
 
-    // Add color to the payment method
+    doc.text(`Total: $${orderData.totalamount.toFixed(2)}`).moveDown(1);
+
     doc.text(`Payment Method: ${orderData.paymentmethod}`).moveDown(1);
 
-    // Style the thank you message
     doc.fontSize(10).fillColor('#ffffff').text('Thank you for your business!', { align: 'center' });
 
-    // Save and send the PDF
-    const fileName = `invoice_${orderData._id}.pdf`;
-    doc.pipe(fs.createWriteStream(fileName));
     doc.end();
 
     res.setHeader('Content-disposition', `attachment; filename=${fileName}`);
@@ -598,53 +537,6 @@ exports.downloadData = async (req, res) => {
     const fileStream = fs.createReadStream(fileName);
     fileStream.pipe(res);
 }
-
-
-// exports.downloadData = async (req, res) => {
-//     let orderId = req.params.id;
-//     let UID = req.session.userData;
-//     var addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
-//     var orderData = addsData.orders.find(item => item._id == orderId);
-//     // Replace this with logic to fetch order data based on orderId
-
-//     if (!orderData) {
-//         return res.status(404).send('Order not found');
-//     }
-
-//     const doc = new pdfkit();
-//     const fileName = `invoice_${orderData._id}.pdf`;
-
-//     doc.pipe(fs.createWriteStream(fileName));
-
-//     doc.fontSize(16).text('Invoice', { align: 'center' }).moveDown(0.5);
-//     doc.fontSize(12).text(`Invoice Number: INV-${orderData._id}`);
-//     doc.text(`Date: ${new Date().toLocaleDateString()}`).moveDown(1);
-
-//     doc.text('Billed To:').moveDown(0.5);
-//     doc.text(`${orderData.address.name}`);
-//     doc.text(`${orderData.address.address}`);
-//     doc.text(`${orderData.address.city}, ${orderData.address.state}, ${orderData.address.zipcode}`).moveDown(1);
-
-//     doc.fontSize(12).text('Description', { continued: true }).text('Quantity', { continued: true }).text('Price', { continued: true }).text('Total');
-//     orderData.products.forEach((item) => {
-//         doc.text(item.product_id.name, { continued: true }).text(item.qty.toString(), { continued: true }).text(`$${item.price.toFixed(2)}`, { continued: true }).text(`$${(item.qty * item.price).toFixed(2)}`);
-//     });
-//     doc.moveDown(1);
-
-//     doc.text(`Total: $${orderData.totalamount.toFixed(2)}`).moveDown(1);
-
-//     doc.text(`Payment Method: ${orderData.paymentmethod}`).moveDown(1);
-
-//     doc.fontSize(10).fillColor('#ffffff').text('Thank you for your business!', { align: 'center' });
-
-//     doc.end();
-
-//     res.setHeader('Content-disposition', `attachment; filename=${fileName}`);
-//     res.setHeader('Content-type', 'application/pdf');
-
-//     const fileStream = fs.createReadStream(fileName);
-//     fileStream.pipe(res);
-// }
 
 
 exports.coupenApply = async (req, res) => {
