@@ -8,8 +8,8 @@ let fs = require('fs');
 let pdfkit = require('pdfkit');
 
 const admin = {
-    email: 'a@m',
-    password: '123'
+    email: 'admin@gmail.com',
+    password: 'admin123'
 }
 
 function getYearWeek(date) {
@@ -18,7 +18,6 @@ function getYearWeek(date) {
     return `${year}-W${weekNumber}`;
 }
 
-// Function to get the ISO week number of a date
 function getISOWeek(date) {
     const target = new Date(date.valueOf());
     const dayNumber = (date.getDay() + 6) % 7;
@@ -50,13 +49,19 @@ exports.adminpage = async (req, res) => {
 
         const monthlySales = await user.aggregate([
             {
-                $unwind: '$orders',
+                $unwind:"$orders",
+            },
+            {
+                $unwind:"$orders.products"
+            },
+            {
+                $match:{"orders.products.returned":false}
             },
             {
                 $project: {
                     month: { $month: '$orders.created_at' },
                     year: { $year: '$orders.created_at' },
-                    totalamount: '$orders.totalamount',
+                    totalamount: '$orders.products.price',
                 },
             },
             {
@@ -139,14 +144,11 @@ exports.adminpage = async (req, res) => {
         }));
 
         formattedMonthlySales.unshift(newEntry);
-
         formattedMonthlySales = formattedMonthlySales.slice(0, 12);
-
         const amountOfUsers = await user.find({}).count();
-
         const totalordersCount = await user.aggregate([
             {
-            $unwind:"$orders",
+                $unwind:"$orders",
             },
             {
                 $unwind:"$orders.products"
@@ -159,9 +161,27 @@ exports.adminpage = async (req, res) => {
             }
         ])
 
+        let totalProfit = await user.aggregate([
+            {
+                $unwind:"$orders",
+            },
+            {
+                $unwind:"$orders.products"
+            },
+            {
+                $match:{"orders.products.returned":false}
+            },
+            {
+                $group:{
+                    "_id":null,
+                    totalProfitAmount:{$sum:"$orders.products.price"},
+                }
+            },
+        ])
+
         let totalorders = totalordersCount[0].count;
 
-        res.render('admin/adminPanel', { chartData, chartDataM, chartDataY, formattedMonthlySales, paymentMethodsCount, amountOfUsers , totalorders});
+        res.render('admin/adminPanel', { chartData, chartDataM, chartDataY, formattedMonthlySales, paymentMethodsCount, amountOfUsers , totalorders , totalProfitData:totalProfit[0].totalProfitAmount});
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -192,34 +212,84 @@ exports.loginpage = async (req, res) => {
 
 exports.salesReport = async (req, res) => {
 
-    let userOrders = await user.aggregate([
-        {
-            $unwind: '$orders'
-        },
-        {
-            $unwind: '$orders.products'
-        },
-        {
-            $lookup: {
-                from: 'productdetails', // Assuming your product details collection is named 'productdetails'
-                localField: 'orders.products.product_id',
-                foreignField: '_id',
-                as: 'productDetails'
+    let userOrders;
+    if(Object.keys(req.query).length != 0){
+        userOrders = await user.aggregate([
+            {
+                $unwind: '$orders'
+            },
+            {
+                $unwind: '$orders.products'
+            },
+            {
+                $lookup: {
+                    from: 'productdetails',
+                    localField: 'orders.products.product_id',
+                    foreignField: '_id',
+                    as: 'productDetails'
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: '$orders.created_at',
+                    orderId: '$orders._id',
+                    name: '$address.name',
+                    productName: '$productDetails.name',
+                    quantity: '$orders.products.qty',
+                    paymentMethod: '$orders.paymentmethod',
+                    amount: '$orders.products.price'
+                }
+            },
+            {
+                $match: {
+                    date: {
+                        $gte: new Date(req.query.fromDate),
+                        $lte: new Date(req.query.toDate + 'T23:59:59.999Z') // Add one day to include the entire end date
+                    }
+                }
+            },
+            {
+                $sort: {
+                    date: -1
+                }
             }
-        },
-        {
-            $project: {
-                _id: 0,
-                date: '$orders.created_at',
-                orderId: '$orders._id',
-                name: '$address.name',
-                productName: '$productDetails.name',
-                quantity: '$orders.products.qty',
-                paymentMethod: '$orders.paymentmethod',
-                amount: '$orders.products.price'
+        ]);         
+    }else{
+        userOrders = await user.aggregate([
+            {
+                $unwind: '$orders'
+            },
+            {
+                $unwind: '$orders.products'
+            },
+            {
+                $lookup: {
+                    from: 'productdetails', // Assuming your product details collection is named 'productdetails'
+                    localField: 'orders.products.product_id',
+                    foreignField: '_id',
+                    as: 'productDetails'
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    date: '$orders.created_at',
+                    orderId: '$orders._id',
+                    name: '$address.name',
+                    productName: '$productDetails.name',
+                    quantity: '$orders.products.qty',
+                    paymentMethod: '$orders.paymentmethod',
+                    amount: '$orders.products.price'
+                }
+            },
+            {
+                $sort:{
+                    date:-1
+                }
             }
-        }
-    ]);
+        ]);
+    }
 
     res.render('admin/adminSales', { allOrders: userOrders });
 }
@@ -345,7 +415,6 @@ exports.orderList = async (req, res) => {
 
 
 exports.orderView = async (req, res) => {
-
     try {
         let id = req.query.id;
         let userOrders = await user.findOne({ "_id": id }).populate('orders.products.product_id');
@@ -377,11 +446,11 @@ exports.orderStatus = async (req, res) => {
 
 exports.coupenManagement = async (req, res) => {
     try {
-        var coupenData = await coupen.find({});
-        console.log(coupenData);
+        let coupenData = await coupen.find({}).sort({expired:-1});
         res.render('admin/adminCoupens', { coupenDetails: coupenData });
     } catch (error) {
-
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
     }
 }
 
@@ -610,10 +679,10 @@ exports.addCategory = async (req, res) => {
             });
             let resultData = await categoryDetail.save();
             if (resultData) {
-                res.redirect('/admin/addCategory');
+                res.json({ categoryExitNot : true , redirect : '/admin/products'});
             }
         } else {
-            res.render('admin/adminAddCategory', { messsage: 'The category Already Existing' });
+            res.json({ categoryExit : true });
         }
     } catch (error) {
         const statusCode = error.status || 500;

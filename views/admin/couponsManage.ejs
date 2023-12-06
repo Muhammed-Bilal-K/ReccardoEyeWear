@@ -5,6 +5,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <!-- MDB -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <title>user.username Account Details</title>
     <section style="background-color: #eee; height: 100vh;">
         <div class="container py-5">
@@ -12,13 +13,13 @@
                 <div class="col">
                     <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
                         <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item">Add a Products</li>
-
+                            <li class="breadcrumb-item">Add a Coupen</li>
                         </ol>
                     </nav>
                 </div>
             </div>
-            <form action="admin/addCoupen" method="post" enctype="multipart/form-data">
+            <!-- <form action="admin/addCoupen" method="post" enctype="multipart/form-data"> -->
+            <form action=" " id="coupenform">
                 <div class="row">
                     <!-- <div class="col-lg-4">
                         <div class="card mb-4">
@@ -42,34 +43,34 @@
                                     <div class="mb-2 ml-3 cl2"><span>Coupon Name</span></div>
                                     <input type="text" class="form-control form-control-user"
                                         id="exampleFirstName" placeholder="Coupon Name"
-                                        name="couponName">
+                                        name="couponName" required>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-2 mb-sm-0">
                                         <div class="mb-2 ml-3 cl2"><span>Coupon Code</span></div>
                                         <input type="text" class="form-control form-control-user"
                                             id="exampleLastName" placeholder="Coupon Code" style="text-transform: uppercase;"
-                                            name="couponCode">
+                                            name="couponCode" required>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="mb-2 ml-3 cl2"><span>Discount Amount</span></div>
                                         <input type="number" class="form-control form-control-user"
                                             id="exampleFirstName" placeholder="DiscountAmount"
-                                            name="discount">
+                                            name="discount" required >
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-2 mb-sm-0">
                                         <div class="mb-2 ml-3 cl2"><span>Maximum Price</span></div>
-                                        <input type="text" class="form-control form-control-user"
+                                        <input type="number" class="form-control form-control-user"
                                             id="exampleFirstName" placeholder="Maximum use count"
-                                            name="maxPrice">
+                                            name="maxPrice" required>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="mb-2 ml-3 cl2"><span>Minimum Price</span></div>
                                         <input type="number" class="form-control form-control-user"
                                             id="exampleLastName" placeholder="Orders Above"
-                                            name="minPrice">
+                                            name="minPrice" required>
                                     </div>
 
                                 </div>
@@ -85,7 +86,7 @@
                                         <div class="mb-2 ml-3 cl2"><span>Expiry Date</span></div>
                                         <input type="date" class="form-control form-control-user"
                                             id="exampleLastName" placeholder="Expiry Date"
-                                            name="expiryDate">
+                                            name="expiryDate" required>
                                     </div>
                                 </div>
                                 <button style="padding: 7px 34px;
@@ -102,5 +103,26 @@
             </form>
         </div>
     </section>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.2/mdb.min.js"></script>
+    <script>
+        $("#coupenform").submit((e) => {
+                e.preventDefault()
+                $.ajax({
+                    url: 'admin/addCoupen',
+                    method: 'post',
+                    data: $('#coupenform').serialize(),
+                    success: (response) => {
+                        if (response.expiryDateFaild) {
+                            Swal.fire("Date should be greter than Now");
+                        }else if(response.CoupenVerified){
+                            window.location.href = response.redirect;
+                        }else{
+                            Swal.fire("Somthing went wrong!");
+                        }
+                    }
+                })
+            })
+    </script>
 
 </main>

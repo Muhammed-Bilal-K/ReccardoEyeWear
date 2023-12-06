@@ -48,14 +48,6 @@ exports.addTocarts = async (req, res) => {
             })
         }
         res.redirect('/cart');
-
-        // if (quantity > equantity) {
-        //     mqty = equantity;
-        //     // await product.updateOne({ "_id": pid }, { $inc: { qnumber: -mqty } });
-        // } else {
-        //     mqty = equantity - quantity;
-        //     // await product.updateOne({ "_id": pid }, { $set: { qnumber: mqty } });
-        // }
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -94,8 +86,11 @@ exports.processDelivery = async (req, res) => {
         }));
 
         if (req.body.paymentmethod == 'Card') {
-
-            const amountInPaise = Math.round(req.body.totalamount * 100);
+            var amountInPaise = Math.round(req.body.totalamount * 100);
+            if (req.body.coupenid != '') {
+                let coupenamoutEsxit = await coupensdb.findOne({ "_id": req.body.coupenid});
+                amountInPaise = parseInt(amountInPaise)-parseInt(coupenamoutEsxit.discountamount * 100);
+            }
             const razorpayOrder = await instance.orders.create({
                 amount: amountInPaise,
                 currency: 'INR', // Update with your currency
@@ -372,9 +367,15 @@ exports.newuserAdd = async (req, res) => {
 
 exports.listOrder = async (req, res) => {
     try {
-        var ID = req.session.userData;
-        var addsData = await user.findOne({ "_id": ID }).populate("orders.products.product_id");
-        res.render('userordersList', { Alldata: addsData.orders });
+        let ID = req.session.userData;
+        let OrdersListed;
+        let addsData = await user.findOne({ "_id": ID }).populate("orders.products.product_id");
+        if (addsData.orders != null) {
+            OrdersListed = addsData.orders.reverse(); 
+        }else{
+            res.redirect('/login');
+        }
+        res.render('userordersList', { Alldata:OrdersListed});
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -385,8 +386,9 @@ exports.viewEach = async (req, res) => {
     try {
         var ID = req.params.id;
         UID = req.session.userData;
-        let addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id');
+        let addsData = await user.findOne({ "_id": UID }).populate('orders.products.product_id').populate('orders.coupen_Id');
         let shopItem = addsData.orders.find(item => item._id == ID);
+        console.log(shopItem);
         res.render('DVProduct', { Fulldata: shopItem });
     } catch (error) {
         const statusCode = error.status || 500;

@@ -76,12 +76,14 @@
 										<% if (new Date(items.expiresAt) > new Date()) { %>
 											<% if (!items.returned) { %>
 												<p><a href="/order/return?Ordid=<%= Fulldata._id %>&proid=<%= items._id %>&coupid=<%= Fulldata.coupen_Id %>&sepId=<%= items.product_id._id %>" class="card-link">Return</a></p>
+												<p style="margin-top: -18px;
+												font-size: 12px;
+												font-weight: 800;">7 days Return Policy</p>
 											<% } else { %>
 												<p>Returned</p>
 											<% } %>
 										<% } %>
 									<% } %>
-
 									<p>3 Days Delivery Time</p>
                                     <hr>
                                 <% }) %>
@@ -101,6 +103,16 @@
                             <h5>Payment :<%= Fulldata.paymentmethod %></h5>
 							<h5 style="display: inline;">Shipping Charge</h5><p style="display: inline;">: Free Shipping</p>
                             <hr>
+							<% if (Fulldata.coupen_Id != null) { %>
+								<h4 style="font-weight: 800;">Cuopens Details</h4>
+								<h6 style="margin: 0 auto;
+								background-color: green;
+								color: white;
+								padding: 9px 40px;
+								border-radius: 6px;">Coupen Applied Successfully</h6>
+								<p style="margin-bottom: 0px;">Coupon Code : <span style="text-transform: uppercase;"><%= Fulldata.coupen_Id.couponcode %></span></p>
+								<p>Discount Amount : $<%= Fulldata.coupen_Id.discountamount %></p>
+							<% } %>
                         </div>
                         <div class="col-md-4">
                             <!-- <p><a href="/settings/useradd/update/" class="card-link"></a></p> -->

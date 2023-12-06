@@ -85,6 +85,11 @@ exports.addaProducts = async (req, res) => {
 exports.addcoupens = async (req, res) => {
     try {
         console.log(req.body);
+        const expiryDate = new Date(req.body.expiryDate);
+        if(expiryDate < Date.now())
+        {
+            return res.json({expiryDateFaild:true});
+        }
         const coupenDetail = new coupen({
             couponname: req.body.couponName,
             couponcode: req.body.couponCode,
@@ -95,7 +100,8 @@ exports.addcoupens = async (req, res) => {
         });
         await coupenDetail.save();
         if (coupenDetail) {
-            res.redirect('/admin/coupens');
+            res.json({CoupenVerified:true , redirect : '/admin/coupens'});
+            // res.redirect('/admin/coupens');
         }
     } catch (error) {
         const statusCode = error.status || 500;
@@ -193,7 +199,7 @@ exports.updateNewSpecific = async (req, res) => {
                 }
             })
         }
-        res.redirect('/admin');
+        res.redirect('/admin/products');
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);

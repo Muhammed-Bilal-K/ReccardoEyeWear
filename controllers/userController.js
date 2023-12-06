@@ -683,13 +683,15 @@ exports.deleteAdds = async (req, res) => {
 
 exports.deleteCartItem = async (req, res) => {
     try {
+        console.log(req.params);
         let CartId = req.params.id;
         let UID = req.session.userData;
         let UserAddss = await user.findOne({ "_id": UID });
         if (UserAddss) {
             await user.findByIdAndUpdate({ "_id": UID }, { $pull: { cart: { "_id": CartId } } }, { new: true })
+            res.json({message:'item deleted from your cart'});
         }
-        res.redirect('/cart');
+        // res.redirect('/cart');
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);

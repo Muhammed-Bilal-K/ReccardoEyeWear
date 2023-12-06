@@ -19,10 +19,6 @@
                     </li>
                 </ul>
             </div>
-            <a href="#" class="btn-download">
-                <i class='bx bxs-cloud-download'></i>
-                <span class="text">Download PDF</span>
-            </a>
         </div>
 
         <ul class="box-info">
@@ -43,7 +39,7 @@
             <li>
                 <i class='bx bxs-dollar-circle'></i>
                 <span class="text">
-                    <h3>$2543</h3>
+                    <h3>$<span><%= totalProfitData %></span></h3>
                     <p>Total Sales</p>
                 </span>
             </li>
@@ -154,7 +150,6 @@
         </script>
 
         <script>
-            // Assuming paymentMethodsCount is an array of objects with _id and count properties
             const paymentMethodsCount = JSON.parse('<%- JSON.stringify(paymentMethodsCount) %>');
 
             const labelsofD = paymentMethodsCount.map(method => method._id);

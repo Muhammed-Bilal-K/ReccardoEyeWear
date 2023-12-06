@@ -5,7 +5,7 @@ let productController = require('../controllers/productController');
 let adminMiddleware = require('../middleware/adminMiddleware');
 
 /* GET user' homepage listing. */
-router.get('/' , adminMiddleware.loggedIn  , adminController.adminpage);
+router.get('/', adminMiddleware.loggedIn , adminController.adminpage);
 /* GET user's loginpage listing. */
 router.get('/login', adminMiddleware.notlogged , adminController.loginpage);
 

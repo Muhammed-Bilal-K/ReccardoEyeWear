@@ -149,10 +149,15 @@
                                                     <%= x.totalPrice %>
                                                 </td>
                                                 <td>
-                                                    <form action="/cart/delete/<%= x._id %>"
+
+
+                                                    <button style="padding: 0 7px;" type="submit"
+                                                        onclick="DeleteItemFromCart('<%= x._id %>')">X</button>
+
+                                                    <!-- <form action="/cart/delete/"
                                                         method="post">
                                                         <button style="padding: 0 7px;" type="submit" onclick="return confirm('are you want to delete')">X</button>
-                                                    </form>
+                                                    </form> -->
                                                 </td>
                                             </tr>
                                             <% } %>
@@ -226,6 +231,42 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script>
+            function DeleteItemFromCart(proid) {
+                Swal.fire({
+                    title: "Are you sure?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, remove !"
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch(`/cart/delete/${proid}`, {
+                            method: 'POST',
+                        }).then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        }).then(data => {
+                            if (data) {
+                                Swal.fire({
+                                    title: "Deleted!",
+                                    text: "Item has been removed.",
+                                    icon: "success"
+                                }).then(()=>{
+                                    location.reload();
+                                })
+                            }
+                        }).catch(error => {
+                            console.log(error);
+                        });
+                    }
+                })
+            }
+        </script>
+
+        <script>
             function changeQuantity(proid, userID, count, totalP, pPrice, allP, sum, cart) {
                 var quantity = parseInt(document.getElementById(proid).value);
                 var tP = parseInt(document.getElementById(totalP).innerText);
@@ -280,7 +321,7 @@
                     confirmButtonText: "Yes, delete it!"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        
+
                         Swal.fire({
                             title: "Deleted!",
                             text: "Your file has been deleted.",

@@ -88,6 +88,8 @@
                 height: 2px;
                 margin-bottom: 1.5em;">
                 <!-- <form action="/getAdd" method="post"> -->
+
+                    <!--------------------------------------------- CHECK OUT FORM--------------------------- -->
                 <form action="" id="checkout-form">
                     <!--Grid row-->
                     <div class="row">
@@ -131,6 +133,14 @@
                             <div class="form-outline mb-4">
                                 <hr />
                                 <h4 class="my-4">PAYMENT</h4>
+
+                                <p style="color: black;
+                                background-color: antiquewhite;
+                                margin-right: 40rem;
+                                padding: 10px;
+                                border-radius: 9px;
+                                font-weight: 700;
+                            ">Wallet Balance : $<%= walletData.wallet.balance %></p>
                                 <div class="my-3" style="box-shadow: 3px 6px 26px #ffc4c4;
                                 padding: 20px;
                                 margin-right: 459px;
@@ -153,47 +163,6 @@
                                                 <label class="form-check-label" for="flexRadioDefault3"> COD </label>
                                             </div>
                                 </div>
-                                <!-- <div class="row mb-3">
-                                <div class="col-md-6 mb-3">
-                                    <p class="mb-0">
-                                        Name on card
-                                    </p>
-                                    <div>
-                                        <input type="text" / style="margin-left: 2px;
-                                width: 100%;">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <p class="mb-0">
-                                        Credit card number
-                                    </p>
-                                    <div>
-                                        <input type="text" style="margin-left: 2px;
-                                width: 100%;" />
-                                    </div>
-                                </div>
-                            </div> -->
-                                <!-- <div class="row">
-                                <div class="col-md-3 mb-3">
-                                    <p class="mb-0">
-                                        Expiration
-                                    </p>
-                                    <div class="form-outline">
-                                        <input type="text" style="margin-left: 2px;
-                                width: 50%;" />
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <p class="mb-0">
-                                        CVV
-                                    </p>
-                                    <div class="form-outline">
-                                        <input type="text" style="margin-left: 5px;
-                                width: 50%;" />
-
-                                    </div>
-                                </div>
-                            </div> -->
                                 <hr class="mb-4" />
 
                                 <input type="text" hidden name="totalamount" value="<%= sumP %>">
@@ -293,7 +262,6 @@
                 })
             })
             function razorpayPayment(order) {
-                var sumAll = document.getElementById('placeholderValue').innerHTML;
                 var options = {
                     "key": "rzp_test_w6dIwCMt6fH2NS", // Enter the Key ID generated from the Dashboard
                     "amount": "<%= sumP %>", // < % = sumP % > Amount is in curre. Default currency is INR. Hence, 50000 refers to 50000 paise
