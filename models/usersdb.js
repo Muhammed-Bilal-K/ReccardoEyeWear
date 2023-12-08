@@ -130,6 +130,9 @@ const USERSSchema = new mongoose.Schema({
         created_at: {
             type: Date,
         },
+        orderPlaced:{
+            type:String,
+        }
     }],
     created_at: {
         type: Date,

@@ -27,7 +27,7 @@ function getISOWeek(date) {
     if (target.getDay() !== 4) {
         target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
     }
-    return 1 + Math.ceil((firstThursday - target) / 604800000); // 604800000 = 7 * 24 * 3600 * 1000
+    return 1 + Math.ceil((firstThursday - target) / 604800000);
 }
 
 exports.adminpage = async (req, res) => {
@@ -265,7 +265,7 @@ exports.salesReport = async (req, res) => {
             },
             {
                 $lookup: {
-                    from: 'productdetails', // Assuming your product details collection is named 'productdetails'
+                    from: 'productdetails', 
                     localField: 'orders.products.product_id',
                     foreignField: '_id',
                     as: 'productDetails'
@@ -299,8 +299,6 @@ exports.addingProducts = async (req, res) => {
         await category.find({}).then((CategoryData) => {
             res.render('admin/adminAddProducts', { CategoryList: CategoryData });
         })
-        // let categ = await product.find({}).distinct("choose");
-        // res.render('addone', { categ: categ });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -417,8 +415,12 @@ exports.orderList = async (req, res) => {
 exports.orderView = async (req, res) => {
     try {
         let id = req.query.id;
+        let OrdersListed;
         let userOrders = await user.findOne({ "_id": id }).populate('orders.products.product_id');
-        res.render('admin/adminEachOrdderView', { FULLDATA: userOrders.orders, Userid: id });
+
+        OrdersListed = userOrders.orders.filter(item => item.orderPlaced == 'Placed');
+
+        res.render('admin/adminEachOrdderView', { FULLDATA: OrdersListed.reverse() , Userid: id });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -568,7 +570,6 @@ exports.salesReportDownload = async (req, res) => {
             },
         ]);
         if (req.body.method == 'csv') {
-            // Aggregate data from MongoDB
 
             const csvWriter = createCsvWriter({
                 path: 'sales_report.csv',

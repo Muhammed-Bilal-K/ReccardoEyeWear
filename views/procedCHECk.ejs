@@ -89,7 +89,7 @@
                 margin-bottom: 1.5em;">
                 <!-- <form action="/getAdd" method="post"> -->
 
-                    <!--------------------------------------------- CHECK OUT FORM--------------------------- -->
+                <!--------------------------------------------- CHECK OUT FORM--------------------------- -->
                 <form action="" id="checkout-form">
                     <!--Grid row-->
                     <div class="row">
@@ -115,7 +115,8 @@
                                     <!--Grid column-->
                                     <h6>Select the Address</h4>
                                         <select class="browser-default custom-select mb-3"
-                                            style="-webkit-appearance: none;" name="address">
+                                            style="-webkit-appearance: none;-moz-appearance:none;appearance:none;" 
+                                            name="address">
                                             <option>select address</option>
                                             <% for( let i=0; i < address.length; i++ ) { %>
                                                 <option value="<%= address[i]._id %>">
@@ -140,7 +141,8 @@
                                 padding: 10px;
                                 border-radius: 9px;
                                 font-weight: 700;
-                            ">Wallet Balance : $<%= walletData.wallet.balance %></p>
+                            ">Wallet Balance : $<%= walletData.wallet.balance %>
+                                </p>
                                 <div class="my-3" style="box-shadow: 3px 6px 26px #ffc4c4;
                                 padding: 20px;
                                 margin-right: 459px;
@@ -171,7 +173,8 @@
                                 <button type="submit" class="button alt" name="totalamount" id="placeholder"
                                     value="<%= sumP %>">Place
                                     Order $<span id="placeholderValue">
-                                        <%= sumP %></span>.00</button>
+                                        <%= sumP %>
+                                    </span>.00</button>
                             </div>
                             <!--/.Card-->
                         </div>
@@ -251,10 +254,36 @@
                     method: 'post',
                     data: $('#checkout-form').serialize(),
                     success: (response) => {
-                        if (response.codSuccuss) {
-                            location.href = '/ordersuccess'
+                        if (response.productDataNotFound) {
+                            Swal.fire("Product not found!");
+                        } else if (response.quantityExceeded) {
+                            Swal.fire("Quantity for product exceeds !");
+                        } else if (response.codSuccuss) {
+                            // location.href = '/ordersuccess'
+                            Swal.fire({
+                                title: 'Order Placed Successfully',
+                                html: `
+                                <p>Thank you for your purchase! Now we're preparing for the shipment!...</p>
+                                <a href="/settings/orders" class="btn btn-primary">Order Details</a>
+                                <a href="/" class="btn btn-secondary">Home</a> `,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                },
+                                width: '40%',
+                            })
                         } else if (response.walletSuccuss) {
-                            location.href = '/ordersuccess'
+                            // location.href = '/ordersuccess'
+                            Swal.fire({
+                                title: 'Order Placed Successfully',
+                                html: `
+                                <p>Thank you for your purchase! Now we're preparing for the shipment!...</p>
+                                <a href="/settings/orders" class="btn btn-primary">Order Details</a>
+                                <a href="/" class="btn btn-secondary">Home</a> `,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                },
+                                width: '40%',
+                            })
                         } else {
                             razorpayPayment(response)
                         }
@@ -271,7 +300,7 @@
                     "image": "",
                     "order_id": order.razorpay_order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                     "handler": function (response) {
-                        window.location = '/ordersuccess'
+                        // window.location = '/ordersuccess'
                         verifyPayment(response, order)
                     },
                     "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
@@ -298,10 +327,33 @@
                         order
                     },
                     method: 'post',
+                    success: (response) => {
+                        if (response.razorpaySuccess == true) {
+                            Swal.fire({
+                                title: 'Order Placed Successfully',
+                                html: `
+                                <p>Thank you for your purchase! Now we're preparing for the shipment!...</p>
+                                <a href="/settings/orders" class="btn btn-primary">Order Details</a>
+                                <a href="/" class="btn btn-secondary">Home</a> `,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                },
+                                width: '40%',
+                            })
+                        } else {
+                            swal.fire({
+                                positon: "center",
+                                icon: "error",
+                                title: "Payment failed",
+                                showConfirmButton: false,
+                                timer: 1500,
+                            })
+                        }
+                    }
                 })
             }
-
         </script>
+
         <script>
             function coupenApply() {
                 let coupencode = document.getElementById('coupenname').value;
@@ -321,7 +373,7 @@
                             document.getElementById('discountamountMinus').innerText = '-$' + response.coupenDis;
                             document.getElementById('placeholderValue').innerText = response.amountData;
                             document.getElementById('coupenid').value = response.coupenid;
-                            document.getElementById('button-addon2').setAttribute('disabled','');
+                            document.getElementById('button-addon2').setAttribute('disabled', '');
                             const Toast = Swal.mixin({
                                 toast: true,
                                 position: "top-end",
@@ -342,8 +394,8 @@
                             Swal.fire("Invalid coupon code or expired!");
                         } else if (response.minAmount) {
                             Swal.fire("Minimum Cart Amount Needed!");
-                        } else if (response.maxAmount) 
-                            {Swal.fire("Maximum Cart Amount Needed!");
+                        } else if (response.maxAmount) {
+                            Swal.fire("Maximum Cart Amount Needed!");
                         } else {
                             Swal.fire("the coupen used!");
                         }

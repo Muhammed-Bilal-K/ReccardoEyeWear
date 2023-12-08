@@ -5,7 +5,6 @@ const Razorpay = require('razorpay');
 let pdfkit = require('pdfkit');
 let fs = require('fs');
 var disamount = null;
-var coupenidPass;
 var instance = new Razorpay({
     key_id: 'rzp_test_w6dIwCMt6fH2NS',
     key_secret: 'enJXg6YSPYMvparSvXKmiWUG',
@@ -16,7 +15,6 @@ exports.addTocarts = async (req, res) => {
     console.log(req.params);
     let userId = req.session.userData;
     let pid = req.params.id;
-    let mqty = 0;
     quantity = req.body.quantity;
     equantity = req.body.equantity
     quantity = parseInt(quantity);
@@ -57,9 +55,11 @@ exports.addTocarts = async (req, res) => {
 
 exports.processDelivery = async (req, res) => {
     try {
-
-        console.log(req.body);
         let userID = req.session.userData;
+        let products = [];
+        var statusOrder;
+        var lastOrderId;
+
         let productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
         let orderadd = productData.address;
         const addres = orderadd.find(add => add._id.equals(req.body.address));
@@ -76,44 +76,55 @@ exports.processDelivery = async (req, res) => {
             }
         }
         let productsArray = productData.cart;
-        let products = productsArray.map(data => ({
-            product_id: data.product_id._id,
-            qty: data.qty,
-            price: data.totalPrice,
-            status: 'pending',
-            returned: false,
-            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        }));
+
+        if (req.body.paymentmethod != 'Card') {
+            statusOrder = 'Placed';
+        } else {
+            statusOrder = 'Pending';
+        }
+        for (let data of productsArray) {
+            let productdataStock = await product.findById(data.product_id._id);
+            if (productdataStock) {
+                if (data.qty <= productdataStock.qnumber) {
+                    products.push({
+                        product_id: data.product_id._id,
+                        qty: data.qty,
+                        price: data.totalPrice,
+                        status: 'pending',
+                        returned: false,
+                        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                    });
+                } else {
+                    res.json({ quantityExceeded: true });
+                }
+            } else {
+                res.json({ productDataNotFound: true });
+            }
+        }
 
         if (req.body.paymentmethod == 'Card') {
             var amountInPaise = Math.round(req.body.totalamount * 100);
             if (req.body.coupenid != '') {
-                let coupenamoutEsxit = await coupensdb.findOne({ "_id": req.body.coupenid});
-                amountInPaise = parseInt(amountInPaise)-parseInt(coupenamoutEsxit.discountamount * 100);
+                let coupenamoutEsxit = await coupensdb.findOne({ "_id": req.body.coupenid });
+                amountInPaise = parseInt(amountInPaise) - parseInt(coupenamoutEsxit.discountamount * 100);
             }
             const razorpayOrder = await instance.orders.create({
                 amount: amountInPaise,
-                currency: 'INR', // Update with your currency
+                currency: 'INR',
                 receipt: '' + new Date().getTime(),
-                payment_capture: 1, // Auto capture payment
+                payment_capture: 1,
             });
 
-            productsArray.map(data => {
-                product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then(() => {
-                })
-            })
-            // var tottalamount = parseInt(req.body.totalamount)-parseInt(disamount);
             if (disamount === null) {
                 disamount = req.body.totalamount;
             }
-            console.log(typeof req.body.coupenid);
-            console.log(req.body.coupenid);
+
             if (req.body.coupenid === '') {
                 var cid = null;
             } else {
                 var cid = req.body.coupenid;
             }
-            console.log(cid);
+
             let order = {
                 products,
                 totalamount: disamount,
@@ -121,15 +132,23 @@ exports.processDelivery = async (req, res) => {
                 address,
                 coupen_Id: cid,
                 created_at: Date.now(),
+                orderPlaced: statusOrder,
             }
             disamount = null;
-            await user.updateOne({ "_id": userID }, { $push: { orders: order } });
-            if (req.body.coupenid) {
-                await coupensdb.updateOne({ "_id": req.body.coupenid }, { $addToSet: { usedusers: userID } });
+
+            const result = await user.updateOne({ "_id": userID }, { $push: { orders: order } });
+
+            if (result.modifiedCount === 1) {
+                const userdatas = await user.findById(userID);
+
+                lastOrderId = userdatas.orders[userdatas.orders.length - 1]._id;
+
+                console.log('Order added successfully. Last order ID:', lastOrderId);
+            } else {
+                console.log('No document was modified. The order may not have been added.');
             }
-            productData.cart = [];
-            await productData.save();
-            res.json({ status: true, razorpay_order_id: razorpayOrder.id });
+
+            res.json({ status: true, razorpay_order_id: razorpayOrder.id, coupendata: req.body.coupenid , lastOrderId});
         } else if (req.body.paymentmethod == 'COD') {
             productsArray.map(data => {
                 product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then((respo) => {
@@ -154,6 +173,7 @@ exports.processDelivery = async (req, res) => {
                 address,
                 coupen_Id: cid,
                 created_at: Date.now(),
+                orderPlaced: statusOrder,
             }
             disamount = null;
             await user.updateOne({ "_id": userID }, { $push: { orders: order } });
@@ -189,6 +209,7 @@ exports.processDelivery = async (req, res) => {
                 address,
                 coupen_Id: cid,
                 created_at: Date.now(),
+                orderPlaced: statusOrder,
             }
             if (productData.wallet.balance > parseInt(req.body.totalamount)) {
                 function generateRandom12DigitNumber() {
@@ -227,7 +248,59 @@ exports.processDelivery = async (req, res) => {
 
 
 exports.deliveredOnline = async (req, res) => {
-    console.log(req.body, 'hi');
+    try {
+        console.log(req.body, 'fdsffd');
+        let userID = req.session.userData;
+        const productData = await user.findOne({ "_id": userID }).populate("cart.product_id");
+        const {
+            'payment[razorpay_payment_id]': paymentId,
+            'payment[razorpay_order_id]': orderId,
+            'payment[razorpay_signature]': signature,
+            'order[status]': status,
+            'order[razorpay_order_id]': orderRazorpayId,
+            'order[coupendata]': coupenid,
+            'order[razorpayOrder][receipt]': reciptdata,
+            'order[lastOrderId]': orderIdData,
+        } = req.body;
+        const crypto = require('crypto');
+        const expectedSignature = crypto.createHmac('sha256', instance.key_secret)
+            .update(orderId + '|' + paymentId)
+            .digest('hex');
+
+        if (expectedSignature === signature) {
+            let productsArray = productData.cart;
+            productsArray.map(data => {
+                product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then(() => {
+                })
+            })
+            if (coupenid != '') {
+                await coupensdb.updateOne({ "_id": coupenid }, { $addToSet: { usedusers: userID } });
+            }
+
+            var changeOrderStatus = productData.orders.find(item => item._id.toString() === orderIdData);
+            changeOrderStatus.orderPlaced = 'Placed';
+
+            productData.cart = [];
+            await productData.save();
+            res.json({ razorpaySuccess: true });
+        } else {
+            const Userdata = await user.updateOne(
+                { _id: userID },
+                { $pull: { orders: 1 } },
+                (err, result) => {
+                    if (err) {
+                        console.error('Error updating user', err);
+                    } else {
+                        console.log('deleted the last order from the array', result);
+                    }
+                }
+            );
+            res.json({ razorpaySuccess: false });
+        }
+    } catch (error) {
+        const statusCode = error.status || 500;
+        res.status(statusCode).send(error.message);
+    }
 }
 
 
@@ -266,13 +339,8 @@ exports.changeQUA = async (req, res, next) => {
         if (count === '-1' && quantity === '1') {
             let UID = req.body.user;
             let UserAddss = await user.findOne({ "_id": UID });
-            // if (UserAddss) {
-            //     await user.findByIdAndUpdate({ "_id": UID }, { $pull: { cart: { "_id": req.body.cartid } } }, { new: true })
-            // }
-            // res.redirect('/cart');
             if (UserAddss) {
                 return res.json({ RemovePcart: true });
-                // return res.json({ RemovePcart: true, redirectToCart: '/cart' });
             }
         }
         if (count === '+1') {
@@ -290,10 +358,8 @@ exports.changeQUA = async (req, res, next) => {
         if (cartItem) {
             if (count === 1) {
                 var total = cartItem.productPrice;
-                // await product.updateOne({ "_id": proID }, { $inc: { "qnumber": -1 } })
             } else {
                 var total = -cartItem.productPrice;
-                // await product.updateOne({ "_id": proID }, { $inc: { "qnumber": 1 } })
             }
             await user.updateOne({ "_id": req.body.user, "cart.product_id": req.body.pro }, {
                 $inc: { "cart.$.qty": count, "cart.$.totalPrice": total }
@@ -311,7 +377,6 @@ exports.changeQUA = async (req, res, next) => {
 exports.orderProceed = async (req, res) => {
     try {
         var userId = req.session.userData;
-        // var userId = '6558654ab003b89039f6b568';
         var sumP = 0;
         var count = 0;
         var emailData = await user.findOne({ "_id": userId }, { "email": 1 });
@@ -368,14 +433,14 @@ exports.newuserAdd = async (req, res) => {
 exports.listOrder = async (req, res) => {
     try {
         let ID = req.session.userData;
-        let OrdersListed;
+        let OrdersListed = [];
         let addsData = await user.findOne({ "_id": ID }).populate("orders.products.product_id");
         if (addsData.orders != null) {
-            OrdersListed = addsData.orders.reverse(); 
-        }else{
+            OrdersListed = addsData.orders.filter(item => item.orderPlaced == 'Placed');
+        } else {
             res.redirect('/login');
         }
-        res.render('userordersList', { Alldata:OrdersListed});
+        res.render('userordersList', { Alldata: OrdersListed.reverse() });
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -404,9 +469,9 @@ exports.DeleteOrder = async (req, res) => {
         let UID = req.session.userData;
 
         await user.updateOne({ _id: UID, 'orders._id': Ordd }, { $pull: { 'orders.$.products': { _id: Prodd } } }
-        ).then((respo) => {
+        ).then(() => {
             product.updateOne({ _id: req.query.sepId }, { $inc: { qnumber: parseInt(req.query.proQuantity) } }
-            ).then((resdata) => {
+            ).then(() => {
                 res.redirect('/settings/orders');
             })
         })
@@ -551,7 +616,6 @@ exports.coupenApply = async (req, res) => {
         let allcuopenData = await coupensdb.findOne({ couponcode: coupenDetail, expired: { $gte: new Date() } });
         console.log(allcuopenData);
         if (!allcuopenData) {
-            // return res.status(400).send('Invalid coupon code or expired.');
             res.json({ dataInvalid: true });
         }
 

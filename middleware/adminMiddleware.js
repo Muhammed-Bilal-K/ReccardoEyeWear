@@ -1,5 +1,3 @@
-
-
 const notlogged = (req, res, next) => {
     try {
         if (req.session.adminData) {

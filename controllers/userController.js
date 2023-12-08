@@ -65,7 +65,6 @@ exports.otpverifiypage = async (req, res) => {
                     await user.updateOne({ email: emailOtpCheck }, { $set: { is_verified: 1 } });
                     otpverify = null;
                     emailOtpCheck = null;
-                    // await otps.deleteOne({otps:veriOtp});
                     res.redirect('/login');
                 }
             } else {
@@ -103,7 +102,6 @@ exports.homepage = async (req, res) => {
     try {
         await category.find({}).then((categoryData) => {
             res.render('home', { logCheck: req.session.userData, categoryList: categoryData });
-            // res.render('otp',{error:null});
         })
     } catch (error) {
         console.log('homepage');
@@ -114,7 +112,7 @@ exports.homepage = async (req, res) => {
 
 exports.womencate = async (req, res) => {
     try {
-        var limit = 4;
+        var limit = 6;
         var page = 1;
         let categoryData = await category.findOne({ name: 'woman' });
         if (req.query.search || req.query.price || req.query.page) {
@@ -173,7 +171,7 @@ exports.womencate = async (req, res) => {
                 }).countDocuments();
             }
         } else {
-            limit = 4;
+            limit = 6;
             page = 1;
             if (req.query.page) {
                 page = req.query.page;
@@ -200,7 +198,7 @@ exports.womencate = async (req, res) => {
 
 exports.mencate = async (req, res) => {
     try {
-        var limit = 4;
+        var limit = 6;
         var page = 1;
         let categoryData = await category.findOne({ name: 'men' });
 
@@ -260,7 +258,7 @@ exports.mencate = async (req, res) => {
                 }).countDocuments();
             }
         } else {
-            limit = 4;
+            limit = 6;
             page = 1;
             if (req.query.page) {
                 page = req.query.page;
@@ -287,7 +285,7 @@ exports.mencate = async (req, res) => {
 
 exports.allCategory = async (req, res) => {
     try {
-        var limit = 4;
+        var limit = 6;
         var page = 1;
         var categoryd = req.query.category;
         let categoryListed = await category.find({});
@@ -350,7 +348,7 @@ exports.allCategory = async (req, res) => {
                 }).countDocuments();
             }
         } else {
-            limit = 4;
+            limit = 6;
             page = 1;
             if (req.query.page) {
                 page = req.query.page;
@@ -486,9 +484,6 @@ exports.createsignuppage = async (req, res) => {
         res.status(statusCode).send(error.message);
     }
 }
-
-// sendVerifyMail(req.body.name, req.body.email, userDetail._id);
-
 
 exports.createloginpage = async (req, res) => {
     let checkEmail = req.body.email;
@@ -691,7 +686,6 @@ exports.deleteCartItem = async (req, res) => {
             await user.findByIdAndUpdate({ "_id": UID }, { $pull: { cart: { "_id": CartId } } }, { new: true })
             res.json({message:'item deleted from your cart'});
         }
-        // res.redirect('/cart');
     } catch (error) {
         const statusCode = error.status || 500;
         res.status(statusCode).send(error.message);
@@ -714,33 +708,3 @@ exports.successPage = async (req, res) => {
     res.render('OrderComplete');
 }
 
-
-
-
-
-
-// sendVerifyMail(req.body.name, req.body.email, userDetail._id);
-// await userDetail.save();
-
-// const transporter = nodemailer.createTransport({
-//     service: 'Gmail',
-//     auth: {
-//         user: 'bilalcr7juv@gmail.com',
-//         pass: '',
-//     },
-// });
-
-// const mailOptions = {
-//     from: 'bilalcr7juv@gmail.com',
-//     to: email,
-//     subject: 'Your OTP Code',
-//     html:'<p>Hi '+name+', please verify your email <a href="http://localhost:4000/verify?id='+user_id+'"> click </a>.</p>'
-// };
-
-// transporter.sendMail(mailOptions, (error, info) => {
-//     if (error) {
-//         console.log(error);
-//     } else {
-//         console.log('Email sent: ' + info.response);
-//     }
-// });

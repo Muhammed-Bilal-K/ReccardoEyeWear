@@ -101,7 +101,6 @@ exports.addcoupens = async (req, res) => {
         await coupenDetail.save();
         if (coupenDetail) {
             res.json({CoupenVerified:true , redirect : '/admin/coupens'});
-            // res.redirect('/admin/coupens');
         }
     } catch (error) {
         const statusCode = error.status || 500;

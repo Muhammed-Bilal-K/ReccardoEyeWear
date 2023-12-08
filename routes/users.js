@@ -5,60 +5,44 @@ let cartController = require('../controllers/cartController');
 let userMiddleware = require('../middleware/userMiddleware');
 
 
-/* GET user' homepage listing. */
 router.get('/', userController.homepage);
 
-/* GET user's loginpage listing. */
 router.get('/login', userMiddleware.notLogged , userController.loginpage);
 
-/* GET user's signuppage listing. */
 router.get('/signup', userMiddleware.notLogged , userController.signuppage);
 
-/* GET user' homepage listing. */
 router.get('/product-category/women', userController.womencate);
 
-/* GET user' homepage listing. */
 router.get('/product-category/men', userController.mencate);
 
-/* GET user' homepage listing. */
 router.get('/product-category', userController.allCategory);
 
 router.get('/forgetpassword', userController.forgetPassword);
 
-/* GET user' homepage listing. */
 router.get('/product-category/women/view/:id', userMiddleware.loggedIn , userController.eachProductv);
 
-/* GET user' homepage listing. */
 router.get('/cart', userMiddleware.loggedIn , cartController.cart);
 
 router.get('/removeitem', userMiddleware.loggedIn, cartController.removeItemWhishlist);
 
-/* GET user' homepage listing. */
 router.get('/favorite', userMiddleware.loggedIn , cartController.favorite);
 
-/* GET user' homepage listing. */
 router.get('/cart/procesCheck', userMiddleware.loggedIn ,  cartController.orderProceed);
 
-/* GET user' homepage listing. */
 router.get('/settings', userMiddleware.loggedIn , cartController.userAdd);
 
-/* GET user' homepage listing. */
 router.get('/settings/addrs', userMiddleware.loggedIn , cartController.specicAdd);
 
-/* GET user' homepage listing. */
 router.get('/settings/addrs/n1', userMiddleware.loggedIn , cartController.newuserAdd);
 
 router.get('/settings/wallet', userMiddleware.loggedIn , userController.wallet);
 
-/* GET user' homepage listing. */
 router.get('/settings/orders', userMiddleware.loggedIn , cartController.listOrder);
 
-/* GET user' homepage listing. */
 router.get('/settings/orders/view/:id', userMiddleware.loggedIn , cartController.viewEach);
 
 router.get('/order/delete', userMiddleware.loggedIn , cartController.DeleteOrder);
 
-/* GET user' homepage listing. */
 router.get('/OrderInvoice/v1/:id', userMiddleware.loggedIn , cartController.downloadPdf);
 
 router.get('/order/return', userMiddleware.loggedIn, cartController.returnProducts);
@@ -67,25 +51,20 @@ router.post("/retunringProduct", userMiddleware.loggedIn, cartController.product
 
 router.get('/downloadPdf/:id', cartController.downloadData);
 
-/* GET user' homepage listing. */
 router.get('/settings/useradd/update/:id', userMiddleware.loggedIn , userController.updateUseradd);
 
-/* GET user' homepage listing. :id*/
 router.get('/settings/useradd/delete/:id', userMiddleware.loggedIn , userController.deleteAdds);
 
 router.get('/ordersuccess',  userController.successPage);
 
-/* GET user' homepage listing. */
 router.get('/logout', userController.userlogout);
 
 
-////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////POST///////////////////////////////////////////////
 
 
-/* POST user's signuppage listing. */
 router.post('/signup/verification' , userController.createsignuppage);
 
-/* POST user's signuppage listing. */
 router.post('/otp', userController.otpverifiypage);
 
 router.post('/forgetemailverify', userController.forgetPassChange);
@@ -96,10 +75,8 @@ router.post('/setNewPassword', userController.setPassword);
 
 router.post('/resendOtp', userController.otpResend);
 
-/* POST user's loginppage listing. */
 router.post('/login',userMiddleware.notLogged , userController.createloginpage);
 
-/* POST user's loginppage listing. */
 router.post('/addToCart/:id', userMiddleware.loggedIn , cartController.addTocarts);
 
 router.post('/change-product-q', userMiddleware.loggedIn, cartController.changeQUA);
@@ -117,5 +94,6 @@ router.post('/getAdd', userMiddleware.loggedIn, cartController.processDelivery);
 router.post('/verify-payment', userMiddleware.loggedIn, cartController.deliveredOnline);
 
 router.post('/coupenCheck', userMiddleware.loggedIn, cartController.coupenApply);
+
 
 module.exports = router;
