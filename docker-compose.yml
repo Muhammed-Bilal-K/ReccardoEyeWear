@@ -1,0 +1,27 @@
+version: '3'
+services:
+  # MongoDB service
+  mongo:
+    container_name: db_container
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+
+  # Node.js application service
+  app:
+    container_name: web-app
+    image: mhdbilal/ecomrecardo
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      MONGODB_URI : mongodb+srv://bilalmuhammed192:8Ax4BbyN6Iuqlo94@cluster0.ys0pdmm.mongodb.net/EyeWearStore?retryWrites=true&w=majority
+      EMAIL : bilalcr7juv@gmail.com
+      PASS : xqrd drrx xmax yymw
+      PORT : 4000
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_db: {}
