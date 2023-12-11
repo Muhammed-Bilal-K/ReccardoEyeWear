@@ -2,7 +2,6 @@ let product = require('../models/productdb');
 let coupen = require('../models/coupondb');
 let fs = require('fs').promises;
 let path = require('path');
-let sharp = require('sharp');
 
 function generateRandomName() {
     try {
@@ -43,8 +42,6 @@ exports.addaProducts = async (req, res) => {
                 let randomName = generateRandomName();
                 let newImageName = randomName;
                 let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
-                let croppedImages = require('path').resolve('./') + '/public/uploaded/croppedImage' + newImageName;
-                sharp(file.data).resize(450, 450).toFile(croppedImages);
                 file.mv(uploadPath, (err) => {
                     if (err) {
                         return res.status(500).json({ message: 'Error uploading files.' });
@@ -57,8 +54,6 @@ exports.addaProducts = async (req, res) => {
             let randomName = generateRandomName();
             let newImageName = randomName;
             let uploadPath = require('path').resolve('./') + '/public/uploaded/' + newImageName;
-            let croppedImages = require('path').resolve('./') + '/public/uploaded/croppedImage' + newImageName;
-            await sharp(ImageUpload).resize(300, 300).toFile(croppedImages);
             ImageUpload.mv(uploadPath, err => {
                 if (err) {
                     return res.status(500).json({ message: 'Error uploading file.' });

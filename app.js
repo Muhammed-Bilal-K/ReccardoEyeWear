@@ -5,7 +5,6 @@ const session = require('express-session');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let fileUpload = require('express-fileupload');
-let sharp = require('sharp');
 
 require('nocache');
 require('dotenv').config();
