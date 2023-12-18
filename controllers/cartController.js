@@ -148,7 +148,7 @@ exports.processDelivery = async (req, res) => {
                 console.log('No document was modified. The order may not have been added.');
             }
 
-            res.json({ status: true, razorpay_order_id: razorpayOrder.id, coupendata: req.body.coupenid , lastOrderId});
+            res.json({ status: true, razorpay_order_id: razorpayOrder.id, coupendata: req.body.coupenid, lastOrderId });
         } else if (req.body.paymentmethod == 'COD') {
             productsArray.map(data => {
                 product.updateOne({ "_id": data.product_id._id }, { $inc: { qnumber: -data.qty } }).then((respo) => {
@@ -467,6 +467,34 @@ exports.DeleteOrder = async (req, res) => {
         let Ordd = req.query.Ordid;
         let Prodd = req.query.proId;
         let UID = req.session.userData;
+        let Disamount;
+
+        if (req.query.paymentMethod != 'COD') {
+            let quantity = await product.findOne({ _id: req.query.sepId }, { price: 1 });
+            let quantityData = quantity.price;
+            if (req.query.coupid != '') {
+                Disamount = await coupensdb.findOne({ _id: req.query.coupid }, { discountamount: 1 });
+                quantityData = quantity.price - Disamount.discountamount;
+            }
+
+            let Userdata = await user.findOne({ _id: UID }).populate('orders.products.product_id');
+            var balanace = Userdata.wallet.balance + quantityData;
+            function generateRandom12DigitNumber() {
+                const min = 100000000000;
+                const max = 999999999999;
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+            const random12DigitNumber = generateRandom12DigitNumber();
+
+            Userdata.wallet.balance = balanace;
+            Userdata.wallet.transactions.push({
+                orderId: random12DigitNumber,
+                amount: quantityData,
+                orderStatus: 'Canceled',
+                date: Date.now(),
+            })
+            await Userdata.save();
+        }
 
         await user.updateOne({ _id: UID, 'orders._id': Ordd }, { $pull: { 'orders.$.products': { _id: Prodd } } }
         ).then(() => {
@@ -526,7 +554,6 @@ exports.productReturnWithQ = async (req, res) => {
             statusData.returned = true;
             statusData.returnReason = req.body.returnReason;
             statusData.returnMethod = req.body.returnMethod;
-            console.log(statusData.price);
             var returnAmount = statusData.price - remainData;
             var balanace = Userdata.wallet.balance + returnAmount;
             function generateRandom12DigitNumber() {

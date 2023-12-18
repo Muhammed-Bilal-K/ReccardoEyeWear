@@ -83,7 +83,7 @@
 								</p>
 
 								<% if (items.status=='pending' ) { %>
-									<p><a href="/order/delete?proId=<%= items._id %>&Ordid=<%= Fulldata._id %>&proQuantity=<%= items.qty %>&sepId=<%= items.product_id._id %>"
+									<p><a href="/order/delete?proId=<%= items._id %>&Ordid=<%= Fulldata._id %>&proQuantity=<%= items.qty %>&sepId=<%= items.product_id._id %>&coupid=<%= Fulldata.coupen_Id._id	 %>&paymentMethod=<%= Fulldata.paymentmethod %>"
 											class="card-link">Cancel</a></p>
 
 									<p>Order Status : <%= Fulldata.orderPlaced %>

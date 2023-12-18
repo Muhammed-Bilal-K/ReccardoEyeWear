@@ -181,6 +181,7 @@ exports.adminpage = async (req, res) => {
 
         let totalorders = totalordersCount[0].count;
 
+
         res.render('admin/adminPanel', { chartData, chartDataM, chartDataY, formattedMonthlySales, paymentMethodsCount, amountOfUsers , totalorders , totalProfitData:totalProfit[0].totalProfitAmount});
     } catch (error) {
         const statusCode = error.status || 500;

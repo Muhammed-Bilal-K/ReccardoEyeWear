@@ -63,7 +63,9 @@
 	<section id="content" style="margin: 3rem 9rem;">
 		<h2>Order History</h2>
 		<hr style="width: 12rem;">
-		<h5 style="box-shadow: 1px 1px 10px #3b2828;
+
+		<% if (Alldata.length !=0) { %>
+			<h5 style="box-shadow: 1px 1px 10px #3b2828;
 		font-weight: 700;
 		padding: 7px 9px;
 		background-color: #086f08;
@@ -75,59 +77,62 @@
 		z-index: 999;
 		left: 21px;
 		top: 90px;">New One</h5>
-		<% Alldata.forEach(data=> { %>
-			<div class="card mb-4" style="width: 60rem;
+			<% } %>
+
+				<% Alldata.forEach(data=> { %>
+					<div class="card mb-4" style="width: 60rem;
 			border-radius: 15px;
 			box-shadow: 6px 3px 25px #909090;">
-				<div class="card-body">
-					<div class="container" style="padding: 3rem 2rem;">
-						<% data.products.forEach(sdata=> { %>
-							<div class="row">
-								<div class="col">
-									<label for="" style="font-weight: 800;">Product Name</label>
-									<div>
-										<h4>
-											<%= sdata.product_id.name %>
-										</h4>
-									</div>
-								</div>
-								<div class="col">
-									<div>
-										<h4><img style="width: 65px; height: 65px; margin-left: 12px;
+						<div class="card-body">
+							<div class="container" style="padding: 3rem 2rem;">
+								<% data.products.forEach(sdata=> { %>
+									<div class="row">
+										<div class="col">
+											<label for="" style="font-weight: 800;">Product Name</label>
+											<div>
+												<h4>
+													<%= sdata.product_id.name %>
+												</h4>
+											</div>
+										</div>
+										<div class="col">
+											<div>
+												<h4><img style="width: 65px; height: 65px; margin-left: 12px;
 											border: 1px solid #80c7af;
 											border-radius: 16px" src="/uploaded/<%= sdata.product_id.image[0] %>" alt="" srcset=""></h4>
+											</div>
+										</div>
+										<div class="col">
+											<label for="" style="font-weight: 800;">Product Quantity</label>
+											<div>
+												<h4>Q:<%= sdata.qty %>
+												</h4>
+											</div>
+										</div>
+										<div class="col">
+											<label for="" style="font-weight: 800;">Product Price</label>
+											<div>
+												<h4>$<%= sdata.price %>
+												</h4>
+											</div>
+										</div>
+										<div class="col">
+											<label for="" style="font-weight: 800;">Payment Type</label>
+											<div>
+												<h4>
+													<%= data.paymentmethod %>
+												</h4>
+											</div>
+										</div>
 									</div>
-								</div>
-								<div class="col">
-									<label for="" style="font-weight: 800;">Product Quantity</label>
-									<div>
-										<h4>Q:<%= sdata.qty %>
-										</h4>
-									</div>
-								</div>
-								<div class="col">
-									<label for="" style="font-weight: 800;">Product Price</label>
-									<div>
-										<h4>$<%= sdata.price %>
-										</h4>
-									</div>
-								</div>
-								<div class="col">
-									<label for="" style="font-weight: 800;">Payment Type</label>
-									<div>
-										<h4>
-											<%= data.paymentmethod %>
-										</h4>
-									</div>
-								</div>
+									<% }) %>
 							</div>
-							<% }) %>
+							<a href="/settings/orders/view/<%= data._id %>">View</a>
+							<p style="display: inline; margin-left: 50%;">Thank you for your order from ReccardoEyeWear
+							</p>
+						</div>
 					</div>
-					<a href="/settings/orders/view/<%= data._id %>">View</a>
-					<p style="display: inline; margin-left: 50%;">Thank you for your order from ReccardoEyeWear</p>
-				</div>
-			</div>
-			<% }) %>
+					<% }) %>
 	</section>
 	<!-- CONTENT -->
 

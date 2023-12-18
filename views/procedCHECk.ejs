@@ -117,7 +117,6 @@
                                         <select class="browser-default custom-select mb-3"
                                             style="-webkit-appearance: none;-moz-appearance:none;appearance:none;" 
                                             name="address">
-                                            <option>select address</option>
                                             <% for( let i=0; i < address.length; i++ ) { %>
                                                 <option value="<%= address[i]._id %>">
                                                     <%= address[i].name %>
@@ -294,7 +293,7 @@
                 var options = {
                     "key": "rzp_test_w6dIwCMt6fH2NS", // Enter the Key ID generated from the Dashboard
                     "amount": "<%= sumP %>", // < % = sumP % > Amount is in curre. Default currency is INR. Hence, 50000 refers to 50000 paise
-                    "currency": "INR",
+                    "currency": 'USD',
                     "name": "ReccardoEyeWear", //your business name
                     "description": "Test Transaction",
                     "image": "",
