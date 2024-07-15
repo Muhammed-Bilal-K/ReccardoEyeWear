@@ -99,7 +99,9 @@
                             <h6 style="margin: 0 auto; background-color: green; color: white; padding: 9px 40px; border-radius: 6px;">Coupon Applied Successfully</h6>
                             <p style="margin-bottom: 0px;">Coupon Code: <span style="text-transform: uppercase;"><%= Fulldata.coupen_Id.couponcode %></span></p>
                             <p>Discount Amount: $<%= Fulldata.coupen_Id.discountamount %></p>
-                        <% } %>
+                        <% } else { %>
+                            <h4 style="font-weight: 800;">No Coupon Applied</h4>
+                        <% } %>                        
                     <% } else { %>
                         <h2>Payment Failed</h2>
                         <h5>Total: $<%= Fulldata.totalamount %></h5>
