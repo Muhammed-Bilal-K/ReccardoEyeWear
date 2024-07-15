@@ -1,186 +1,119 @@
 <%- include('partials/__userAddConfig__') %>
 
-	<section id="sidebar">
-		<a href="/" class="brand">
-			<i class='bx bx-home'></i>
-			<span class="text">HOME</span>
-		</a>
-		<ul class="side-menu top">
-			<li>
-				<a href="/settings">
-					<i class='bx bxs-user'></i>
-					<span class="text">Account Details</span>
-				</a>
-			</li>
-			<li>
-				<a href="/settings/addrs">
-					<i class='bx bx-home'></i>
-					<span class="text">Address</span>
-				</a>
-			</li>
-			<li class="active">
-				<a href="/settings/orders">
-					<i class='bx bxs-shopping-bags'></i>
-					<span class="text">My Orders</span>
-				</a>
-			</li>
-			<!-- <li>
-			<a href="#">
-				<i class='bx bxs-message-dots'></i>
-				<span class="text">Message</span>
-			</a>
-		</li>
-		<li>
-			<a href="#">
-				<i class='bx bxs-group'></i>
-				<span class="text">Team</span>
-			</a>
-		</li> -->
-		</ul>
-		<!-- <ul class="side-menu"> -->
-		<!-- <li>
-			<a href="#">
-				<i class='bx bxs-cog' ></i>
-				<span class="text">Settings</span>
-			</a>
-		</li> -->
-		<!-- <li>
-			<a href="#" class="logout">
-				<i class='bx bxs-log-out-circle'></i>
-				<span class="text">Logout</span>
-			</a>
-		</li> -->
-		<!-- </ul> -->
-	</section>
+<section id="sidebar">
+    <a href="/" class="brand">
+        <i class='bx bx-home'></i>
+        <span class="text">HOME</span>
+    </a>
+    <ul class="side-menu top">
+        <li>
+            <a href="/settings">
+                <i class='bx bxs-user'></i>
+                <span class="text">Account Details</span>
+            </a>
+        </li>
+        <li>
+            <a href="/settings/addrs">
+                <i class='bx bx-home'></i>
+                <span class="text">Address</span>
+            </a>
+        </li>
+        <li class="active">
+            <a href="/settings/orders">
+                <i class='bx bxs-shopping-bags'></i>
+                <span class="text">My Orders</span>
+            </a>
+        </li>
+    </ul>
+</section>
 
-	<!-- CONTENT -->
-	<section id="content" style="margin: 3rem 9rem;">
-		<div class="card mb-4" style="width: 60rem;">
-			<div class="card-body">
-				<h1>ORDER DETAILS</h1>
-				<h6>Order ID - <%= Fulldata._id %>
-				</h6>
-				<HR>
-				</HR>
-				<div class="row">
-					<div class="col-md-4">
-						<h4 style="font-weight: 800;">Products</h4>
-						<% Fulldata.products.forEach(items=> { %>
-							<h4>
-								<%= items.product_id.name %>
-							</h4>
-							<p><img style="width: 65px;" src="/uploaded/<%= items.product_id.image[0] %>" alt=""
-									srcset=""></p>
-							<p style="display: inline;">Qunatity:<%= items.qty %>
-							</p>
-							<p style="display: inline;">X $<%= items.product_id.price %>
-							</p>
-							<p>Total : $<%= items.price %>
-							</p>
+<!-- CONTENT -->
+<section id="content" style="margin: 3rem 9rem;">
+    <div class="card mb-4" style="width: 60rem;">
+        <div class="card-body">
+            <h1>ORDER DETAILS</h1>
+            <h6>Order ID - <%= Fulldata._id %></h6>
+            <hr>
+            <div class="row">
+                <div class="col-md-4">
+                    <h4 style="font-weight: 800;">Products</h4>
+                    <% Fulldata.products.forEach(items => { %>
+                        <h4><%= items.product_id ? items.product_id.name : 'Product name not available' %></h4>
+                        <p>
+                            <img style="width: 65px;" src="/uploaded/<%= items.product_id && items.product_id.image ? items.product_id.image[0] : 'default.jpg' %>" alt="Product Image">
+                        </p>
+                        <p style="display: inline;">Quantity: <%= items.qty %></p>
+                        <p style="display: inline;">X $<%= items.product_id ? items.product_id.price : '0.00' %></p>
+                        <p>Total: $<%= items.price %></p>
 
-							<% if (Fulldata.orderPlaced !='Pending' ) { %>
-								<p>Status : <%= items.status %>
-								</p>
+                        <% if (Fulldata.orderPlaced != 'Pending') { %>
+                            <p>Status: <%= items.status %></p>
 
-								<!-- "/order/delete?proId=<%= items._id %>&Ordid=<%= Fulldata._id %>&proQuantity=<%= items.qty %>&sepId=<%= items.product_id._id %>&coupid=<%= Fulldata.coupen_Id._id%>&paymentMethod=<%= Fulldata.paymentmethod %>" -->
-								<% if (items.status=='pending' ) { %>
-									<p><a href="/order/delete?proId=<%= items._id %>&Ordid=<%= Fulldata._id %>&proQuantity=<%= items.qty %>&sepId=<%= items.product_id._id %><% if (Fulldata.coupen_Id) { %>&coupid=<%= Fulldata.coupen_Id._id %><% } %>&paymentMethod=<%= Fulldata.paymentmethod %>" class="card-link">
-										Cancel
-									</a>
-							</p>
+                            <% if (items.status == 'pending') { %>
+                                <p>
+                                    <a href="/order/delete?proId=<%= items._id %>&Ordid=<%= Fulldata._id %>&proQuantity=<%= items.qty %>&sepId=<%= items.product_id ? items.product_id._id : '' %><% if (Fulldata.coupen_Id) { %>&coupid=<%= Fulldata.coupen_Id._id %><% } %>&paymentMethod=<%= Fulldata.paymentmethod %>" class="card-link">
+                                        Cancel
+                                    </a>
+                                </p>
 
-									<p>Order Status : <%= Fulldata.orderPlaced %>
-									</p>
-									<% } else { %>
-										<% if (new Date(items.expiresAt)> new Date()) { %>
-											<% if (!items.returned) { %>
-												<p><a href="/order/return?Ordid=<%= Fulldata._id %>&proid=<%= items._id %>&coupid=<%= Fulldata.coupen_Id %>&sepId=<%= items.product_id._id %>"
-														class="card-link">Return</a></p>
-												<p style="margin-top: -18px;
-													font-size: 12px;
-													font-weight: 800;">7 days Return Policy</p>
-												<% } else { %>
-													<p>Returned</p>
-													<% } %>
-														<% } %>
-															<% } %>
+                                <p>Order Status: <%= Fulldata.orderPlaced %></p>
+                            <% } else { %>
+                                <% if (new Date(items.expiresAt) > new Date()) { %>
+                                    <% if (!items.returned) { %>
+                                        <p>
+                                            <a href="/order/return?Ordid=<%= Fulldata._id %>&proid=<%= items._id %><% if (Fulldata.coupen_Id) { %>&coupid=<%= Fulldata.coupen_Id._id %><% } %>&sepId=<%= items.product_id ? items.product_id._id : '' %>" class="card-link">
+                                                Return
+                                            </a>
+                                        </p>
+                                        <p style="margin-top: -18px; font-size: 12px; font-weight: 800;">7 days Return Policy</p>
+                                    <% } else { %>
+                                        <p>Returned</p>
+                                    <% } %>
+                                <% } %>
+                            <% } %>
+                        <% } %>
+                        <p>3 Days Delivery Time</p>
+                        <hr>
+                    <% }) %>
+                </div>
+                <div class="col-md-4">
+                    <h4 style="font-weight: 800;">Address Information</h4>
+                    <h4><%= Fulldata.address ? Fulldata.address.name : 'Name not available' %></h4>
+                    <p style="display: inline;"><%= Fulldata.email %></p>
+                    <p style="display: inline;"><%= Fulldata.address ? Fulldata.address.country : 'Country not available' %></p>
+                    <p style="display: inline;"><%= Fulldata.address ? Fulldata.address.address : 'Address not available' %></p>
+                    <p style="display: inline;"><%= Fulldata.address ? Fulldata.address.city : 'City not available' %></p>
+                    <p style="display: inline;"><%= Fulldata.address ? Fulldata.address.state : 'State not available' %></p>
+                    <p style="display: inline;"><%= Fulldata.address ? Fulldata.address.zipcode : 'Zipcode not available' %></p>
+                    <hr>
 
-																<% } %>
-																	<p>3 Days Delivery Time</p>
-																	<hr>
-																	<% }) %>
-					</div>
-					<div class="col-md-4">
-						<h4 style="font-weight: 800;">Address Information</h4>
-						<h4>
-							<%= Fulldata.address.name %>
-						</h4>
-						<p style="display: inline;">
-							<%= Fulldata.email %>
-						</p>
-						<p style="display: inline;">
-							<%= Fulldata.address.country %>
-						</p>
-						<p style="display: inline;">
-							<%= Fulldata.address.address %>
-						</p>
-						<p style="display: inline;">
-							<%= Fulldata.address.city %>
-						</p>
-						<p style="display: inline;">
-							<%= Fulldata.address.state %>
-						</p>
-						<p style="display: inline;">
-							<%= Fulldata.address.zipcode %>
-						</p>
-						<hr>
+                    <% if (Fulldata.orderPlaced != 'Pending') { %>
+                        <h4 style="font-weight: 800;">Bill Details</h4>
+                        <h5>Total: $<%= Fulldata.totalamount %></h5>
+                        <h5>Payment: <%= Fulldata.paymentmethod %></h5>
+                        <h5 style="display: inline;">Shipping Charge</h5>
+                        <p style="display: inline;">: Free Shipping</p>
+                        <hr>
+                        <% if (Fulldata.coupen_Id) { %>
+                            <h4 style="font-weight: 800;">Coupons Details</h4>
+                            <h6 style="margin: 0 auto; background-color: green; color: white; padding: 9px 40px; border-radius: 6px;">Coupon Applied Successfully</h6>
+                            <p style="margin-bottom: 0px;">Coupon Code: <span style="text-transform: uppercase;"><%= Fulldata.coupen_Id.couponcode %></span></p>
+                            <p>Discount Amount: $<%= Fulldata.coupen_Id.discountamount %></p>
+                        <% } %>
+                    <% } else { %>
+                        <h2>Payment Failed</h2>
+                        <h5>Total: $<%= Fulldata.totalamount %></h5>
+                        <h5>Payment: <%= Fulldata.paymentmethod %></h5>
+                    <% } %>
+                </div>
+                <% if (Fulldata.orderPlaced != 'Pending') { %>
+                    <div class="col-md-4">
+                        <p><a href="/OrderInvoice/v1/<%= Fulldata._id %>" class="card-link">Invoice</a></p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</section>
 
-						<% if (Fulldata.orderPlaced !='Pending' ) { %>
-							<h4 style="font-weight: 800;">Bill Details</h4>
-							<h5>Total : $<%= Fulldata.totalamount %>
-							</h5>
-							<h5>Payment :<%= Fulldata.paymentmethod %>
-							</h5>
-							<h5 style="display: inline;">Shipping Charge</h5>
-							<p style="display: inline;">: Free Shipping</p>
-							<hr>
-							<% if (Fulldata.coupen_Id !=null) { %>
-								<h4 style="font-weight: 800;">Cuopens Details</h4>
-								<h6 style="margin: 0 auto;
-									background-color: green;
-									color: white;
-									padding: 9px 40px;
-									border-radius: 6px;">Coupen Applied Successfully</h6>
-								<p style="margin-bottom: 0px;">Coupon Code : <span style="text-transform: uppercase;">
-										<%= Fulldata.coupen_Id.couponcode %>
-									</span></p>
-								<p>Discount Amount : $<%= Fulldata.coupen_Id.discountamount %>
-								</p>
-								<% } %>
-									<% } else {%>
-										<h2>Payment Failed</h2>
-										<h5>Total : $<%= Fulldata.totalamount %>
-										</h5>
-										<h5>Payment :<%= Fulldata.paymentmethod %>
-										</h5>
-										<% } %>
-					</div>
-					<% if (Fulldata.orderPlaced !='Pending' ) { %>
-						<div class="col-md-4">
-							<!-- <p><a href="/settings/useradd/update/" class="card-link"></a></p> -->
-
-							<p><a href="/OrderInvoice/v1/<%= Fulldata._id %>" class="card-link">Invoice</a></p>
-						</div>
-						<% } %>
-
-				</div>
-			</div>
-		</div>
-	</section>
-
-
-	<!-- CONTENT -->
-
-
-
-	<%- include('partials/__useraddFoo__') %>
+<%- include('partials/__useraddFoo__') %>
